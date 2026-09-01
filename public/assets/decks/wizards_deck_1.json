@@ -1,0 +1,5633 @@
+{
+  "deckName": "Wizards Deck",
+  "cards": [
+    {
+      "id": "card_1782853578674",
+      "cardName": "Skirk Prospector Goblin",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Goblin",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A fierce goblin sentry that gathers resources.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [
+        "Stacking"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Skirk Prospector Goblin.jpg"
+    },
+    {
+      "id": "card_1782853757084",
+      "cardName": "Ogre Sunderer",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Earth shaker and wall breaker.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Stacking"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Ogre Sunderer.jpg"
+    },
+    {
+      "id": "card_1782853898447",
+      "cardName": "Magma Rifter Elemental",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R",
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A creature born of molten fury.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [
+        "Trample"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Magma Rifter Elemental.jpg"
+    },
+    {
+      "id": "card_1782853990159",
+      "cardName": "Hellkite Ancient Dragon",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R",
+        "R",
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Dragon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Scorches the earth from above.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [
+        "Flying"
+      ],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "R",
+            "R"
+          ],
+          "text": "Deals 2 damage to any target"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Hellkite Ancient Dragon.jpg"
+    },
+    {
+      "id": "card_1782854293097",
+      "cardName": "Field Sentry Human",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Soldier",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Guardian of the outer gates.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [
+        "Stacking"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Field Sentry Human.jpg"
+    },
+    {
+      "id": "card_1782897244143",
+      "cardName": "White Knight",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W",
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Soldier",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A champion of light and justice.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "First Strike"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "White Knight.jpg"
+    },
+    {
+      "id": "card_1782897576632",
+      "cardName": "Leonin Sun-Stalker",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W",
+        "W",
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Hunter of the golden plains.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Leonin Sun-Stalker.jpg"
+    },
+    {
+      "id": "card_1782898399216",
+      "cardName": "Archon of Grace",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W",
+        "W",
+        "W",
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "An archon (an armored angelic being) riding a winged, crystalline ram. A divine protector in the skies.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [
+        "Flying"
+      ],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "W",
+            "W"
+          ],
+          "text": "Heals 2 damage to any target"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Archon of Grace.jpg"
+    },
+    {
+      "id": "card_1782898613530",
+      "cardName": "Leaf-Crowned Elf Scout",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Elven",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Fleet-footed scout of the forests.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [
+        "Stacking"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Leaf-Crowned Elf Scout.jpg"
+    },
+    {
+      "id": "card_1782900241150",
+      "cardName": "Rootwalla Lizard",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Adapts to any forest environment.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Stacking"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Rootwalla Lizard.jpg"
+    },
+    {
+      "id": "card_1782900831688",
+      "cardName": "Heartwood Dryad",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G",
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A tree spirit protector of the woods.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Heartwood Dryad.jpg"
+    },
+    {
+      "id": "card_1782900996864",
+      "cardName": "Sylvan Primordial",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G",
+        "G",
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A colossal, walking treefold with massive, twisted roots forming its legs. Force of nature incarnate.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [
+        "Trample"
+      ],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "G",
+            "G"
+          ],
+          "text": "Heals 2 damage to any target"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Sylvan Primordial.jpg"
+    },
+    {
+      "id": "card_1782901767744",
+      "cardName": "Festering Bog-Rot Human Zombie",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Born of the swamp rot, seeking flesh.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [
+        "Stacking"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Festering Bog-Rot Human Zombie.jpg"
+    },
+    {
+      "id": "card_1782901879915",
+      "cardName": "Carrion Crow Swarm",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A dark cloud over the swamps.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Stacking",
+        "Flying"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Carrion Crow Swarm.jpg"
+    },
+    {
+      "id": "card_1782902069422",
+      "cardName": "Fen Haunt Spirit",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B",
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A restless soul of the marshes.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Fen Haunt Spirit.jpg"
+    },
+    {
+      "id": "card_1782902146891",
+      "cardName": "Litch King",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B",
+        "B",
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Lord of the undead host.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "B",
+            "B"
+          ],
+          "text": "Deals 2 damage to any target"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Litch King.jpg"
+    },
+    {
+      "id": "card_1783179353949",
+      "cardName": "Wizard",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Wizard",
+      "cardSubType": "Level 1",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Practitioner of basic blue spellcraft.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "5",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C3"
+          ],
+          "text": "Add a mana of any color."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Wizard L1.jpg"
+    },
+    {
+      "id": "card_1783179624611",
+      "cardName": "Wizard",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Wizard",
+      "cardSubType": "Level 2",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A skilled wizard of the tower.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "10",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C2"
+          ],
+          "text": "Add a mana of any color."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Wizard L2.jpg"
+    },
+    {
+      "id": "card_1783179668256",
+      "cardName": "Wizard",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Wizard",
+      "cardSubType": "Level 3",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A wizard of advanced studies and elemental control.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "15",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C3"
+          ],
+          "text": "Add 2 mana of any color."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Wizard L3.jpg"
+    },
+    {
+      "id": "card_1783179759077",
+      "cardName": "Wizard",
+      "frameStyle": "blue",
+      "borderColor": "blue",
+      "manaCost": [],
+      "cardType": "Wizard",
+      "cardSubType": "Level 4",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Archmage of the North, master of the ultimate magic.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "20",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C1"
+          ],
+          "text": "Add a mana of any color."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Wizard L4.jpg"
+    },
+    {
+      "id": "card_1784232752540",
+      "cardName": "Wizards Tower",
+      "frameStyle": "black",
+      "borderColor": "blue",
+      "manaCost": [],
+      "cardType": "Tower",
+      "cardSubType": "Level 1",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Produces {U} per turn.\n",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "0",
+      "toughness": "10",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C3"
+          ],
+          "text": "Draw 1 card."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Wizards Tower L1.jpg"
+    },
+    {
+      "id": "card_1784233164257",
+      "cardName": "Wizards Tower",
+      "frameStyle": "black",
+      "borderColor": "blue",
+      "manaCost": [],
+      "cardType": "Tower",
+      "cardSubType": "Level 2",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Produces  {U} {U} per turn.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "0",
+      "toughness": "15",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C2"
+          ],
+          "text": "Draw 1 card."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Wizards Tower L2.jpg"
+    },
+    {
+      "id": "card_1784233385406",
+      "cardName": "Wizards Tower",
+      "frameStyle": "black",
+      "borderColor": "blue",
+      "manaCost": [],
+      "cardType": "Tower",
+      "cardSubType": "Level 3",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Produces  {U} {U}{U} per turn.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "0",
+      "toughness": "20",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C3"
+          ],
+          "text": "Draw 2 cards."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Wizards Tower L3.jpg"
+    },
+    {
+      "id": "card_1784233612156",
+      "cardName": "Wizards Tower",
+      "frameStyle": "black",
+      "borderColor": "blue",
+      "manaCost": [],
+      "cardType": "Tower",
+      "cardSubType": "Level 4",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Produces  {U} {U}{U} {U} per turn.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "0",
+      "toughness": "25",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C1"
+          ],
+          "text": "Draw 1 card."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Wizards Tower L4.jpg"
+    },
+    {
+      "id": "card_1784467369547",
+      "cardName": "Balrog",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Monster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Balrog",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "8",
+      "keywords": [
+        "Trample"
+      ],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "R",
+            "R"
+          ],
+          "text": "Gain +6/+0"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Balrog.jpg"
+    },
+    {
+      "id": "card_1784467664393",
+      "cardName": "Nightmare",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Monster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Nightmare",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "8",
+      "keywords": [
+        "Trample"
+      ],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "B",
+            "B"
+          ],
+          "text": "Gain +6/+0"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Nightmare.jpg"
+    },
+    {
+      "id": "card_1784467862209",
+      "cardName": "Forest Golem",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Monster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Golem",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "8",
+      "keywords": [
+        "Trample"
+      ],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "G",
+            "G"
+          ],
+          "text": "Gain +6/+0"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Forest Golem.jpg"
+    },
+    {
+      "id": "card_1784468455314",
+      "cardName": "Stone Golem",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Monster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Golem",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "8",
+      "keywords": [
+        "Trample"
+      ],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "W",
+            "W"
+          ],
+          "text": "Gain +6/+0"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Stone Golem.jpg"
+    },
+    {
+      "id": "card_1784503790742",
+      "cardName": "Upgrade Land",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Enchantment",
+      "target": "Land",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Upgrade target controlled territory level by 1.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Upgrade Land.jpg"
+    },
+    {
+      "id": "card_1784504023401",
+      "cardName": "Trample",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Target friendly creature gains Trample until end of battle.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Trample.jpg"
+    },
+    {
+      "id": "card_1784504232346",
+      "cardName": "First Strike",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Target friendly creature gains First Strike until end of battle.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "First Strike.jpg"
+    },
+    {
+      "id": "card_1784504384559",
+      "cardName": "Lightning Strike",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Deals 2 damage to target creature or enemy tower.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Lightning Strike.jpg"
+    },
+    {
+      "id": "card_1784504524412",
+      "cardName": "Fireball",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Deals 3 damage to target creature or tower.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Fireball.jpg"
+    },
+    {
+      "id": "card_1784506003132",
+      "cardName": "Clone",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Create a copy of target creature both friendly or hostile.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Clone.jpg"
+    },
+    {
+      "id": "card_1784506093062",
+      "cardName": "Downgrade Land",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Enchantment",
+      "target": "Land",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Downgrade target enemy territory level by 1.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Downgrade Land.jpg"
+    },
+    {
+      "id": "card_1784506282548",
+      "cardName": "Create Land",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Enchantment",
+      "target": "Land",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Claim target unowned adjacent tile as controlled territory.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Create Land.jpg"
+    },
+    {
+      "id": "card_1784506402610",
+      "cardName": "Destroy Land",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Enchantment",
+      "target": "Land",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": " Destroy target enemy territory, making it unowned.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Destroy Land.jpg"
+    },
+    {
+      "id": "card_1784506536134",
+      "cardName": "Mana Drain",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Enchantment",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Steal 2 mana from opponent’s mana pool.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Mana Drain.jpg"
+    },
+    {
+      "id": "card_1784506663992",
+      "cardName": "Mana Boost",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Enchantment",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": " Gain {G}{G}{G} extra mana.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Mana Boost.jpg"
+    },
+    {
+      "id": "card_1784541608021",
+      "cardName": "Vision",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Enchantment",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Draw 2 cards from your deck.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Vision.jpg"
+    },
+    {
+      "id": "card_1784541679387",
+      "cardName": "Counterspell Red",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Cancel an enemy spell or ability target.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Counterspell Red.jpg"
+    },
+    {
+      "id": "default_tower_ability_l1",
+      "cardName": "Tower L1 Ability",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [
+        "C3"
+      ],
+      "cardType": "Ability",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Draw 1 card.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Tower Ability.png"
+    },
+    {
+      "id": "default_tower_ability_l2",
+      "cardName": "Tower L2 Ability",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [
+        "C2"
+      ],
+      "cardType": "Ability",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Draw 1 card.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Tower Ability.png"
+    },
+    {
+      "id": "default_tower_ability_l3",
+      "cardName": "Tower L3 Ability",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [
+        "C3"
+      ],
+      "cardType": "Ability",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Draw 2 cards.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Tower Ability.png"
+    },
+    {
+      "id": "default_tower_ability_l4",
+      "cardName": "Tower L4 Ability",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [
+        "C1"
+      ],
+      "cardType": "Ability",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Draw 1 card.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Tower Ability.png"
+    },
+    {
+      "id": "default_wizard_ability_l1",
+      "cardName": "Wizard L1 Ability",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [
+        "C3"
+      ],
+      "cardType": "Ability",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Add a mana of any color.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Wizard Ability.png"
+    },
+    {
+      "id": "default_wizard_ability_l2",
+      "cardName": "Wizard L2 Ability",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [
+        "C2"
+      ],
+      "cardType": "Ability",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Add a mana of any color.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Wizard Ability.png"
+    },
+    {
+      "id": "default_wizard_ability_l3",
+      "cardName": "Wizard L3 Ability",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [
+        "C3"
+      ],
+      "cardType": "Ability",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Add 2 mana of any color.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Wizard Ability.png"
+    },
+    {
+      "id": "default_wizard_ability_l4",
+      "cardName": "Wizard L4 Ability",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [
+        "C1"
+      ],
+      "cardType": "Ability",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Add a mana of any color.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Wizard Ability.png"
+    },
+    {
+      "id": "default_tower_of_terror_quest",
+      "cardName": "Tower of Terror Quest",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Quest",
+      "cardSubType": "Level 1",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Quest: Visit the ancient ruins of the Tower of Terror (the old mage tower) to learn about the dark arts.\n\nReward: Receive a monster card.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Tower of Terror Quest.png"
+    },
+    {
+      "id": "card_1785063998339",
+      "cardName": "Abyssal Walker",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Skeleton",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A unique, powerful Abyssal Walker creature type.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Abyssal Walker.jpg"
+    },
+    {
+      "id": "card_1785064215492",
+      "cardName": "Bone Dragon",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Dragon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A single, massive Bone Dragon (skeletal dragon).",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "7",
+      "toughness": "7",
+      "keywords": [
+        "Flying",
+        "Trample",
+        "Fear"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Bone Dragon.jpg"
+    },
+    {
+      "id": "card_1785064406277",
+      "cardName": "Skeleton Archers",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Skeleton",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A unique, powerful Abyssal Walker creature type.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Skeleton Archers.jpg"
+    },
+    {
+      "id": "card_1785064509658",
+      "cardName": "Skeleton Unit",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Skeleton",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A pair of distinct Skeleton Warriors.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [
+        "Stacking"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Skeleton Unit.jpg"
+    },
+    {
+      "id": "card_1785065432536",
+      "cardName": "Skeleton Warriors",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Skeleton",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A pair of distinct Skeleton Warriors.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Skeleton Warriors.jpg"
+    },
+    {
+      "id": "card_1785065573787",
+      "cardName": "Undead King",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Skeleton",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A solitary, powerful skeletal King.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "5",
+      "toughness": "5",
+      "keywords": [
+        "Fear"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Undead King.jpg"
+    },
+    {
+      "id": "card_1785065625887",
+      "cardName": "Undead Knight",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Skeleton",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "One high-ranking Undead Knight, mounted on its Skeletal Steed.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [
+        "First Strike",
+        "Trample"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Undead Knight.jpg"
+    },
+    {
+      "id": "card_1785078021817",
+      "cardName": "Goblin King",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R",
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Goblin",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A cunning Goblin King standing tall in all his glory and pride",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "6",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Gives +1/+1 to all Goblins."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Goblin King.jpg"
+    },
+    {
+      "id": "card_1785078265385",
+      "cardName": "Goblin Berserker",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Goblin",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "An enraged Goblin Berserker dual-wielding axes.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "1",
+      "keywords": [
+        "First Strike"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Goblin Berserker.jpg"
+    },
+    {
+      "id": "card_1785078401809",
+      "cardName": "Goblin Warrior",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Goblin",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A heavily armored Goblin Infantry Warrior.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Goblin Warrior.jpg"
+    },
+    {
+      "id": "card_1785078554263",
+      "cardName": "Goblin Spearman",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Goblin",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A defensive Goblin Spearman ready for battle.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [
+        "Stacking"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Goblin Spearman.jpg"
+    },
+    {
+      "id": "card_1785078626401",
+      "cardName": "Goblin Greandier",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Goblin",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A wild Goblin Grenadier holding lit explosive alchemical bombs.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Goblin Greandier.jpg"
+    },
+    {
+      "id": "card_1785078712770",
+      "cardName": "Goblin Wolfrider",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R",
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Goblin",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A nimble Goblin Wolfrider mounted on a ferocious giant wolf.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Goblin Wolfrider.jpg"
+    },
+    {
+      "id": "card_1785164625358",
+      "cardName": "Archmage",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W",
+        "W",
+        "W",
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Wizard",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Powerful elven archmage",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [
+        "card_1784504232346",
+        "card_1785768764508"
+      ],
+      "companions": [
+        "card_1787057762927"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Archmage.jpg"
+    },
+    {
+      "id": "card_1785164783475",
+      "cardName": "Grandmaster Mage",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Grandmaster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Wizened grandmaster mage",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [
+        "card_1784506003132",
+        "card_1785768715146",
+        "card_1785957814891",
+        "card_1785768547724"
+      ],
+      "companions": [
+        "card_1787057762927"
+      ],
+      "power": "3",
+      "toughness": "4",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Grandmaster Mage.jpg"
+    },
+    {
+      "id": "card_1785164975702",
+      "cardName": "Battle Mage",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W",
+        "W",
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Wizard",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Human battle wizard",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [
+        "card_1784504384559",
+        "card_1784504524412"
+      ],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Battle Mage.jpg"
+    },
+    {
+      "id": "card_1785165079673",
+      "cardName": "Fireball Archmage",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Wizard",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Wizard",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [
+        "card_1784504524412"
+      ],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Fireball Archmage.jpg"
+    },
+    {
+      "id": "card_1785165194773",
+      "cardName": "Lightning Archmage",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Wizard",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Wizened, elder Grandmaster mage.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [
+        "card_1784504384559"
+      ],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Lightning Archmage.jpg"
+    },
+    {
+      "id": "card_1785165293355",
+      "cardName": "Necromancer",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Wizard",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Menacing, focused necromancer.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [
+        "card_1787393804735"
+      ],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Necromancer.jpg"
+    },
+    {
+      "id": "card_1785166958441",
+      "cardName": "Medusa",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Mythical Monster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A striking, green-skinned Gorgon Medusa.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "8",
+      "keywords": [
+        "Freeze"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Medusa.jpg"
+    },
+    {
+      "id": "card_1785167079925",
+      "cardName": "Cyclops",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Mythical Monster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A massive, muscular single-eyed giant Cyclops.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Cyclops.jpg"
+    },
+    {
+      "id": "card_1785167146985",
+      "cardName": "Harpy",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Mythical Monster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A fearsome Harpy—a hybrid creature with the upper body of a wild-eyed woman and the wings, talons, and feathered body of a dark bird of prey.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Flying"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Harpy.jpg"
+    },
+    {
+      "id": "card_1785167218717",
+      "cardName": "Minotaur",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Mythical Monster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A powerful, dark-furred Minotaur featuring the head of a fierce bull with long, sharp horns and the muscular body of a warrior.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "5",
+      "toughness": "5",
+      "keywords": [
+        "Trample"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Minotaur.jpg"
+    },
+    {
+      "id": "card_1785167295970",
+      "cardName": "Manticore",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Mythical Monster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A terrifying mythical Manticore with the body and head of a golden lion, a pair of large leathery dragon wings, and a long, deadly scorpion tail with poisonous barb spikes.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [
+        "First Strike",
+        "Poison"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Manticore.jpg"
+    },
+    {
+      "id": "card_1785167414870",
+      "cardName": "Hydra",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Mythical Monster",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A multi-headed serpentine Hydra with five distinct, scaly reptilian dragon-like heads, each with sharp fangs and glowing yellow eyes, slithering out of dark waters.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "5",
+      "toughness": "5",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Hydra.jpg"
+    },
+    {
+      "id": "card_1785167618937",
+      "cardName": "Obsidian Grand Wyrm",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Dragon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A massive, ancient Grand Wyrm. Its scales are like cracked, dull obsidian, craggy and aged, with several thick, multi-pronged horns.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "7",
+      "toughness": "7",
+      "keywords": [
+        "Flying"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Obsidian Grand Wyrm.jpg"
+    },
+    {
+      "id": "card_1785167714105",
+      "cardName": "Bearded Dragon",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Dragon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "It has a smaller, lizard-like body with a dense, trailing 'beard' of smaller, spiked scales and spines.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Bearded Dragon.jpg"
+    },
+    {
+      "id": "card_1785167813914",
+      "cardName": "Frost Hydra",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Dragon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A menacing, three-headed Frost Hydra. Its entire body is made of faceted, multi-colored (ice-blue, teal, white) translucent ice crystal scales.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "6",
+      "keywords": [
+        "Freeze"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Frost Hydra.jpg"
+    },
+    {
+      "id": "card_1785167944020",
+      "cardName": "Wyvern",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Dragon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A serpentine wyvern, similar in form to a massive snake but with scaled legs and a multi-horned head. It has dull, greenish-grey scales.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Wyvern.jpg"
+    },
+    {
+      "id": "card_1785168087939",
+      "cardName": "Dragon Whelp",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Dragon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A very small, cute baby Dragon Whelp. It has smooth, vibrant emerald-green scales, oversized, curious green eyes, and small, budding wings.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Dragon Whelp.jpg"
+    },
+    {
+      "id": "card_1785168153526",
+      "cardName": "Fire Dragon",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Dragon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A fiery dragon.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "6",
+      "toughness": "6",
+      "keywords": [
+        "Flying",
+        "Trample"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Fire Dragon.jpg"
+    },
+    {
+      "id": "card_1785757758773",
+      "cardName": "Fafnir",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Legend",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Fafnir is a colossal, serpentine lindworm from Norse myth.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "12",
+      "toughness": "12",
+      "keywords": [
+        "Flying",
+        "Trample"
+      ],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Immune to spells"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Fafnir.jpg"
+    },
+    {
+      "id": "card_1785758328916",
+      "cardName": "Frankensteins Monster",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Legend",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A towering, stitched figure with pallid yellow-gray skin, sunken glowing eyes, and jagged scars.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "8",
+      "toughness": "8",
+      "keywords": [
+        "Regenerate"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Frankensteins Monster.jpg"
+    },
+    {
+      "id": "card_1785760313167",
+      "cardName": "Achilles",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Hero",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "8",
+      "toughness": "8",
+      "keywords": [
+        "First Strike"
+      ],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "+1/+1 to all soldiers."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Achilles.jpg"
+    },
+    {
+      "id": "card_1785760401710",
+      "cardName": "Keni Queen",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Hero",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Keni Queen.jpg"
+    },
+    {
+      "id": "card_1785760465995",
+      "cardName": "Manhunter",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Hero",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Manhunter.jpg"
+    },
+    {
+      "id": "card_1785760531046",
+      "cardName": "Rick Dragonslayer",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Hero",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "+5/+5 against any dragons."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Rick Dragonslayer.jpg"
+    },
+    {
+      "id": "card_1785760678681",
+      "cardName": "Roland",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Hero",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "5",
+      "toughness": "5",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "+6/+6 against Fafnir."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Roland.jpg"
+    },
+    {
+      "id": "card_1785760862615",
+      "cardName": "Two Heavens",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Hero",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "6",
+      "toughness": "6",
+      "keywords": [
+        "First Strike"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Two Heavens.jpg"
+    },
+    {
+      "id": "card_1785768547724",
+      "cardName": "Freeze",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Freezes target creature until end of battle.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Freeze.jpg"
+    },
+    {
+      "id": "card_1785768641323",
+      "cardName": "Flying",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Target friendly creature gains Flying until end of battle.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Flying.jpg"
+    },
+    {
+      "id": "card_1785768715146",
+      "cardName": "Disenchant",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Removes target enchanment.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Disenchant.jpg"
+    },
+    {
+      "id": "card_1785768764508",
+      "cardName": "Strength",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Target friendly creature gains +2/+2 until end of battle.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Strength.jpg"
+    },
+    {
+      "id": "card_1785768811757",
+      "cardName": "Fog",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Attackers turns end directly.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Fog.jpg"
+    },
+    {
+      "id": "card_1785957711575",
+      "cardName": "Fear",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Target creature gets -1/-1 until end of battle.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Fear.jpg"
+    },
+    {
+      "id": "card_1785957814891",
+      "cardName": "Heal",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Heal target creature for 2 damage.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Heal.jpg"
+    },
+    {
+      "id": "card_1785957902142",
+      "cardName": "Poison",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Target creature gets poisoned.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Poison.jpg"
+    },
+    {
+      "id": "card_1785957947231",
+      "cardName": "Regenerate",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Target friendly creature gains Regenerate until end of battle.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Regenerate.jpg"
+    },
+    {
+      "id": "card_1785957993479",
+      "cardName": "Web",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "Creature",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Removes target creatures flying ability until end of battle.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Web.jpg"
+    },
+    {
+      "id": "card_1785961024566",
+      "cardName": "Troll",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Regenerate"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Troll.jpg"
+    },
+    {
+      "id": "card_1785961146509",
+      "cardName": "Mummy",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Undead",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Mummy.jpg"
+    },
+    {
+      "id": "card_1785961209541",
+      "cardName": "Vampire",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Undead",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [
+        "Flying"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Vampire.jpg"
+    },
+    {
+      "id": "card_1785961277257",
+      "cardName": "Werewulf",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Undead",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "5",
+      "toughness": "4",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Werewulf.jpg"
+    },
+    {
+      "id": "card_1786015866699",
+      "cardName": "Spartacus",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Hero",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "Spartacus was a Thracian gladiator who led the largest slave revolt against Rome, becoming an enduring symbol of resistance and freedom.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "7",
+      "toughness": "7",
+      "keywords": [
+        "First Strike"
+      ],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "+1/+1 to all gladiators."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Spartacus.jpg"
+    },
+    {
+      "id": "card_1786015964738",
+      "cardName": "Murmillo",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Gladiator",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A Murmillo was a Roman gladiator type, heavily armored, using a large shield and short sword, often fighting lighter opponents.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Murmillo.jpg"
+    },
+    {
+      "id": "card_1786016016582",
+      "cardName": "Retiarius",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Gladiator",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A retiarius was a lightly armored gladiator who fought with a net, trident, and dagger, relying on speed and agility.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Retiarius.jpg"
+    },
+    {
+      "id": "card_1786017197580",
+      "cardName": "Secutor",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Gladiator",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "A secutor (Latin for “pursuer” or “chaser”) was a heavily armored Roman gladiator class.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Secutor.jpg"
+    },
+    {
+      "id": "card_1786110500192",
+      "cardName": "Bracelet of strength",
+      "frameStyle": "artifact",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Artifact",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Add +2/+0 to power/toughness"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Bracelet of strength.jpg"
+    },
+    {
+      "id": "card_1786110635264",
+      "cardName": "Poisoned dagger",
+      "frameStyle": "artifact",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Artifact",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [
+        "Poison"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Poisined dagger.jpg"
+    },
+    {
+      "id": "card_1786110699552",
+      "cardName": "Ring of power",
+      "frameStyle": "artifact",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Artifact",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Add +1/+0 to power/toughness"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Ring of power.jpg"
+    },
+    {
+      "id": "card_1786110789724",
+      "cardName": "Ringmail of protection",
+      "frameStyle": "artifact",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Artifact",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Add +0/+5 to power/toughness"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Ringmail of protection.jpg"
+    },
+    {
+      "id": "card_1786110876985",
+      "cardName": "Scepter of doom",
+      "frameStyle": "artifact",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Artifact",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [
+        "card_1784506003132",
+        "card_1784541679387"
+      ],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Scepter of doom.jpg"
+    },
+    {
+      "id": "card_1786110962742",
+      "cardName": "Sword of glory",
+      "frameStyle": "artifact",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Artifact",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Add +5/+0 to power/toughness"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Sword of glory.jpg"
+    },
+    {
+      "id": "card_1786114010950",
+      "cardName": "Planar Portal",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Portal",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Planar Portal.jpg"
+    },
+    {
+      "id": "card_1786114110227",
+      "cardName": "Sol Ring",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Portal",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Sol Ring.jpg"
+    },
+    {
+      "id": "default_dragons_nest_quest",
+      "cardName": "Dragons Nest Quest",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Quest",
+      "cardSubType": "Level 1",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Quest: Search for the dragon's nest.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Dragons Nest Quest.jpg"
+    },
+    {
+      "id": "default_ancient_temple_ruins_quest",
+      "cardName": "Ancient Temple Ruins Quest",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Quest",
+      "cardSubType": "Level 1",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Quest: Find the ancient ruins",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Ancient Temple Ruins Quest.jpg"
+    },
+    {
+      "id": "default_city_of_the_dead_quest",
+      "cardName": "City of the Dead Quest",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Quest",
+      "cardSubType": "Level 1",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Quest: Locate the city of the dead and find the entrance.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "City of the Dead Quest.jpg"
+    },
+    {
+      "id": "default_goblin_camp_quest",
+      "cardName": "Goblin Camp Quest",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Quest",
+      "cardSubType": "Level 1",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Quest: Find the Goblin camp!",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Goblin Camp Quest.jpg"
+    },
+    {
+      "id": "default_crypt_of_the_undead_quest",
+      "cardName": "Crypt of the undead Quest",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Quest",
+      "cardSubType": "Level 1",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Quest: Visit the crypt to unlock certain horrors.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Crypt of the undead Quest.jpg"
+    },
+    {
+      "id": "default_gladiator_school_quest",
+      "cardName": "Gladiator School Quest",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Quest",
+      "cardSubType": "Level 1",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Quest: Visit the gladiator school and learn new skills.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Gladiator School Quest.jpg"
+    },
+    {
+      "id": "default_battle_arena_quest",
+      "cardName": "Battle Arena Quest",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Quest",
+      "cardSubType": "Level 1",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Quest: Find the great battle arena, where fights are on nonstop.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Battle Arena Quest.jpg"
+    },
+    {
+      "id": "card_1786194707980",
+      "cardName": "Succubus",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Demon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [
+        "Flying"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Succubus.jpg"
+    },
+    {
+      "id": "card_1786194762283",
+      "cardName": "Soul reaper",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Demon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Soul reaper.jpg"
+    },
+    {
+      "id": "card_1786194843860",
+      "cardName": "Mammon",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Demon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [
+        "Fear",
+        "Regenerate"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Mammon.jpg"
+    },
+    {
+      "id": "card_1786194901459",
+      "cardName": "Lucifer",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Legend",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "12",
+      "toughness": "12",
+      "keywords": [
+        "Flying",
+        "First Strike",
+        "Fear",
+        "Regenerate"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Lucifer.jpg"
+    },
+    {
+      "id": "card_1786194931971",
+      "cardName": "Leviathan",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Demon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "5",
+      "toughness": "3",
+      "keywords": [
+        "Fear"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Leviathan.jpg"
+    },
+    {
+      "id": "card_1786194986995",
+      "cardName": "Lesser deamon",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Demon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [
+        "Stacking",
+        "Flying"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Lesser deamon.jpg"
+    },
+    {
+      "id": "card_1786195038715",
+      "cardName": "Flesh spawn",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Demon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "2",
+      "keywords": [
+        "Fear"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Flesh spawn.jpg"
+    },
+    {
+      "id": "card_1786195059267",
+      "cardName": "Demonic swarm",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Demon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Stacking",
+        "Flying"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Demonic swarm.jpg"
+    },
+    {
+      "id": "card_1786195110401",
+      "cardName": "Belzebub",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Legend",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "8",
+      "toughness": "8",
+      "keywords": [
+        "Flying",
+        "Fear",
+        "Regenerate"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Belzebub.jpg"
+    },
+    {
+      "id": "card_1786195435887",
+      "cardName": "Belial",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Demon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "5",
+      "toughness": "5",
+      "keywords": [
+        "Flying",
+        "Regenerate"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Belial.jpg"
+    },
+    {
+      "id": "card_1786195486214",
+      "cardName": "Astaroth",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Demon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "4",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Astaroth.jpg"
+    },
+    {
+      "id": "card_1786271177323",
+      "cardName": "Elven dragon rider",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G",
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Elven",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [
+        "Flying"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Elven dragon rider.jpg"
+    },
+    {
+      "id": "card_1786271308444",
+      "cardName": "Waywatcher",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Demon",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Flying"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Waywatcher.jpg"
+    },
+    {
+      "id": "card_1786271382756",
+      "cardName": "Elven sage",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Elven",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Elven sage.jpg"
+    },
+    {
+      "id": "card_1786271427711",
+      "cardName": "Elven Archer",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Elven",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Can block flying creatures."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Elven Archer.jpg"
+    },
+    {
+      "id": "card_1786271501039",
+      "cardName": "Highwayman",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Can block flying creatures."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Highwayman.jpg"
+    },
+    {
+      "id": "card_1786271587754",
+      "cardName": "Human Archer",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W",
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Soldier",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Can block flying creatures."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Human Archer.jpg"
+    },
+    {
+      "id": "card_1786271660396",
+      "cardName": "Goblin Archer",
+      "frameStyle": "red",
+      "borderColor": "black",
+      "manaCost": [
+        "R",
+        "R"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Goblin",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Can block flying creatures."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Goblin Archer.jpg"
+    },
+    {
+      "id": "card_1786271704948",
+      "cardName": "Lion",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Lion.jpg"
+    },
+    {
+      "id": "card_1786282770667",
+      "cardName": "Demonic Portal",
+      "frameStyle": "blue",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Portal",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Demonic Portal.jpg"
+    },
+    {
+      "id": "card_1786532973999",
+      "cardName": "Battlewand",
+      "frameStyle": "artifact",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Artifact",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [
+        "card_1784504384559"
+      ],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Battlewand.jpg"
+    },
+    {
+      "id": "card_1786533610763",
+      "cardName": "Boots of luck",
+      "frameStyle": "artifact",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Artifact",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Gain 10 XP extra for each completed quest level."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Boots of luck.jpg"
+    },
+    {
+      "id": "card_1786533642657",
+      "cardName": "Dragonshield",
+      "frameStyle": "artifact",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Artifact",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Add +0/+5 to power/toughness"
+        },
+        {
+          "cost": [],
+          "text": "Add +0/+5 to power/toughness against dragons"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Dragonshield.jpg"
+    },
+    {
+      "id": "card_1786533684221",
+      "cardName": "Gauntlet of might",
+      "frameStyle": "artifact",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Artifact",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Add +0/+3 to power/toughness"
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Gauntlet of might.jpg"
+    },
+    {
+      "id": "card_1786990056839",
+      "cardName": "Reanimate",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Enchantment",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Bring target creature back as a zombie."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Reanimate.jpg"
+    },
+    {
+      "id": "card_1786990253728",
+      "cardName": "Revive",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Enchantment",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Bring target creature back from the graveyard."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Revive.jpg"
+    },
+    {
+      "id": "card_1786990506593",
+      "cardName": "Reincarnate",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Enchantment",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Bring target creature back from the graveyard."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Reincarnate.jpg"
+    },
+    {
+      "id": "default_dragons_lair_quest",
+      "cardName": "Dragons Lair Quest",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Quest",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Quest: Find the dragon Fafnir's hideout.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Dragons Lair Quest.jpg"
+    },
+    {
+      "id": "default_tower_of_power_quest",
+      "cardName": "Tower of Power Quest",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Quest",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Quest: Find the mage tower.",
+      "customDescriptionItalic": false,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Tower of Power Quest.jpg"
+    },
+    {
+      "id": "card_1787057616182",
+      "cardName": "Towerguard",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W",
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Soldier",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Can block flying creatures."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Towerguard.jpg"
+    },
+    {
+      "id": "card_1787057762927",
+      "cardName": "Guard Dog",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Guard Dog.jpg"
+    },
+    {
+      "id": "card_1787161083942",
+      "cardName": "Chariot",
+      "frameStyle": "gold",
+      "borderColor": "black",
+      "manaCost": [],
+      "cardType": "Creature",
+      "cardSubType": "Gladiator",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "4",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Chariot.jpg"
+    },
+    {
+      "id": "card_1787393804735",
+      "cardName": "Summon Demon",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "Battle",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Summons a random demon",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Summon Demon.jpg"
+    },
+    {
+      "id": "card_1787434757506",
+      "cardName": "Occultist",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Occultist.jpg"
+    },
+    {
+      "id": "card_1787434837623",
+      "cardName": "Warlock",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Wizard",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [
+        "card_1785957711575"
+      ],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Warlock.jpg"
+    },
+    {
+      "id": "card_1788132381017",
+      "cardName": "Counterspell Green",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Cancel an enemy spell or ability target.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Counterspell Green.jpg"
+    },
+    {
+      "id": "card_1788132580227",
+      "cardName": "Counterspell White",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W",
+        "W"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Cancel an enemy spell or ability target.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Counterspell White.jpg"
+    },
+    {
+      "id": "card_1788132602249",
+      "cardName": "Counterspell  Black",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B"
+      ],
+      "cardType": "Spell",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": false,
+      "rulesText": "",
+      "customDescription": "Cancel an enemy spell or ability target.",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Counterspell Black.jpg"
+    }
+  ],
+  "deckSpells": [],
+  "deckCompanions": [],
+  "quests": [
+    {
+      "id": "default_tower_of_terror_quest",
+      "cardId": "default_tower_of_terror_quest",
+      "name": "Tower of Terror Quest",
+      "mapCoords": {
+        "x": 5,
+        "y": 4
+      },
+      "tileName": "Tower of terror.png",
+      "levels": [
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards"
+          ],
+          "questDescription": "Visit the ancient ruins of the Tower of Terror (the old mage tower) to learn about the dark arts.",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1784467664393"
+          ],
+          "rewardsDescription": "Receive a monster card.",
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardsDesc": true,
+            "rewardCards": true,
+            "unlockCards": true,
+            "keywordReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "monsterUnlock",
+            "opponents"
+          ],
+          "questDescription": "Defeat the necromancer and the faul monsters he has summoned.",
+          "opponents": [
+            "card_1785165293355",
+            "card_1784467369547",
+            "card_1784467664393"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1784467862209"
+          ],
+          "monsterUnlockManaCost": 2,
+          "rewardsDescription": "Unlock all the monsters.",
+          "opponentsDescription": "Necromancer and his minions.",
+          "opponentsPower": 6,
+          "opponentsManaPool": 6,
+          "opponentsSpells": 2,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true,
+            "rewardsDesc": true,
+            "opponentsDesc": true,
+            "army": true,
+            "monsterUnlock": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "army"
+          ],
+          "questDescription": "Killing that necromancer has released somthing that doesn't belong in our dimension.",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786532973999"
+          ],
+          "armySubTypes": [
+            "Demon"
+          ],
+          "armyPower": 15,
+          "armyQuestHp": 15,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true,
+            "army": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "learnSpell",
+            "army"
+          ],
+          "questDescription": "When you thought you had defeated all the vile deamons even more appears.",
+          "learnSpellMode": "random",
+          "learnSpellRandomSubType": "Battle",
+          "armySubTypes": [
+            "Demon"
+          ],
+          "armyPower": 20,
+          "armyQuestHp": 20,
+          "sectionCollapsed": {
+            "rewardCards": true,
+            "army": true,
+            "questDesc": true
+          }
+        },
+        {
+          "sections": [
+            "questDesc",
+            "attributeReward",
+            "companionReward",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "You have to find the portal to the other dimension and close it before it's too late.",
+          "opponents": [
+            "card_1786194843860",
+            "card_1786195038715",
+            "card_1786195059267",
+            "card_1786194931971",
+            "card_1786194762283",
+            "card_1786194986995",
+            "card_1786194707980",
+            "card_1786194986995",
+            "card_1786194986995"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786282770667"
+          ],
+          "companionRewardMode": "random",
+          "companionRewardRandomSubType": "Monster",
+          "rewardsDescription": "You find the portal to the demonic plane and manage to close it.",
+          "opponentsPower": 24,
+          "opponentsQuestHp": 25,
+          "attributeReward": {
+            "power": 2,
+            "toughness": 2
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "companionReward": true,
+            "attributeReward": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        }
+      ]
+    },
+    {
+      "id": "default_dragons_nest_quest",
+      "cardId": "default_dragons_nest_quest",
+      "name": "Dragons Nest Quest",
+      "mapCoords": {
+        "x": 5,
+        "y": 0
+      },
+      "tileName": "Dragons Nest.png",
+      "levels": [
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards"
+          ],
+          "questDescription": "Search for the dragon's nest.",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1785078712770"
+          ],
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "manaReward",
+            "opponents"
+          ],
+          "questDescription": "When you search for signs of any dragons, you encounter a goblin scouting party.",
+          "opponents": [
+            "card_1782853578674",
+            "card_1785078554263",
+            "card_1785078712770",
+            "card_1786271660396"
+          ],
+          "opponentsPower": 7,
+          "manaReward": {
+            "amount": 10,
+            "mode": "choice"
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "manaReward": true,
+            "xpReward": true,
+            "unlockCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "keywordReward",
+            "army"
+          ],
+          "questDescription": "More goblins arrive...",
+          "keywordRewardMode": "choice",
+          "armySubTypes": [
+            "Goblin"
+          ],
+          "armyPower": 16,
+          "armyQuestHp": 15,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "keywordReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "attributeReward",
+            "army"
+          ],
+          "questDescription": "Kill the dragons that approach you in the wilderness.",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1785760531046"
+          ],
+          "armySubTypes": [
+            "Dragon"
+          ],
+          "armyPower": 22,
+          "armyQuestHp": 20,
+          "attributeReward": {
+            "power": 2,
+            "toughness": 2
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true,
+            "attributeReward": true,
+            "army": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "xpReward",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "Finally you find the nesting ground, kill the might bone dragon that defends it and escape with the treasure.",
+          "opponents": [
+            "card_1785064215492",
+            "card_1785167944020",
+            "card_1785167813914",
+            "card_1785168153526",
+            "card_1785167618937"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786533684221"
+          ],
+          "opponentsPower": 27,
+          "opponentsQuestHp": 30,
+          "xpReward": 100,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true,
+            "xpReward": true
+          },
+          "collapsed": true
+        }
+      ]
+    },
+    {
+      "id": "default_ancient_temple_ruins_quest",
+      "cardId": "default_ancient_temple_ruins_quest",
+      "name": "Ancient Temple Ruins Quest",
+      "levels": [
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards"
+          ],
+          "questDescription": "Find the ancient ruins",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1785167079925"
+          ],
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true
+          }
+        },
+        {
+          "sections": [
+            "questDesc",
+            "attributeReward",
+            "manaReward",
+            "opponents"
+          ],
+          "questDescription": "You get trapped by some mythical monsters",
+          "opponents": [
+            "card_1785167079925",
+            "card_1785167146985",
+            "card_1785167146985"
+          ],
+          "opponentsPower": 7,
+          "attributeReward": {
+            "power": 1,
+            "toughness": 1
+          },
+          "manaReward": {
+            "amount": 10,
+            "mode": "choice"
+          },
+          "sectionCollapsed": {
+            "opponents": true,
+            "keywordReward": true,
+            "attributeReward": true,
+            "manaReward": true,
+            "questDesc": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "companionReward",
+            "army"
+          ],
+          "questDescription": "More mythical creatures emerge among the ruins.",
+          "companionRewardMode": "random",
+          "companionRewardRandomSubType": "Mythical Monster",
+          "armySubTypes": [
+            "Mythical Monster"
+          ],
+          "armyPower": 17,
+          "armyQuestHp": 15,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "companionReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "learnSpell",
+            "army"
+          ],
+          "questDescription": "You are now surrounded by the weirdest creatures and have no way to escape.",
+          "learnSpellMode": "choice",
+          "armySubTypes": [
+            "Mythical Monster"
+          ],
+          "armyPower": 23,
+          "armyQuestHp": 20,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "learnSpell": true,
+            "opponents": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "Finally the circle opens up and a mythic figure appears, he must be their leader.",
+          "opponents": [
+            "card_1785758328916",
+            "card_1785166958441",
+            "card_1785167218717",
+            "card_1785167414870",
+            "card_1785167295970",
+            "card_1785167079925"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786533610763",
+            "card_1785760862615"
+          ],
+          "opponentsPower": 27,
+          "opponentsQuestHp": 30,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "default_city_of_the_dead_quest",
+      "cardId": "default_city_of_the_dead_quest",
+      "name": "City of the Dead Quest",
+      "levels": [
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards"
+          ],
+          "questDescription": "Locate the city of the dead and find the entrance.",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1785064406277"
+          ],
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "A skeleton crew have spotted, kill them before they sound the alarm!",
+          "opponents": [
+            "card_1785063998339",
+            "card_1785064406277",
+            "card_1785065432536",
+            "card_1785065432536"
+          ],
+          "rewardCardMode": "random",
+          "rewardCardRandomSubType": "Skeleton",
+          "opponentsPower": 9,
+          "sectionCollapsed": {
+            "opponents": true,
+            "questDesc": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "manaReward",
+            "army"
+          ],
+          "questDescription": "You have never seen so many skeletons before and there might be more coming!",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1785065432536",
+            "card_1785064406277"
+          ],
+          "armySubTypes": [
+            "Skeleton"
+          ],
+          "armyPower": 15,
+          "armyQuestHp": 15,
+          "manaReward": {
+            "amount": 5,
+            "mode": "choice"
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "rewardCards": true,
+            "manaReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "attributeReward",
+            "xpReward",
+            "army"
+          ],
+          "questDescription": "Try searching even further in the city and you might find what you seek.",
+          "armyPower": 21,
+          "armyQuestHp": 20,
+          "xpReward": 25,
+          "attributeReward": {
+            "power": 3,
+            "toughness": 3
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "army": true,
+            "attributeReward": true,
+            "xpReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "Defeat the skeleton king and his companions.",
+          "opponents": [
+            "card_1785065573787",
+            "card_1785064215492",
+            "card_1785065625887",
+            "card_1785065432536",
+            "card_1785065432536",
+            "card_1785064406277",
+            "card_1785064406277",
+            "card_1785063998339"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786110635264",
+            "card_1785760401710"
+          ],
+          "opponentsPower": 27,
+          "opponentsQuestHp": 25,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        }
+      ]
+    },
+    {
+      "id": "default_goblin_camp_quest",
+      "cardId": "default_goblin_camp_quest",
+      "name": "Goblin Camp Quest",
+      "levels": [
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards"
+          ],
+          "questDescription": "Find the Goblin camp!",
+          "rewardCardMode": "random",
+          "rewardCardRandomSubType": "Goblin",
+          "sectionCollapsed": {
+            "rewardCards": true,
+            "questDesc": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "Kill the Goblin scouts!",
+          "opponents": [
+            "card_1785078712770",
+            "card_1786271660396",
+            "card_1785078554263",
+            "card_1785078554263",
+            "card_1782853578674"
+          ],
+          "rewardCardMode": "choice",
+          "rewardCardRandomSubType": "Goblin",
+          "opponentsPower": 8,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "Kill the Goblin wolfriders!",
+          "opponents": [
+            "card_1785078712770",
+            "card_1785078712770",
+            "card_1785078712770",
+            "card_1785078712770",
+            "card_1785078712770"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1785078712770",
+            "card_1785078265385"
+          ],
+          "opponentsPower": 15,
+          "opponentsQuestHp": 15,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "attributeReward",
+            "manaReward",
+            "army"
+          ],
+          "questDescription": "Kill the Goblin warparty!",
+          "rewardCardMode": "random",
+          "rewardCardRandomSubType": "Goblin",
+          "armySubTypes": [
+            "Goblin"
+          ],
+          "armyPower": 22,
+          "armyQuestHp": 20,
+          "attributeReward": {
+            "power": 3,
+            "toughness": 3
+          },
+          "manaReward": {
+            "amount": 5,
+            "mode": "choice"
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "attributeReward": true,
+            "manaReward": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "Kill the Goblin King and loot the treasuries!",
+          "opponents": [
+            "card_1785078021817",
+            "card_1785078265385",
+            "card_1785078626401",
+            "card_1785078554263",
+            "card_1785078554263",
+            "card_1785078554263",
+            "card_1785078401809",
+            "card_1785078401809",
+            "card_1785078401809",
+            "card_1785078712770",
+            "card_1786271660396",
+            "card_1786271660396"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786110789724",
+            "card_1785760465995"
+          ],
+          "opponentsPower": 24,
+          "opponentsQuestHp": 25,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "default_crypt_of_the_undead_quest",
+      "cardId": "default_crypt_of_the_undead_quest",
+      "name": "Crypt of the undead Quest",
+      "levels": [
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards"
+          ],
+          "questDescription": "Visit the crypt to unlock certain horrors.",
+          "rewardCardMode": "random",
+          "rewardCardRandomSubType": "Undead",
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "First of many horrors to come.",
+          "opponents": [
+            "card_1785961146509",
+            "card_1785961146509"
+          ],
+          "rewardCardMode": "choice",
+          "rewardCardRandomSubType": "Undead",
+          "opponentsPower": 6,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "manaReward",
+            "army"
+          ],
+          "questDescription": "The crypt goes deeper.",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1785961209541",
+            "card_1785961277257"
+          ],
+          "armySubTypes": [
+            "Undead"
+          ],
+          "armyPower": 15,
+          "armyQuestHp": 15,
+          "manaReward": {
+            "amount": 5,
+            "mode": "choice"
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "rewardCards": true,
+            "manaReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "attributeReward",
+            "xpReward",
+            "army"
+          ],
+          "questDescription": "You meet some old friend down in the crypt.",
+          "armyPower": 20,
+          "armyQuestHp": 20,
+          "xpReward": 50,
+          "attributeReward": {
+            "power": 2,
+            "toughness": 2
+          },
+          "sectionCollapsed": {
+            "army": true,
+            "questDesc": true,
+            "attributeReward": true,
+            "xpReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "manaReward",
+            "opponents"
+          ],
+          "questDescription": "The final boss will surprise you.",
+          "opponents": [
+            "card_1785758328916",
+            "card_1784467369547",
+            "card_1784467664393",
+            "card_1785961277257",
+            "card_1785961277257",
+            "card_1785961209541",
+            "card_1785961146509"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786110699552",
+            "card_1784467369547"
+          ],
+          "opponentsPower": 29,
+          "manaReward": {
+            "amount": 5,
+            "mode": "all"
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true,
+            "manaReward": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "default_gladiator_school_quest",
+      "cardId": "default_gladiator_school_quest",
+      "name": "Gladiator School Quest",
+      "levels": [
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards"
+          ],
+          "questDescription": "Visit the gladiator school and learn new skills.",
+          "rewardCardMode": "random",
+          "rewardCardRandomSubType": "Gladiator",
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "attributeReward",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "First day was easy.",
+          "opponents": [
+            "card_1786015964738",
+            "card_1786015964738",
+            "card_1786015964738"
+          ],
+          "rewardCardMode": "random",
+          "rewardCardRandomSubType": "Gladiator",
+          "opponentsPower": 6,
+          "attributeReward": {
+            "power": 1,
+            "toughness": 1
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "attributeReward": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "keywordReward",
+            "opponents"
+          ],
+          "questDescription": "Now it's getting interesting.",
+          "opponents": [
+            "card_1786015964738",
+            "card_1786016016582",
+            "card_1786016016582",
+            "card_1786017197580",
+            "card_1786017197580",
+            "card_1786271704948"
+          ],
+          "rewardCardMode": "random",
+          "rewardCardRandomSubType": "Gladiator",
+          "keywordRewardMode": "preset",
+          "keywordRewardList": [
+            "First Strike"
+          ],
+          "opponentsPower": 14,
+          "opponentsQuestHp": 15,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true,
+            "keywordReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "keywordReward",
+            "army"
+          ],
+          "questDescription": "I accept the challenge.",
+          "rewardCardMode": "random",
+          "rewardCardRandomSubType": "Gladiator",
+          "keywordRewardMode": "choice",
+          "armySubTypes": [
+            "Gladiator"
+          ],
+          "armyPower": 20,
+          "armyQuestHp": 20,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "rewardCards": true,
+            "keywordReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "attributeReward",
+            "opponents"
+          ],
+          "questDescription": "Someone famous.",
+          "opponents": [
+            "card_1786015866699",
+            "card_1787161083942",
+            "card_1787161083942",
+            "card_1786017197580",
+            "card_1786016016582",
+            "card_1786015964738",
+            "card_1786271704948",
+            "card_1786271704948"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786110500192",
+            "card_1786015866699"
+          ],
+          "opponentsPower": 26,
+          "opponentsQuestHp": 25,
+          "attributeReward": {
+            "power": 2,
+            "toughness": 2
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true,
+            "attributeReward": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "default_battle_arena_quest",
+      "cardId": "default_battle_arena_quest",
+      "name": "Battle Arena Quest",
+      "levels": [
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards"
+          ],
+          "questDescription": "Find the great battle arena, where fights are on nonstop.",
+          "rewardCardMode": "random",
+          "rewardCardRandomCategory": "Creature",
+          "rewardCardRandomSubType": "Mythical Monster",
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "manaReward",
+            "xpReward",
+            "army"
+          ],
+          "questDescription": "Start easy and work your way up.",
+          "armySubTypes": [
+            "Elven",
+            "Goblin",
+            "Skeleton",
+            "Soldier"
+          ],
+          "armyPower": 10,
+          "xpReward": 25,
+          "manaReward": {
+            "amount": 10,
+            "mode": "choice"
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "manaReward": true,
+            "xpReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "attributeReward",
+            "keywordReward",
+            "army"
+          ],
+          "questDescription": "Free for all.",
+          "keywordRewardMode": "choice",
+          "armySubTypes": [
+            "Demon",
+            "Elven",
+            "Gladiator",
+            "Goblin",
+            "Monster",
+            "Mythical Monster",
+            "Skeleton",
+            "Soldier",
+            "Undead"
+          ],
+          "armyPower": 17,
+          "armyQuestHp": 15,
+          "attributeReward": {
+            "power": 1,
+            "toughness": 1
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "keywordReward": true,
+            "attributeReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "companionReward",
+            "army"
+          ],
+          "questDescription": "The fun begins now!",
+          "rewardCardMode": "choice",
+          "rewardCardRandomSubType": "Demon",
+          "companionRewardMode": "random",
+          "companionRewardRandomSubType": "Dragon",
+          "armySubTypes": [
+            "Demon",
+            "Dragon",
+            "Monster",
+            "Mythical Monster",
+            "Undead"
+          ],
+          "armyPower": 30,
+          "armyQuestHp": 25,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "companionReward": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "You have reached the upper echelon. This can be your greatest battle ever.",
+          "opponents": [
+            "card_1785760313167",
+            "card_1785760401710",
+            "card_1785760465995",
+            "card_1785760531046",
+            "card_1785760678681",
+            "card_1786015866699",
+            "card_1785760862615"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786110962742",
+            "card_1785760313167"
+          ],
+          "opponentsPower": 37,
+          "opponentsQuestHp": 40,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "default_dragons_lair_quest",
+      "cardId": "default_dragons_lair_quest",
+      "name": "Dragons Lair Quest",
+      "levels": [
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards"
+          ],
+          "questDescription": "Find the dragon Fafnir's hideout.",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1785167714105"
+          ],
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "I can spot some real dragons. This is going to be hard!",
+          "opponents": [
+            "card_1785167714105",
+            "card_1785167714105",
+            "card_1785167714105"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1785168153526"
+          ],
+          "opponentsPower": 6,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "opponents"
+          ],
+          "questDescription": "Even the small ones are dangerous!",
+          "opponents": [
+            "card_1785168087939",
+            "card_1785168087939",
+            "card_1785167813914",
+            "card_1785167714105",
+            "card_1782853990159",
+            "card_1785167944020"
+          ],
+          "rewardCardMode": "random",
+          "rewardCardRandomSubType": "Dragon",
+          "opponentsPower": 15,
+          "opponentsQuestHp": 15,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "army"
+          ],
+          "questDescription": "Defeat an army of dragons!",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786533642657",
+            "card_1785760678681"
+          ],
+          "armyPower": 28,
+          "armyQuestHp": 25,
+          "sectionCollapsed": {
+            "questDesc": true,
+            "army": true,
+            "rewardCards": true,
+            "keywordReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "attributeReward",
+            "manaReward",
+            "xpReward",
+            "opponents"
+          ],
+          "questDescription": "Behold the might Fafnir! Defeat him and the treasure will be yours!",
+          "opponents": [
+            "card_1785757758773",
+            "card_1785064215492",
+            "card_1785168153526",
+            "card_1785167618937",
+            "card_1785167944020",
+            "card_1782853990159"
+          ],
+          "opponentsPower": 40,
+          "opponentsQuestHp": 40,
+          "xpReward": 150,
+          "attributeReward": {
+            "power": 5,
+            "toughness": 5
+          },
+          "manaReward": {
+            "amount": 30,
+            "mode": "all"
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "manaReward": true,
+            "attributeReward": true,
+            "xpReward": true
+          },
+          "collapsed": true
+        }
+      ]
+    },
+    {
+      "id": "default_tower_of_power_quest",
+      "cardId": "default_tower_of_power_quest",
+      "name": "Tower of Power Quest",
+      "levels": [
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards"
+          ],
+          "questDescription": "Find the mage tower.",
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1787057616182"
+          ],
+          "sectionCollapsed": {
+            "questDesc": true,
+            "rewardCards": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "manaReward",
+            "opponents"
+          ],
+          "questDescription": "Try to get past the towerguards and guard dogs.",
+          "opponents": [
+            "card_1787057762927",
+            "card_1787057762927",
+            "card_1787057616182"
+          ],
+          "opponentsPower": 7,
+          "manaReward": {
+            "amount": 10,
+            "mode": "choice"
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "opponents": true,
+            "manaReward": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "learnSpell",
+            "manaReward",
+            "army"
+          ],
+          "questDescription": "Start from the bottom and work your way up.",
+          "learnSpellMode": "random",
+          "learnSpellRandomSubType": "Battle",
+          "armySubTypes": [
+            "Wizard"
+          ],
+          "armyPower": 15,
+          "armyQuestHp": 15,
+          "armyManaPool": 10,
+          "armySpells": 5,
+          "manaReward": {
+            "amount": 5,
+            "mode": "choice"
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "learnSpell": true,
+            "manaReward": true,
+            "army": true
+          }
+        },
+        {
+          "sections": [
+            "questDesc",
+            "learnSpell",
+            "manaReward",
+            "army"
+          ],
+          "questDescription": "As you get your way up the castle you encounter more wizards.",
+          "learnSpellMode": "choice",
+          "learnSpellRandomSubType": "Battle",
+          "armySubTypes": [
+            "Wizard"
+          ],
+          "armyPower": 20,
+          "armyQuestHp": 20,
+          "armyManaPool": 10,
+          "armySpells": 5,
+          "manaReward": {
+            "amount": 5,
+            "mode": "choice"
+          },
+          "sectionCollapsed": {
+            "questDesc": true,
+            "learnSpell": true,
+            "manaReward": true,
+            "army": true
+          },
+          "collapsed": true
+        },
+        {
+          "sections": [
+            "questDesc",
+            "rewardCards",
+            "manaReward",
+            "opponents"
+          ],
+          "questDescription": "Defeat the grandmaster.",
+          "opponents": [
+            "card_1785164783475",
+            "card_1785164625358",
+            "card_1785164625358",
+            "card_1785164975702",
+            "card_1785164975702",
+            "card_1785165079673",
+            "card_1785165194773",
+            "card_1785165293355"
+          ],
+          "rewardCardMode": "preset",
+          "rewardCards": [
+            "card_1786110876985"
+          ],
+          "opponentsPower": 19,
+          "opponentsQuestHp": 30,
+          "opponentsManaPool": 20,
+          "opponentsSpells": 6,
+          "manaReward": {
+            "amount": 10,
+            "mode": "all"
+          },
+          "sectionCollapsed": {
+            "opponents": true,
+            "questDesc": true,
+            "rewardCards": true,
+            "manaReward": true
+          },
+          "collapsed": true
+        }
+      ]
+    }
+  ]
+}

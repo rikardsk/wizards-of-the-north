@@ -1,0 +1,25 @@
+{
+  "cols": 11,
+  "rows": 9,
+  "seed": "12345",
+  "playerCount": 2,
+  "playerStartCells": [
+    { "col": 0, "row": 4 },
+    { "col": 10, "row": 4 },
+    null,
+    null
+  ],
+  "mapData": [
+    ["Grass", "Grass", "Plain L1", "Plain L1", "Wizards Tower L1", "Plain L1", "Plain L2", "Grass", "Grass"],
+    ["Grass", "Plain L1", "Plain L2", "Forrest L1", "Forrest L1", "Forrest L2", "Plain L1", "Plain L1", "Grass"],
+    ["Plain L1", "Plain L2", "Forrest L1", "Forrest L2", "Forrest L3", "Forrest L2", "Forrest L1", "Plain L2", "Plain L1"],
+    ["Plain L2", "Forrest L1", "Forrest L2", "Mountain L1", "Mountain L2", "Mountain L1", "Forrest L2", "Forrest L1", "Plain L2"],
+    ["Plain L1", "Forrest L2", "Mountain L1", "Mountain L2", "Mountain L3", "Mountain L2", "Mountain L1", "Forrest L2", "Plain L1"],
+    ["Plain L2", "Forrest L1", "Forrest L2", "Mountain L1", "Mountain L2", "Mountain L1", "Forrest L2", "Forrest L1", "Plain L2"],
+    ["Plain L1", "Plain L2", "Forrest L1", "Forrest L2", "Forrest L3", "Forrest L2", "Forrest L1", "Plain L2", "Plain L1"],
+    ["Grass", "Plain L1", "Plain L2", "Swamp L1", "Swamp L1", "Swamp L2", "Plain L1", "Plain L1", "Grass"],
+    ["Grass", "Grass", "Plain L1", "Plain L1", "Wizards Tower L1", "Plain L1", "Plain L2", "Grass", "Grass"],
+    ["Grass", "Plain L1", "Plain L1", "Plain L2", "Plain L2", "Plain L2", "Plain L1", "Plain L1", "Grass"],
+    ["Grass", "Grass", "Plain L1", "Plain L1", "Wizards Tower L1", "Plain L1", "Plain L2", "Grass", "Grass"]
+  ]
+}

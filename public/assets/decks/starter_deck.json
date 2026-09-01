@@ -1,0 +1,85 @@
+{
+  "name": "Wizards Starter Deck",
+  "cards": [
+    {
+      "name": "Wizard Apprentice",
+      "color": "blue",
+      "manaCost": "1U",
+      "type": "Creature - Wizard",
+      "illustration": "Wizard creature L1.png",
+      "rulesText": "When this card is played, draw an extra card from your deck.",
+      "power": "1",
+      "toughness": "2"
+    },
+    {
+      "name": "Grand Archmage",
+      "color": "gold",
+      "manaCost": "3UUR",
+      "type": "Creature - Wizard Avatar",
+      "illustration": "Wizard creature L3.png",
+      "rulesText": "Spellcasting: Choose any tile within 2 spaces of this wizard and transform it into a Mountain or Swamp.",
+      "power": "4",
+      "toughness": "5"
+    },
+    {
+      "name": "Forest Guardian",
+      "color": "green",
+      "manaCost": "2G",
+      "type": "Creature - Elemental Guardian",
+      "illustration": "Forrest creature L2.png",
+      "rulesText": "Vigilance. Can move through Forest tiles without consuming movement points.",
+      "power": "3",
+      "toughness": "3"
+    },
+    {
+      "name": "Mountain Drake",
+      "color": "red",
+      "manaCost": "3RR",
+      "type": "Creature - Dragon",
+      "illustration": "Mountain creature L3.png",
+      "rulesText": "Flying. Mountain Drake gets +1/+0 for each Mountain tile adjacently controlled.",
+      "power": "4",
+      "toughness": "4"
+    },
+    {
+      "name": "Swamp Behemoth",
+      "color": "black",
+      "manaCost": "4B",
+      "type": "Creature - Horror",
+      "illustration": "Swamp creature L4.png",
+      "rulesText": "Trample. Swamp Behemoth can only be summoned on or adjacent to Swamp tiles.",
+      "power": "5",
+      "toughness": "5"
+    },
+    {
+      "name": "Plains Unicorn",
+      "color": "white",
+      "manaCost": "1W",
+      "type": "Creature - Unicorn Beast",
+      "illustration": "Plain creature L1.png",
+      "rulesText": "Lifelink. Restores 1 health point to your Wizard Tower when played.",
+      "power": "2",
+      "toughness": "2"
+    },
+    {
+      "name": "Sol Ring",
+      "color": "artifact",
+      "manaCost": "1",
+      "type": "Artifact",
+      "illustration": "Sol Ring.jpg",
+      "rulesText": "Tap to add {C}{C} mana.",
+      "power": "0",
+      "toughness": "0"
+    },
+    {
+      "name": "Planar Portal",
+      "color": "artifact",
+      "manaCost": "4",
+      "type": "Portal",
+      "illustration": "Planar Portal.jpg",
+      "rulesText": "Allows summoning creatures from your library directly onto any controlled territory.",
+      "power": "0",
+      "toughness": "0"
+    }
+  ]
+}
