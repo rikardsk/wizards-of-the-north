@@ -4415,7 +4415,10 @@
           },
           "collapsed": true
         }
-      ]
+      ],
+      "startInHand": true,
+      "startingLocation": "hand",
+      "placeTileAtStart": true
     },
     {
       "id": "default_dragons_nest_quest",
@@ -4549,7 +4552,10 @@
           },
           "collapsed": true
         }
-      ]
+      ],
+      "startInHand": true,
+      "startingLocation": "hand",
+      "placeTileAtStart": true
     },
     {
       "id": "default_ancient_temple_ruins_quest",
@@ -4671,7 +4677,15 @@
             "opponents": true
           }
         }
-      ]
+      ],
+      "startInHand": true,
+      "startingLocation": "hand",
+      "placeTileAtStart": true,
+      "tileName": "Ancient Temple Ruins.png",
+      "mapCoords": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": "default_city_of_the_dead_quest",
@@ -4802,7 +4816,15 @@
           },
           "collapsed": true
         }
-      ]
+      ],
+      "startInHand": true,
+      "startingLocation": "hand",
+      "placeTileAtStart": true,
+      "tileName": "City of the Dead.png",
+      "mapCoords": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": "default_goblin_camp_quest",
@@ -4941,7 +4963,15 @@
             "rewardCards": true
           }
         }
-      ]
+      ],
+      "startInHand": true,
+      "startingLocation": "hand",
+      "placeTileAtStart": true,
+      "tileName": "Goblin Camp.png",
+      "mapCoords": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": "default_crypt_of_the_undead_quest",
@@ -5070,7 +5100,15 @@
             "manaReward": true
           }
         }
-      ]
+      ],
+      "startInHand": true,
+      "startingLocation": "hand",
+      "placeTileAtStart": true,
+      "tileName": "Crypt of the undead.png",
+      "mapCoords": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": "default_gladiator_school_quest",
@@ -5211,7 +5249,15 @@
             "attributeReward": true
           }
         }
-      ]
+      ],
+      "startInHand": true,
+      "startingLocation": "hand",
+      "placeTileAtStart": true,
+      "tileName": "Gladiator School.png",
+      "mapCoords": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": "default_battle_arena_quest",
@@ -5353,7 +5399,15 @@
             "rewardCards": true
           }
         }
-      ]
+      ],
+      "startInHand": true,
+      "startingLocation": "hand",
+      "placeTileAtStart": true,
+      "tileName": "Battle Arena.png",
+      "mapCoords": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": "default_dragons_lair_quest",
@@ -5485,7 +5539,15 @@
           },
           "collapsed": true
         }
-      ]
+      ],
+      "startInHand": true,
+      "startingLocation": "hand",
+      "placeTileAtStart": true,
+      "tileName": "Dragons Lair.png",
+      "mapCoords": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "id": "default_tower_of_power_quest",
@@ -5627,7 +5689,89 @@
           },
           "collapsed": true
         }
-      ]
+      ],
+      "startInHand": true,
+      "startingLocation": "hand",
+      "placeTileAtStart": true,
+      "tileName": "Tower of Power.png",
+      "mapCoords": {
+        "x": 0,
+        "y": 0
+      }
     }
-  ]
+  ],
+  "questsStartingInHand": [
+    "Tower of Terror Quest",
+    "Dragons Nest Quest",
+    "Ancient Temple Ruins Quest",
+    "City of the Dead Quest",
+    "Goblin Camp Quest",
+    "Crypt of the undead Quest",
+    "Gladiator School Quest",
+    "Battle Arena Quest",
+    "Dragons Lair Quest",
+    "Tower of Power Quest"
+  ],
+  "questTileConfigs": {
+    "Tower of Terror Quest": {
+      "enabled": true,
+      "tileId": "Tower of terror",
+      "x": 5,
+      "y": 4
+    },
+    "Dragons Nest Quest": {
+      "enabled": true,
+      "tileId": "Dragons Nest",
+      "x": 5,
+      "y": 0
+    },
+    "Ancient Temple Ruins Quest": {
+      "enabled": true,
+      "tileId": "Ancient Temple Ruins",
+      "x": 0,
+      "y": 0
+    },
+    "City of the Dead Quest": {
+      "enabled": true,
+      "tileId": "City of the Dead",
+      "x": 0,
+      "y": 0
+    },
+    "Goblin Camp Quest": {
+      "enabled": true,
+      "tileId": "Goblin Camp",
+      "x": 0,
+      "y": 0
+    },
+    "Crypt of the undead Quest": {
+      "enabled": true,
+      "tileId": "Crypt of the undead",
+      "x": 0,
+      "y": 0
+    },
+    "Gladiator School Quest": {
+      "enabled": true,
+      "tileId": "Gladiator School",
+      "x": 0,
+      "y": 0
+    },
+    "Battle Arena Quest": {
+      "enabled": true,
+      "tileId": "Battle Arena",
+      "x": 0,
+      "y": 0
+    },
+    "Dragons Lair Quest": {
+      "enabled": true,
+      "tileId": "Dragons Lair",
+      "x": 0,
+      "y": 0
+    },
+    "Tower of Power Quest": {
+      "enabled": true,
+      "tileId": "Tower of Power",
+      "x": 0,
+      "y": 0
+    }
+  }
 }

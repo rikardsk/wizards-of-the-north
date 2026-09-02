@@ -2922,25 +2922,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         if (Array.isArray(raw)) {
           setMasterDeckCards(raw.map((c: any) => mapCardJson(c, questMap)));
         }
-        if (d.quests && Array.isArray(d.quests)) {
-          setQuestTileConfigs((prev) => {
-            const updated = { ...prev };
-            let changed = false;
-            d.quests.forEach((q: any) => {
-              if (!updated[q.name]) {
-                const tileId = q.tileName ? q.tileName.replace(/\.png$/i, "") : "Plain L1";
-                updated[q.name] = {
-                  enabled: true,
-                  tileId,
-                  x: q.mapCoords?.x ?? 0,
-                  y: q.mapCoords?.y ?? 0,
-                };
-                changed = true;
-              }
-            });
-            return changed ? updated : prev;
-          });
-        }
+        applyQuestConfigs(d);
       })
       .catch((e) => console.error("Failed to load master deck:", e));
 
@@ -4434,24 +4416,114 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   };
 
   const applyQuestConfigs = (json: any) => {
-    if (!json || !Array.isArray(json.quests)) return;
-    setQuestTileConfigs((prev) => {
-      const updated = { ...prev };
-      let changed = false;
-      json.quests.forEach((q: any) => {
-        if (!updated[q.name]) {
-          const tileId = q.tileName ? q.tileName.replace(/\.png$/i, "") : "Plain L1";
+    if (!json) return;
+
+    // 1. Quests Starting in Hand
+    if (Array.isArray(json.questsStartingInHand) && json.questsStartingInHand.length > 0) {
+      setQuestsStartingInHand(json.questsStartingInHand);
+    } else if (Array.isArray(json.quests)) {
+      const inHandFromQuests = json.quests
+        .filter((q: any) => q.startInHand === true || q.startingLocation === "hand" || q.inHand === true)
+        .map((q: any) => q.name);
+      if (inHandFromQuests.length > 0) {
+        setQuestsStartingInHand(inHandFromQuests);
+      }
+    }
+
+    // 2. Portals Starting in Hand
+    if (Array.isArray(json.portalsStartingInHand) && json.portalsStartingInHand.length > 0) {
+      setPortalsStartingInHand(json.portalsStartingInHand);
+    }
+
+    // 3. Disabled Card Names
+    if (Array.isArray(json.disabledCardNames)) {
+      setDisabledCardNames(json.disabledCardNames);
+    }
+
+    // 4. Quest Tile Configurations
+    if (json.questTileConfigs && typeof json.questTileConfigs === "object" && Object.keys(json.questTileConfigs).length > 0) {
+      setQuestTileConfigs(prev => ({
+        ...prev,
+        ...json.questTileConfigs
+      }));
+    } else if (Array.isArray(json.quests)) {
+      setQuestTileConfigs((prev) => {
+        const updated = { ...prev };
+        json.quests.forEach((q: any) => {
+          const tileId = q.tileName ? q.tileName.replace(/\.png$/i, "").replace(/\.jpg$/i, "") : getDefaultQuestTileId(q.name);
           updated[q.name] = {
-            enabled: true,
+            enabled: q.placeTileAtStart !== undefined ? q.placeTileAtStart : (q.enabled !== undefined ? q.enabled : true),
             tileId,
-            x: q.mapCoords?.x ?? 0,
-            y: q.mapCoords?.y ?? 0,
+            x: q.mapCoords?.x ?? prev[q.name]?.x ?? 0,
+            y: q.mapCoords?.y ?? prev[q.name]?.y ?? 0,
           };
-          changed = true;
-        }
+        });
+        return updated;
       });
-      return changed ? updated : prev;
-    });
+    }
+
+    // 5. Portal Tile Configurations
+    if (json.portalTileConfigs && typeof json.portalTileConfigs === "object") {
+      setPortalTileConfigs(prev => ({
+        ...prev,
+        ...json.portalTileConfigs
+      }));
+    }
+  };
+
+  const handleExportDeckWithQuests = () => {
+    try {
+      const pool = getMergedCardPool();
+      const rawCards = pool.length > 0 ? pool : (playerCardPool.length > 0 ? playerCardPool : (gameState ? gameState.players[0].deck : []));
+      const quests = rawCards.filter(c => resolveWizardCard(c).type.toLowerCase().includes("quest"));
+      
+      const currentQuestsData: any[] = [];
+      quests.forEach(q => {
+        const resolved = resolveWizardCard(q);
+        const qData = resolveQuestData(resolved, rawCards);
+        const tileConfig = questTileConfigs[resolved.name];
+        const isStartInHand = questsStartingInHand.includes(resolved.name);
+        
+        currentQuestsData.push({
+          id: resolved.id || resolved.name.toLowerCase().replace(/\s+/g, "_"),
+          cardId: resolved.id || resolved.name.toLowerCase().replace(/\s+/g, "_"),
+          name: resolved.name,
+          startInHand: isStartInHand,
+          startingLocation: isStartInHand ? "hand" : "deck",
+          placeTileAtStart: tileConfig?.enabled ?? true,
+          mapCoords: {
+            x: tileConfig?.x ?? 0,
+            y: tileConfig?.y ?? 0
+          },
+          tileName: tileConfig?.tileId ? (tileConfig.tileId.endsWith(".png") || tileConfig.tileId.endsWith(".jpg") ? tileConfig.tileId : `${tileConfig.tileId}.png`) : `${getDefaultQuestTileId(resolved.name)}.png`,
+          levels: qData?.levels || defaultTowerOfTerrorQuestData.levels
+        });
+      });
+
+      const exportPayload = {
+        deckName: customDeckFileName ? customDeckFileName.replace(/\.json$/i, "") : "Wizards Deck",
+        questsStartingInHand,
+        questTileConfigs,
+        portalsStartingInHand,
+        portalTileConfigs,
+        disabledCardNames,
+        cards: rawCards,
+        quests: currentQuestsData
+      };
+
+      const jsonStr = JSON.stringify(exportPayload, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = customDeckFileName || "wizards_deck_1.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      addLog(`💾 Exported deck JSON with quest manager configuration: ${a.download}`);
+    } catch (err) {
+      console.error("Failed to export deck JSON:", err);
+      alert("Failed to export deck JSON: " + (err as Error).message);
+    }
   };
 
   const handlePresetDeckSelect = async (path: string, fileName: string) => {
@@ -14516,6 +14588,18 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             {/* Modal Actions */}
             <div className="modal-options" style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
               <button 
+                className="modal-btn secondary"
+                onClick={handleExportDeckWithQuests}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px"
+                }}
+                title="Download current deck cards and quest configuration as a JSON file"
+              >
+                <i className="fa-solid fa-download"></i> Save Deck JSON
+              </button>
+              <button 
                 className="modal-btn primary"
                 onClick={() => {
                   setShowQuestModal(false);
@@ -15190,6 +15274,21 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
             {/* Modal Actions */}
             <div className="modal-options">
+              <button 
+                className="modal-btn secondary"
+                onClick={handleExportDeckWithQuests}
+                style={{
+                  background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+                  color: "#fff",
+                  fontWeight: "bold",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px"
+                }}
+                title="Save current quest manager settings into a downloadable Deck JSON file"
+              >
+                <i className="fa-solid fa-download"></i> Save / Export Deck JSON
+              </button>
               <button 
                 className="modal-btn primary" 
                 onClick={() => {
