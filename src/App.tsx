@@ -9478,13 +9478,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         <div className="logo">
           <i className="fa-solid fa-chess-rook"></i>
           <h1>Wizards of the North</h1>
-          <span 
-            className="subtitle" 
-            title={`Active Deck: ${customDeckFileName || "wizards_deck_1.json"} | Active Map: ${customMapFileName || "wizards_map_fp_vs_ms_2_player.json"}`}
-            style={{ cursor: "default" }}
-          >
-            {gameState.cols}x{gameState.rows} Grid • 🎴 {customDeckFileName || "wizards_deck_1.json"} • 🗺️ {customMapFileName || "wizards_map_fp_vs_ms_2_player.json"}
-          </span>
+          <span className="subtitle">Tactical Hex Game • {gameState.cols}x{gameState.rows} Grid</span>
         </div>
 
         {/* View Controls Toolbar */}
