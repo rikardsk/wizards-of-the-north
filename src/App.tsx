@@ -9823,6 +9823,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 </button>
               </div>
               {gameState.players.map((p) => {
+                if (solo && (p.isBot || p.id !== 0)) return null;
                 const turnProduction = getManaPoolForTurn(gameState.map, p.id, p.wizardLevel, p.wizardManaChoice);
                 return (
                   <div key={p.id} className="player-row" style={{ borderLeftColor: p.color }}>
