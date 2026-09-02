@@ -342,6 +342,16 @@ const getTargetFolder = (
   return "creatures";
 };
 
+export function getAssetUrl(path: string): string {
+  if (!path) return "";
+  if (path.startsWith("data:") || path.startsWith("http://") || path.startsWith("https://") || path.startsWith("blob:")) {
+    return path;
+  }
+  const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+  const baseUrl = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) ? import.meta.env.BASE_URL : "/";
+  return baseUrl.endsWith("/") ? `${baseUrl}${cleanPath}` : `${baseUrl}/${cleanPath}`;
+}
+
 export const resolveIllustrationPath = (type: string, rawIllusion: string, name?: string, subType?: string): string => {
   let file = rawIllusion || (name ? cardNameMap[name] : "") || "";
   const nameLower = (name || "").toLowerCase();
@@ -380,7 +390,7 @@ export const resolveIllustrationPath = (type: string, rawIllusion: string, name?
     typeLower.includes("territory") ||
     typeLower.includes("land")
   )) || fileLower.includes("/assets/tiles/") || fileLower.includes("assets/tiles/");
-  if (isTile) return file;
+  if (isTile) return getAssetUrl(file);
 
   if (oldFilesMap[file]) file = oldFilesMap[file];
 
@@ -392,16 +402,16 @@ export const resolveIllustrationPath = (type: string, rawIllusion: string, name?
   const targetFolder = getTargetFolder(typeLower, nameLower, fileLower, subTypeLower);
 
   if (isExternalOrAbsolutePath(file)) {
-    if (file.includes("/assets/")) {
-      if (nameLower.includes("ability") && (file.includes("/assets/creatures/") || file.includes("/assets/heroes/") || file.includes("/assets/legends/"))) {
-        return file;
+    if (file.includes("/assets/") || file.includes("assets/")) {
+      if (nameLower.includes("ability") && (file.includes("assets/creatures/") || file.includes("assets/heroes/") || file.includes("assets/legends/"))) {
+        return getAssetUrl(file);
       }
       const folder = isTowerCard ? "towers" : targetFolder;
       const isJpgTarget = isTowerCard || folder === "wizards" || folder === "creatures" || nameLower.includes("festering bog-rot human zombie") || fileLower.includes("festering bog-rot human zombie");
       const resolvedFilename = isJpgTarget && filename !== "Ultimate Victory.png"
         ? filename.replace(/\.png$/i, ".jpg")
         : filename;
-      return `/assets/${folder}/${resolvedFilename}`;
+      return getAssetUrl(`assets/${folder}/${resolvedFilename}`);
     }
     return file;
   }
@@ -410,7 +420,7 @@ export const resolveIllustrationPath = (type: string, rawIllusion: string, name?
   const finalFilename = isJpgTarget && filename !== "Ultimate Victory.png"
     ? filename.replace(/\.png$/i, ".jpg")
     : filename;
-  return `/assets/${targetFolder}/${finalFilename}`;
+  return getAssetUrl(`assets/${targetFolder}/${finalFilename}`);
 };
 
 export interface QuestLevelJSON {
@@ -2350,44 +2360,44 @@ export const preloadAllGameImages = async (cards?: CardJSON[]) => {
   const tileTypes = ["Plain", "Forrest", "Mountain", "Swamp", "Wizards Tower"];
   tileTypes.forEach((t) => {
     for (let level = 1; level <= 4; level++) {
-      urlsToPreload.add(`/assets/tiles/${t} L${level}.png`);
+      urlsToPreload.add(getAssetUrl(`assets/tiles/${t} L${level}.png`));
     }
   });
 
   for (let level = 1; level <= 4; level++) {
-    urlsToPreload.add(`/assets/wizards/Wizard L${level}.jpg`);
+    urlsToPreload.add(getAssetUrl(`assets/wizards/Wizard L${level}.jpg`));
   }
-  urlsToPreload.add("/assets/wizards/Ultimate Victory.png");
+  urlsToPreload.add(getAssetUrl("assets/wizards/Ultimate Victory.png"));
 
   // 4. Preload ability, quest, hero and legend images
   const extraAssets = [
-    "/assets/quests/Tower of Terror Quest.png",
-    "/assets/quests/Dragons Lair Quest.jpg",
-    "/assets/quests/Tower of Power Quest.jpg",
-    "/assets/tiles/Dragons Lair.png",
-    "/assets/tiles/Tower of Power.png",
-    "/assets/abilities/Tower Ability.png",
-    "/assets/abilities/Tower Ability.jpg",
-    "/assets/abilities/Wizard Ability.png",
-    "/assets/abilities/Wizard Ability.jpg",
-    "/assets/heroes/Achilles.jpg",
-    "/assets/heroes/Keni Queen.jpg",
-    "/assets/heroes/Manhunter.jpg",
-    "/assets/heroes/Rick Dragonslayer.jpg",
-    "/assets/heroes/Roland.jpg",
-    "/assets/heroes/Two Heavens.jpg",
-    "/assets/legends/Fafnir.jpg",
-    "/assets/legends/Frankensteins Monster.jpg",
-    "/assets/artifacts/Bracelet of strength.jpg",
-    "/assets/artifacts/Poisined dagger.jpg",
-    "/assets/artifacts/Ring of power.jpg",
-    "/assets/artifacts/Ringmail of protection.jpg",
-    "/assets/artifacts/Scepter of doom.jpg",
-    "/assets/artifacts/Sword of glory.jpg",
-    "/assets/portals/Planar Portal.jpg",
-    "/assets/portals/Sol Ring.jpg",
+    "assets/quests/Tower of Terror Quest.png",
+    "assets/quests/Dragons Lair Quest.jpg",
+    "assets/quests/Tower of Power Quest.jpg",
+    "assets/tiles/Dragons Lair.png",
+    "assets/tiles/Tower of Power.png",
+    "assets/abilities/Tower Ability.png",
+    "assets/abilities/Tower Ability.jpg",
+    "assets/abilities/Wizard Ability.png",
+    "assets/abilities/Wizard Ability.jpg",
+    "assets/heroes/Achilles.jpg",
+    "assets/heroes/Keni Queen.jpg",
+    "assets/heroes/Manhunter.jpg",
+    "assets/heroes/Rick Dragonslayer.jpg",
+    "assets/heroes/Roland.jpg",
+    "assets/heroes/Two Heavens.jpg",
+    "assets/legends/Fafnir.jpg",
+    "assets/legends/Frankensteins Monster.jpg",
+    "assets/artifacts/Bracelet of strength.jpg",
+    "assets/artifacts/Poisined dagger.jpg",
+    "assets/artifacts/Ring of power.jpg",
+    "assets/artifacts/Ringmail of protection.jpg",
+    "assets/artifacts/Scepter of doom.jpg",
+    "assets/artifacts/Sword of glory.jpg",
+    "assets/portals/Planar Portal.jpg",
+    "assets/portals/Sol Ring.jpg",
   ];
-  extraAssets.forEach((img) => urlsToPreload.add(img));
+  extraAssets.forEach((img) => urlsToPreload.add(getAssetUrl(img)));
 
   // Execute all preload image requests in parallel
   await Promise.all(Array.from(urlsToPreload).map((url) => preloadImage(url)));

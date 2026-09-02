@@ -7,7 +7,7 @@ import type { GameState, MapCell, Player, CardJSON, MapDataJSON, ActivatedAbilit
 import { getManaDataUri, setColorlessManaFontSize } from "./assets/mana/manaIcons";
 import type { UploadHistoryItem } from "./utils/db";
 import { saveHistoryItem, getHistoryItems, deleteHistoryItem } from "./utils/db";
-import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem } from "./utils/cardMapping";
+import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem } from "./utils/cardMapping";
 import "./App.css";
 
 export interface QuestTileConfig {
@@ -2906,7 +2906,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   };
 
   useEffect(() => {
-    fetch("/assets/decks/wizards_deck_1.json")
+    fetch(getAssetUrl("/assets/decks/wizards_deck_1.json"))
       .then((res) => res.json())
       .then((d) => {
         const questMap: Record<string, any> = {};
@@ -2962,7 +2962,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             const preset = presetDecks.find((p) => p.name === lastDeckName);
             if (preset) {
               try {
-                const res = await fetch(preset.path);
+                const res = await fetch(getAssetUrl(preset.path));
                 const json = await res.json();
                 const cards = json.cards || json;
                 if (Array.isArray(cards)) {
@@ -3010,7 +3010,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             const preset = presetMaps.find((p) => p.name === lastMapName);
             if (preset) {
               try {
-                const res = await fetch(preset.path);
+                const res = await fetch(getAssetUrl(preset.path));
                 const json = await res.json();
                 loadedMap = json;
                 setCustomMapData(json);
@@ -4085,8 +4085,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       const activeDeck = overrideDeck || customDeckCards;
       const activeMap = overrideMap || customMapData;
 
-      const mapJson = activeMap || await fetch("/assets/maps/sample_map.json").then((res) => res.json());
-      const deckJson = await fetch("/assets/decks/wizards_deck_1.json").then((res) => res.json());
+      const mapJson = activeMap || await fetch(getAssetUrl("/assets/maps/sample_map.json")).then((res) => res.json());
+      const deckJson = await fetch(getAssetUrl("/assets/decks/wizards_deck_1.json")).then((res) => res.json());
       const questMap: Record<string, any> = {};
       if (deckJson.quests && Array.isArray(deckJson.quests)) {
         deckJson.quests.forEach((q: any) => {
@@ -4456,7 +4456,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
   const handlePresetDeckSelect = async (path: string, fileName: string) => {
     try {
-      const res = await fetch(path);
+      const res = await fetch(getAssetUrl(path));
       const json = await res.json();
       const questMap = extractQuestMap(json);
       const cards = json.cards || json;
@@ -4478,7 +4478,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
   const handlePresetMapSelect = async (path: string, fileName: string) => {
     try {
-      const res = await fetch(path);
+      const res = await fetch(getAssetUrl(path));
       const json = await res.json();
       setCustomMapData(json);
       setCustomMapFileName(fileName);

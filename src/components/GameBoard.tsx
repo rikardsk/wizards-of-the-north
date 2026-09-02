@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { MapCell, Player, CardJSON } from "../types/game";
-import { resolveIllustrationPath } from "../utils/cardMapping";
+import { resolveIllustrationPath, getAssetUrl } from "../utils/cardMapping";
 
 const HEX_WIDTH = 128;
 const HEX_HEIGHT = 111;
@@ -276,7 +276,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
        const promises = [
         ...uniqueTileIds.map((id) => {
-          const src = id.startsWith("data:image/") ? id : `/assets/tiles/${id}.png`;
+          const src = id.startsWith("data:image/") ? id : getAssetUrl(`assets/tiles/${id}.png`);
           return loadImg(src, id, loaded);
         }),
         ...uniqueCreatureFiles.map((file) => {
