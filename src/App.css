@@ -36,16 +36,22 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 24px;
+  gap: 12px;
+  padding: 8px 18px;
   background: rgba(8, 12, 21, 0.85);
   border-bottom: 1px solid var(--border-light);
   backdrop-filter: blur(8px);
+  min-height: 52px;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
 }
 
 .logo {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .logo i {
@@ -56,10 +62,11 @@ body {
 
 .logo h1 {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 800;
   margin: 0;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .subtitle {
@@ -67,22 +74,33 @@ body {
   color: var(--text-muted);
   border-left: 1px solid var(--border-light);
   padding-left: 8px;
+  white-space: nowrap;
 }
 
 .turn-info {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 8px;
   font-family: 'Outfit', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .active-badge {
-  padding: 4px 10px;
-  border-radius: 20px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .active-badge.player {
@@ -546,27 +564,33 @@ body {
 /* View Toggles Toolbar in Header */
 .view-toggles {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   background: rgba(0, 0, 0, 0.25);
-  padding: 4px;
+  padding: 3px;
   border-radius: 8px;
   border: 1px solid var(--border-light);
+  flex-shrink: 0;
 }
 
 .view-toggle-btn {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  padding: 6px 12px;
+  height: 26px;
+  padding: 0 10px;
   font-family: 'Outfit', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   border-radius: 6px;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .view-toggle-btn i {
@@ -586,7 +610,8 @@ body {
 
 /* Header Compact End Turn Button */
 .end-turn-btn.header-btn {
-  padding: 6px 14px;
+  height: 32px;
+  padding: 0 12px;
   font-size: 0.8rem;
   border-radius: 6px;
   background: linear-gradient(135deg, #00ffcc 0%, #00a887 100%);
@@ -596,6 +621,13 @@ body {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  flex-shrink: 0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   margin-left: 8px;
 }
@@ -617,16 +649,21 @@ body {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-light);
   color: var(--text-main);
-  padding: 6px 14px;
+  height: 32px;
+  padding: 0 12px;
   font-family: 'Outfit', sans-serif;
   font-weight: 600;
   font-size: 0.8rem;
   border-radius: 6px;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .menu-btn:hover {
@@ -646,6 +683,29 @@ body {
   background: #00e6b8;
   color: #06090e;
   box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* Base Header Buttons (New Game, Save, Load, etc.) */
+.header-btn {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-family: 'Outfit', sans-serif;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.header-btn:hover {
+  transform: translateY(-1px);
 }
 
 /* Deck Submenu Bar in Header (Floating Above Gameboard Panel) */

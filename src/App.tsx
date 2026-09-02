@@ -9455,30 +9455,35 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             <div 
               onClick={() => setShowScoreBreakdownModal(true)}
               style={{
-                display: "flex",
+                display: "inline-flex",
                 alignItems: "center",
+                justifyContent: "center",
                 gap: "6px",
+                height: "32px",
                 background: "linear-gradient(135deg, rgba(250, 204, 21, 0.15) 0%, rgba(202, 138, 4, 0.25) 100%)",
                 border: "1px solid rgba(250, 204, 21, 0.4)",
-                padding: "6px 14px",
+                padding: "0 12px",
                 borderRadius: "20px",
                 color: "#facc15",
                 fontWeight: 800,
-                fontSize: "0.92rem",
+                fontSize: "0.85rem",
                 boxShadow: "0 0 12px rgba(250, 204, 21, 0.25)",
                 userSelect: "none",
-                cursor: "pointer"
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                boxSizing: "border-box",
+                flexShrink: 0
               }}
               title="Click to view live score breakdown modal"
             >
-              <i className="fa-solid fa-trophy" style={{ color: "#facc15", fontSize: "1rem" }}></i>
+              <i className="fa-solid fa-trophy" style={{ color: "#facc15", fontSize: "0.9rem" }}></i>
               <span>{liveScore.toLocaleString()} PTS</span>
             </div>
           );
         })()}
 
         {/* Action Controls */}
-        <div style={{ display: "flex", gap: "8px" }}>
+        <div style={{ display: "flex", gap: "6px", alignItems: "center", flexShrink: 0 }}>
           <button
             className={`menu-btn ${showRulesModal ? "active" : ""}`}
             onClick={() => setShowRulesModal(true)}
@@ -9626,7 +9631,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           </button>
         </div>
 
-        <div className="turn-info">
+        <div className="turn-info" style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
           <span>Turn {gameState.turnNumber}</span>
           <span 
             className={`active-badge ${activePlayer.isBot ? "bot" : "player"}`}
@@ -9635,7 +9640,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               setShowChangeNameModal(true);
             }}
             title="Click to change your player name"
-            style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
+            style={{ cursor: "pointer" }}
           >
             <span>{activePlayer.name}'s Phase</span>
             <i className="fa-solid fa-pen" style={{ fontSize: "0.7rem", opacity: 0.75 }}></i>
@@ -9647,17 +9652,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             style={{
               background: "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
               border: "1px solid rgba(139, 92, 246, 0.4)",
-              borderRadius: "6px",
               color: "#fff",
-              padding: "6px 12px",
-              fontSize: "0.8rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              boxShadow: "0 2px 8px rgba(139, 92, 246, 0.3)",
-              fontFamily: "'Outfit', sans-serif"
+              boxShadow: "0 2px 8px rgba(139, 92, 246, 0.3)"
             }}
           >
             <i className="fa-solid fa-plus"></i>
@@ -9670,17 +9666,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             style={{
               background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
               border: "1px solid rgba(16, 185, 129, 0.4)",
-              borderRadius: "6px",
               color: "#fff",
-              padding: "6px 12px",
-              fontSize: "0.8rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
-              fontFamily: "'Outfit', sans-serif"
+              boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)"
             }}
           >
             <i className="fa-solid fa-floppy-disk"></i>
@@ -9693,17 +9680,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             style={{
               background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
               border: "1px solid rgba(59, 130, 246, 0.4)",
-              borderRadius: "6px",
               color: "#fff",
-              padding: "6px 12px",
-              fontSize: "0.8rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              boxShadow: "0 2px 8px rgba(59, 130, 246, 0.3)",
-              fontFamily: "'Outfit', sans-serif"
+              boxShadow: "0 2px 8px rgba(59, 130, 246, 0.3)"
             }}
           >
             <i className="fa-solid fa-folder-open"></i>
