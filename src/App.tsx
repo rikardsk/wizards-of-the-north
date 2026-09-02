@@ -59,6 +59,16 @@ const AVAILABLE_TILES = [
   "Wizards Tower L4"
 ];
 
+const getTileImageUrl = (tileId: string): string => {
+  if (!tileId) return getAssetUrl("assets/tiles/Grass.png");
+  if (tileId.startsWith("data:image/") || tileId.startsWith("http://") || tileId.startsWith("https://") || tileId.startsWith("blob:")) {
+    return tileId;
+  }
+  const cleanId = tileId.replace(/\.png$/i, "").replace(/\.jpg$/i, "").trim();
+  const matched = AVAILABLE_TILES.find(t => t.toLowerCase() === cleanId.toLowerCase()) || cleanId;
+  return getAssetUrl(`assets/tiles/${matched}.png`);
+};
+
 const getDefaultQuestTileId = (questName: string): string => {
   if (!questName) return "Plain L1";
   const cleanName = questName.replace(/\s+Quest$/i, "").trim().toLowerCase();
@@ -4067,7 +4077,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       const activeDeck = overrideDeck || customDeckCards;
       const activeMap = overrideMap || customMapData;
 
-      const mapJson = activeMap || await fetch(getAssetUrl("/assets/maps/sample_map.json")).then((res) => res.json());
+      const mapJson = activeMap || await fetch(getAssetUrl("/assets/maps/wizards_map_fp_vs_ms_2_player.json")).then((res) => res.json());
       const deckJson = await fetch(getAssetUrl("/assets/decks/wizards_deck_1.json")).then((res) => res.json());
       const questMap: Record<string, any> = {};
       if (deckJson.quests && Array.isArray(deckJson.quests)) {
@@ -4081,26 +4091,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       const rawMaster = deckJson.cards || deckJson;
       const masterCards = Array.isArray(rawMaster) ? rawMaster.map((c: any) => mapCardJson(c, questMap)) : [];
       setMasterDeckCards(masterCards);
-
-      if (deckJson.quests && Array.isArray(deckJson.quests)) {
-        setQuestTileConfigs((prev) => {
-          const updated = { ...prev };
-          let changed = false;
-          deckJson.quests.forEach((q: any) => {
-            if (!updated[q.name]) {
-              const tileId = q.tileName ? q.tileName.replace(/\.png$/i, "") : "Plain L1";
-              updated[q.name] = {
-                enabled: true,
-                tileId,
-                x: q.mapCoords?.x ?? 0,
-                y: q.mapCoords?.y ?? 0,
-              };
-              changed = true;
-            }
-          });
-          return changed ? updated : prev;
-        });
-      }
+      applyQuestConfigs(deckJson);
 
       let deckCards: CardJSON[] = masterCards;
       if (activeDeck && activeDeck.length > 0) {
@@ -4394,13 +4385,13 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   };
 
   const presetDecks = [
-    { name: "starter_deck.json", label: "starter_deck.json", path: "/assets/decks/starter_deck.json" },
     { name: "wizards_deck_1.json", label: "wizards_deck_1.json", path: "/assets/decks/wizards_deck_1.json" },
+    { name: "starter_deck.json", label: "starter_deck.json", path: "/assets/decks/starter_deck.json" },
   ];
 
   const presetMaps = [
-    { name: "sample_map.json", label: "sample_map.json", path: "/assets/maps/sample_map.json" },
     { name: "wizards_map_fp_vs_ms_2_player.json", label: "wizards_map_fp_vs_ms_2_player.json", path: "/assets/maps/wizards_map_fp_vs_ms_2_player.json" },
+    { name: "sample_map.json", label: "sample_map.json", path: "/assets/maps/sample_map.json" },
   ];
 
   const extractQuestMap = (json: any): Record<string, any> => {
@@ -15110,8 +15101,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                   {(() => {
                                     const config = questTileConfigs[selectedQuest.name];
                                     const tileVal = config?.tileId || getDefaultQuestTileId(selectedQuest.name);
-                                    const isCustom = tileVal.startsWith("data:image/");
-                                    const thumbnailSrc = isCustom ? tileVal : `/assets/tiles/${tileVal}.png`;
+                                    const isCustom = tileVal.startsWith("data:image/") || tileVal.startsWith("http://") || tileVal.startsWith("https://") || tileVal.startsWith("blob:");
+                                    const thumbnailSrc = isCustom ? tileVal : getTileImageUrl(tileVal);
 
                                     return (
                                       <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -15127,7 +15118,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                             background: "rgba(0,0,0,0.2)"
                                           }}
                                           onError={(e) => {
-                                            e.currentTarget.src = "/assets/tiles/Grass.png";
+                                            e.currentTarget.src = getTileImageUrl("Grass");
                                           }}
                                         />
                                       </div>
@@ -15576,8 +15567,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                   {(() => {
                                     const config = portalTileConfigs[selectedPortal.name];
                                     const tileVal = config?.tileId || getDefaultPortalTileId(selectedPortal.name);
-                                    const isCustom = tileVal.startsWith("data:image/");
-                                    const thumbnailSrc = isCustom ? tileVal : `/assets/tiles/${tileVal}.png`;
+                                    const isCustom = tileVal.startsWith("data:image/") || tileVal.startsWith("http://") || tileVal.startsWith("https://") || tileVal.startsWith("blob:");
+                                    const thumbnailSrc = isCustom ? tileVal : getTileImageUrl(tileVal);
 
                                     return (
                                       <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -15593,7 +15584,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                             background: "rgba(0,0,0,0.2)"
                                           }}
                                           onError={(e) => {
-                                            e.currentTarget.src = "/assets/tiles/Grass.png";
+                                            e.currentTarget.src = getTileImageUrl("Grass");
                                           }}
                                         />
                                       </div>

@@ -274,9 +274,24 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ])
       );
 
+       const knownTiles = [
+        "Active Volcanic Forge", "Ancient Temple Ruins", "Battle Arena", "City of the dead",
+        "Coastal Fort", "Crypt of the undead", "Dragons Lair", "Dragons Nest", "Dragons Peak",
+        "Forrest L1", "Forrest L2", "Forrest L3", "Forrest L4", "Gladiator School", "Goblin Camp",
+        "Grass", "Mountain L1", "Mountain L2", "Mountain L3", "Mountain L4", "Plain L1",
+        "Plain L2", "Plain L3", "Plain L4", "Scorched Earth", "Swamp L1", "Swamp L2",
+        "Swamp L3", "Swamp L4", "The Coastal Fort", "The Forest", "The Grove Temple",
+        "The Ruined Mountain Pass", "Tower of Power", "Tower of terror", "Wizards Tower L1",
+        "Wizards Tower L2", "Wizards Tower L3", "Wizards Tower L4"
+      ];
+
        const promises = [
         ...uniqueTileIds.map((id) => {
-          const src = id.startsWith("data:image/") ? id : getAssetUrl(`assets/tiles/${id}.png`);
+          if (!id) return Promise.resolve();
+          let clean = id.replace(/\.png$/i, "").replace(/\.jpg$/i, "").trim();
+          const found = knownTiles.find((t) => t.toLowerCase() === clean.toLowerCase());
+          if (found) clean = found;
+          const src = id.startsWith("data:image/") || id.startsWith("http://") || id.startsWith("https://") ? id : getAssetUrl(`assets/tiles/${clean}.png`);
           return loadImg(src, id, loaded);
         }),
         ...uniqueCreatureFiles.map((file) => {
