@@ -4442,24 +4442,23 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
     // 4. Quest Tile Configurations
     if (json.questTileConfigs && typeof json.questTileConfigs === "object" && Object.keys(json.questTileConfigs).length > 0) {
-      setQuestTileConfigs(prev => ({
-        ...prev,
-        ...json.questTileConfigs
-      }));
+      setQuestTileConfigs(json.questTileConfigs);
     } else if (Array.isArray(json.quests)) {
-      setQuestTileConfigs((prev) => {
-        const updated = { ...prev };
-        json.quests.forEach((q: any) => {
-          const tileId = q.tileName ? q.tileName.replace(/\.png$/i, "").replace(/\.jpg$/i, "") : getDefaultQuestTileId(q.name);
+      const updated: Record<string, QuestTileConfig> = {};
+      json.quests.forEach((q: any) => {
+        if (q.tileName && q.mapCoords && typeof q.mapCoords.x === "number" && typeof q.mapCoords.y === "number") {
+          const tileId = q.tileName.replace(/\.png$/i, "").replace(/\.jpg$/i, "");
           updated[q.name] = {
             enabled: q.placeTileAtStart !== undefined ? q.placeTileAtStart : (q.enabled !== undefined ? q.enabled : true),
             tileId,
-            x: q.mapCoords?.x ?? prev[q.name]?.x ?? 0,
-            y: q.mapCoords?.y ?? prev[q.name]?.y ?? 0,
+            x: q.mapCoords.x,
+            y: q.mapCoords.y,
           };
-        });
-        return updated;
+        }
       });
+      if (Object.keys(updated).length > 0) {
+        setQuestTileConfigs(updated);
+      }
     }
 
     // 5. Portal Tile Configurations
