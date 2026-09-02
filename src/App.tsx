@@ -9478,7 +9478,13 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         <div className="logo">
           <i className="fa-solid fa-chess-rook"></i>
           <h1>Wizards of the North</h1>
-          <span className="subtitle">Tactical Hex Game • {gameState.cols}x{gameState.rows} Grid</span>
+          <span 
+            className="subtitle" 
+            title={`Active Deck: ${customDeckFileName || "wizards_deck_1.json"} | Active Map: ${customMapFileName || "wizards_map_fp_vs_ms_2_player.json"}`}
+            style={{ cursor: "default" }}
+          >
+            {gameState.cols}x{gameState.rows} Grid • 🎴 {customDeckFileName || "wizards_deck_1.json"} • 🗺️ {customMapFileName || "wizards_map_fp_vs_ms_2_player.json"}
+          </span>
         </div>
 
         {/* View Controls Toolbar */}
@@ -12243,6 +12249,33 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 <i className="fa-solid fa-xmark"></i>
               </button>
             </div>
+
+            {/* Active Deck & Map Info Box */}
+            <div style={{
+              background: "rgba(255, 255, 255, 0.03)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              borderRadius: "8px",
+              padding: "10px 14px",
+              marginBottom: "14px",
+              fontSize: "0.82rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px"
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <i className="fa-solid fa-layer-group" style={{ color: "#facc15" }}></i> Active Deck:
+                </span>
+                <strong style={{ color: "#facc15" }}>{customDeckFileName || "wizards_deck_1.json"}</strong>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <i className="fa-solid fa-map" style={{ color: "#38bdf8" }}></i> Active Map:
+                </span>
+                <strong style={{ color: "#38bdf8" }}>{customMapFileName || "wizards_map_fp_vs_ms_2_player.json"}</strong>
+              </div>
+            </div>
+
             <div className="modal-options">
               <button
                 className="modal-btn primary"
@@ -13206,7 +13239,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                             }
                           }}
                         >
-                          <option value="">Default (Starter Deck)</option>
+                          <option value="">Default (wizards_deck_1.json)</option>
                           {presetDecks.map((p) => (
                             <option key={p.name} value={p.name}>{p.label}</option>
                           ))}
@@ -13254,7 +13287,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                             }
                           }}
                         >
-                          <option value="">Default (Sample Map)</option>
+                          <option value="">Default (wizards_map_fp_vs_ms_2_player.json)</option>
                           {presetMaps.map((p) => (
                             <option key={p.name} value={p.name}>{p.label}</option>
                           ))}
