@@ -364,7 +364,7 @@ const getCellCardJson = (cell: MapCell, map: MapCell[][], players: Player[]): Ca
         color: "artifact",
         illustration: `/assets/towers/Wizards Tower L${towerLevel}.jpg`,
         rulesText: "",
-        customDescription: `Produces ${"{U}".repeat(towerLevel)} per turn.`,
+        customDescription: "",
         power: "0",
         toughness: String(5 + 5 * towerLevel),
         activatedAbilities: [
@@ -377,10 +377,10 @@ const getCellCardJson = (cell: MapCell, map: MapCell[][], players: Player[]): Ca
       towerCard.name = "Wizards Tower";
       towerCard.cardSubType = `Level ${towerLevel}`;
       towerCard.illustration = `/assets/towers/Wizards Tower L${towerLevel}.jpg`;
-      towerCard.customDescription = `Produces ${"{U}".repeat(towerLevel)} per turn.`;
+      towerCard.customDescription = "";
       if (towerCard.power === undefined) towerCard.power = "0";
       if (towerCard.toughness === undefined) towerCard.toughness = String(5 + 5 * towerLevel);
-      towerCard.rulesText = `Produces ${"{U}".repeat(towerLevel)} per turn.\n\nLocation: ${coords}\nHP: ${p.towerHp} / ${START_HP}`;
+      towerCard.rulesText = `Location: ${coords}\nHP: ${p.towerHp} / ${START_HP}`;
       return towerCard;
     } else {
       return {
@@ -3452,10 +3452,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           pool[color] = 1;
         }
       });
-      const towerCell = map.flat().find(cell => cell.ownerId === playerIdx && cell.tileId.toLowerCase().includes("tower"));
-      if (towerCell) {
-        pool.U += getLevel(towerCell.tileId);
-      }
       return pool;
     }
 
@@ -3464,9 +3460,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         if (cell.ownerId !== playerIdx) return;
         const tile = cell.tileId.toLowerCase();
         const level = getLevel(cell.tileId);
-        if (tile.includes("tower")) {
-          pool.U += level;
-        } else {
+        if (!tile.includes("tower")) {
           if (tile.includes("plain")) pool.W += level;
           else if (tile.includes("forrest")) pool.G += level;
           else if (tile.includes("mountain")) pool.R += level;
@@ -3490,9 +3484,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         if (cell.ownerId !== playerIdx) return;
         const tile = cell.tileId.toLowerCase();
         const level = getLevel(cell.tileId);
-        if (tile.includes("tower")) {
-          pool.U += level;
-        } else {
+        if (!tile.includes("tower")) {
           if (tile.includes("plain")) pool.W += level;
           else if (tile.includes("forrest")) pool.G += level;
           else if (tile.includes("mountain")) pool.R += level;
@@ -3611,7 +3603,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         color: "artifact",
         illustration: `/assets/towers/Wizards Tower L${level}.jpg`,
         rulesText: "",
-        customDescription: `Produces ${"{U}".repeat(level)} per turn.`,
+        customDescription: "",
         power: "0",
         toughness: String(5 + 5 * level),
         activatedAbilities: [
@@ -3625,8 +3617,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     cardData.name = "Wizards Tower";
     cardData.cardSubType = `Level ${level}`;
     cardData.illustration = `/assets/towers/Wizards Tower L${level}.jpg`;
-    cardData.customDescription = `Produces ${"{U}".repeat(level)} per turn.`;
-    cardData.rulesText = `Produces ${"{U}".repeat(level)} per turn.`;
+    cardData.customDescription = "";
+    cardData.rulesText = "";
     cardData.power = "0";
     cardData.toughness = String(5 + 5 * level);
     cardData.activatedAbilities = [];
@@ -10545,10 +10537,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           ratioText: isTower ? undefined : `${owned}/${total}`,
                           isSetComplete: isTower ? false : isSetComplete,
                           rulesText: isTower
-                            ? `Wizards Tower Level ${level}.\nGenerates ${level} Blue mana ({U}) per turn.`
+                            ? `Wizards Tower Level ${level}.`
                             : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`,
                           customDescription: isTower
-                            ? `Wizards Tower Level ${level}.\nGenerates ${level} Blue mana ({U}) per turn.`
+                            ? `Wizards Tower Level ${level}.`
                             : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`
                         };
 
@@ -10829,7 +10821,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                           <span style={{ fontSize: "0.9rem", fontWeight: "bold", color: "#00f2fe" }}>
-                            {currentTowerLevel >= 4 ? "Level 4 (MAX TOWER)" : `Level ${currentTowerLevel} / 4 (+${currentTowerLevel} Blue Mana)`}
+                            {currentTowerLevel >= 4 ? "Level 4 (MAX TOWER)" : `Level ${currentTowerLevel} / 4`}
                           </span>
                           <span style={{ fontSize: "0.68rem", color: towerRankColor, fontWeight: 600, background: "rgba(255, 255, 255, 0.04)", padding: "1px 5px", borderRadius: "10px", border: "1px solid rgba(255, 255, 255, 0.06)" }}>
                             {towerRank}
@@ -17423,7 +17415,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       {showLandOverviewModal && (() => {
         const isExcludedLandTile = (id: string): boolean => {
           const lower = (id || "").toLowerCase();
-          return lower.includes("quest") || lower.includes("tower of power") || lower.includes("tower of terror");
+          return lower.includes("quest") || lower.includes("tower of power") || lower.includes("tower of terror") || lower.includes("tower");
         };
 
         const allMapCells = gameState.map.flat();
@@ -18681,7 +18673,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                       <li><strong>Forests (Green):</strong> {renderTextWithManaSymbols("Generates Green mana ({G}) equal to tile level.")}</li>
                       <li><strong>Mountains (Red):</strong> {renderTextWithManaSymbols("Generates Red mana ({R}) equal to tile level.")}</li>
                       <li><strong>Swamps (Purple):</strong> {renderTextWithManaSymbols("Generates Black mana ({B}) equal to tile level.")}</li>
-                      <li><strong>Towers (Blue):</strong> {renderTextWithManaSymbols("Generates 1 Blue mana ({U}).")}</li>
                       <li><strong>Other lands:</strong> {renderTextWithManaSymbols("Generates 1 Colorless mana ({C}).")}</li>
                     </ul>
                     <p className="modal-text" style={{ marginTop: "6px" }}>
