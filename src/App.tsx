@@ -3621,7 +3621,14 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     cardData.rulesText = "";
     cardData.power = "0";
     cardData.toughness = String(5 + 5 * level);
-    cardData.activatedAbilities = [];
+    if (!cardData.activatedAbilities || cardData.activatedAbilities.length === 0) {
+      cardData.activatedAbilities = [
+        {
+          cost: [level === 1 ? "C3" : level === 2 ? "C2" : level === 3 ? "C3" : "C1"],
+          text: level === 3 ? "Draw 2 cards." : "Draw 1 card."
+        }
+      ];
+    }
     return cardData;
   };
 
@@ -10662,115 +10669,111 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               }
 
               return (
-                <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", maxHeight: "100%", overflow: "hidden", position: "relative", boxSizing: "border-box" }}>
-                  <div className="tower-profile-panel" style={{ display: "flex", padding: "12px 12px 75px 12px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "8px", border: "1px solid var(--border-light)", marginTop: "8px", boxSizing: "border-box", flex: "1 1 auto", overflowX: "auto", overflowY: "hidden" }}>
-                    <div className="tower-progression-cards" style={{ display: "flex", gap: "10px", alignItems: "center", minWidth: 0, flex: "1 1 auto", overflowX: "auto", paddingBottom: "6px" }}>
-                      {[1, 2, 3, 4].map((level) => {
-                        const isActive = currentTowerLevel === level && gameState.winnerId === null;
-                        const card = getTowerCardForLevel(level, gameState.players[0].deck);
-                        const showConnector = level < 4;
-                        const reqs = getTowerLevelUpRequirements(level);
-                        const check = checkTowerLevelUpEligibility(gameState.map.flat(), level, 0);
-                        const isUpgradeStep = currentTowerLevel === level && gameState.winnerId === null;
-                        const isLevelUpClickable = isUpgradeStep && check.eligible && gameState.activePlayerIndex === 0 && gameState.winnerId === null;
+                <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
+                  <div className="cards-list tower-list" style={{ flex: 1, alignItems: "center", padding: "18px 240px 75px 12px", overflowY: "hidden" }}>
+                    {[1, 2, 3, 4].map((level) => {
+                      const isActive = currentTowerLevel === level && gameState.winnerId === null;
+                      const card = getTowerCardForLevel(level, gameState.players[0].deck);
+                      const showConnector = level < 4;
+                      const reqs = getTowerLevelUpRequirements(level);
+                      const check = checkTowerLevelUpEligibility(gameState.map.flat(), level, 0);
+                      const isUpgradeStep = currentTowerLevel === level && gameState.winnerId === null;
+                      const isLevelUpClickable = isUpgradeStep && check.eligible && gameState.activePlayerIndex === 0 && gameState.winnerId === null;
 
-                        return (
-                          <Fragment key={level}>
-                            <div
-                              style={{
-                                opacity: isActive ? 1 : 0.35,
-                                filter: isActive ? "none" : "grayscale(55%)",
-                                transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                                transform: isActive ? "scale(1.01)" : "scale(0.95)",
-                                boxShadow: isActive ? "0 0 16px rgba(0, 255, 204, 0.25)" : "none",
-                                borderRadius: "12px",
-                                display: "flex",
-                                height: "fit-content",
-                                flexShrink: 0
-                              }}
-                            >
-                              <GameCard
-                                card={card}
-                                disabled={false}
-                                onActivateAbility={isActive ? handleActivateAbility : undefined}
-                                canPayAbilityCost={(costStr) => isActive ? canPayManaCost(gameState?.players[0]?.manaPool, costStr, true) : false}
-                                isInBattle={false}
-                              />
-                            </div>
+                      return (
+                        <Fragment key={level}>
+                          <div
+                            style={{
+                              opacity: isActive ? 1 : 0.35,
+                              filter: isActive ? "none" : "grayscale(55%)",
+                              transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                              borderRadius: "12px",
+                              display: "flex",
+                              flexShrink: 0
+                            }}
+                          >
+                            <GameCard
+                              card={card}
+                              disabled={false}
+                              onActivateAbility={isActive ? handleActivateAbility : undefined}
+                              canPayAbilityCost={(costStr) => isActive ? canPayManaCost(gameState?.players[0]?.manaPool, costStr, true) : false}
+                              isInBattle={false}
+                              cardPool={getMergedCardPool()}
+                            />
+                          </div>
 
-                            {showConnector && (
-                              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: "105px", gap: "8px", flexShrink: 0 }}>
-                                <div style={{ height: "2px", width: "50px", backgroundColor: isUpgradeStep ? "rgba(0, 242, 254, 0.4)" : "rgba(255, 255, 255, 0.1)", position: "relative" }}>
-                                  <div style={{
-                                    position: "absolute",
-                                    right: "-4px",
-                                    top: "-3px",
-                                    width: "0",
-                                    height: "0",
-                                    borderTop: "4px solid transparent",
-                                    borderBottom: "4px solid transparent",
-                                    borderLeft: `6px solid ${isUpgradeStep ? "rgba(0, 242, 254, 0.4)" : "rgba(255, 255, 255, 0.1)"}`
-                                  }} />
-                                </div>
-                                
-                                <button
-                                  onClick={handleLevelUpTower}
-                                  disabled={!isLevelUpClickable}
-                                  style={{
-                                    background: isLevelUpClickable
-                                      ? "linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)"
-                                      : isUpgradeStep
-                                        ? "rgba(0, 242, 254, 0.08)"
-                                        : "rgba(255, 255, 255, 0.02)",
-                                    color: isLevelUpClickable ? "#0a0f1d" : isUpgradeStep ? "#00f2fe" : "var(--text-muted)",
-                                    border: `1px solid ${
-                                      isLevelUpClickable
-                                        ? "transparent"
-                                        : isUpgradeStep
-                                          ? "rgba(0, 242, 254, 0.3)"
-                                          : "rgba(255, 255, 255, 0.08)"
-                                    }`,
-                                    borderRadius: "8px",
-                                    padding: "6px 10px",
-                                    fontSize: "0.68rem",
-                                    fontWeight: "bold",
-                                    cursor: isLevelUpClickable ? "pointer" : "not-allowed",
-                                    transition: "all 0.2s",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    gap: "2px",
-                                    boxShadow: isLevelUpClickable ? "0 4px 10px rgba(0, 242, 254, 0.25)" : "none"
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    if (isLevelUpClickable) {
-                                      e.currentTarget.style.transform = "translateY(-1px)";
-                                      e.currentTarget.style.boxShadow = "0 6px 14px rgba(0, 242, 254, 0.4)";
-                                    }
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    if (isLevelUpClickable) {
-                                      e.currentTarget.style.transform = "none";
-                                      e.currentTarget.style.boxShadow = isLevelUpClickable ? "0 4px 10px rgba(0, 242, 254, 0.25)" : "none";
-                                    }
-                                  }}
-                                  title={isUpgradeStep ? (check.eligible ? `Upgrade Wizards Tower to Level ${level + 1}!` : check.reason) : `Cannot upgrade to Level ${level + 1} yet`}
-                                >
-                                  <span style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                                    Level Up
-                                  </span>
-                                  {reqs && (
-                                    <div style={{ fontSize: "0.6rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "1px", opacity: 0.9 }}>
-                                      <span>Lands: {check.totalLands}/{reqs.requiredLands}</span>
-                                    </div>
-                                  )}
-                                </button>
+                          {showConnector && (
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: "105px", gap: "8px", flexShrink: 0 }}>
+                              <div style={{ height: "2px", width: "50px", backgroundColor: isUpgradeStep ? "rgba(0, 242, 254, 0.4)" : "rgba(255, 255, 255, 0.1)", position: "relative" }}>
+                                <div style={{
+                                  position: "absolute",
+                                  right: "-4px",
+                                  top: "-3px",
+                                  width: "0",
+                                  height: "0",
+                                  borderTop: "4px solid transparent",
+                                  borderBottom: "4px solid transparent",
+                                  borderLeft: `6px solid ${isUpgradeStep ? "rgba(0, 242, 254, 0.4)" : "rgba(255, 255, 255, 0.1)"}`
+                                }} />
                               </div>
-                            )}
-                          </Fragment>
-                        );
-                      })}
-                    </div>
+                              
+                              <button
+                                onClick={handleLevelUpTower}
+                                disabled={!isLevelUpClickable}
+                                style={{
+                                  background: isLevelUpClickable
+                                    ? "linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)"
+                                    : isUpgradeStep
+                                      ? "rgba(0, 242, 254, 0.08)"
+                                      : "rgba(255, 255, 255, 0.02)",
+                                  color: isLevelUpClickable ? "#0a0f1d" : isUpgradeStep ? "#00f2fe" : "var(--text-muted)",
+                                  border: `1px solid ${
+                                    isLevelUpClickable
+                                      ? "transparent"
+                                      : isUpgradeStep
+                                        ? "rgba(0, 242, 254, 0.3)"
+                                        : "rgba(255, 255, 255, 0.08)"
+                                  }`,
+                                  borderRadius: "8px",
+                                  padding: "6px 10px",
+                                  fontSize: "0.68rem",
+                                  fontWeight: "bold",
+                                  cursor: isLevelUpClickable ? "pointer" : "not-allowed",
+                                  transition: "all 0.2s",
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  gap: "2px",
+                                  boxShadow: isLevelUpClickable ? "0 4px 10px rgba(0, 242, 254, 0.25)" : "none"
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (isLevelUpClickable) {
+                                    e.currentTarget.style.transform = "translateY(-1px)";
+                                    e.currentTarget.style.boxShadow = "0 6px 14px rgba(0, 242, 254, 0.4)";
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (isLevelUpClickable) {
+                                    e.currentTarget.style.transform = "none";
+                                    e.currentTarget.style.boxShadow = isLevelUpClickable ? "0 4px 10px rgba(0, 242, 254, 0.25)" : "none";
+                                  }
+                                }}
+                                title={isUpgradeStep ? (check.eligible ? `Upgrade Wizards Tower to Level ${level + 1}!` : check.reason) : `Cannot upgrade to Level ${level + 1} yet`}
+                              >
+                                <span style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                                  Level Up
+                                </span>
+                                {reqs && (
+                                  <div style={{ fontSize: "0.6rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "1px", opacity: 0.9 }}>
+                                    <span>Lands: {check.totalLands}/{reqs.requiredLands}</span>
+                                  </div>
+                                )}
+                              </button>
+                            </div>
+                          )}
+                        </Fragment>
+                      );
+                    })}
                   </div>
 
                   {/* Floating Tower Gauge */}
