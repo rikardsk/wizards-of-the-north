@@ -501,14 +501,7 @@
       "power": "1",
       "toughness": "5",
       "keywords": [],
-      "activatedAbilities": [
-        {
-          "cost": [
-            "C3"
-          ],
-          "text": "Draw 1 card."
-        }
-      ],
+      "activatedAbilities": [],
       "abilityManaSize": 14,
       "illustration": "Wizard L1.jpg"
     },
@@ -522,7 +515,7 @@
       "cardSubType": "Level 2",
       "target": "",
       "hasPt": true,
-      "rulesText": "",
+      "rulesText": "Draws 2 cards each turn.",
       "customDescription": "A skilled wizard of the tower.",
       "customDescriptionItalic": true,
       "upkeepCost": [],
@@ -531,14 +524,7 @@
       "power": "2",
       "toughness": "10",
       "keywords": [],
-      "activatedAbilities": [
-        {
-          "cost": [
-            "C2"
-          ],
-          "text": "Draw 2 cards."
-        }
-      ],
+      "activatedAbilities": [],
       "abilityManaSize": 14,
       "illustration": "Wizard L2.jpg"
     },
@@ -552,7 +538,7 @@
       "cardSubType": "Level 3",
       "target": "",
       "hasPt": true,
-      "rulesText": "",
+      "rulesText": "Draws 3 cards each turn.",
       "customDescription": "A wizard of advanced studies and elemental control.",
       "customDescriptionItalic": true,
       "upkeepCost": [],
@@ -561,14 +547,7 @@
       "power": "3",
       "toughness": "15",
       "keywords": [],
-      "activatedAbilities": [
-        {
-          "cost": [
-            "C3"
-          ],
-          "text": "Draw 3 cards."
-        }
-      ],
+      "activatedAbilities": [],
       "abilityManaSize": 14,
       "illustration": "Wizard L3.jpg"
     },
@@ -582,7 +561,7 @@
       "cardSubType": "Level 4",
       "target": "",
       "hasPt": true,
-      "rulesText": "",
+      "rulesText": "Draws 4 cards each turn.",
       "customDescription": "Archmage of the North, master of the ultimate magic.",
       "customDescriptionItalic": true,
       "upkeepCost": [],
@@ -591,14 +570,7 @@
       "power": "4",
       "toughness": "20",
       "keywords": [],
-      "activatedAbilities": [
-        {
-          "cost": [
-            "C1"
-          ],
-          "text": "Draw 4 cards."
-        }
-      ],
+      "activatedAbilities": [],
       "abilityManaSize": 14,
       "illustration": "Wizard L4.jpg"
     },

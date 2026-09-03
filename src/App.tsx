@@ -3572,16 +3572,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       cardData.xp = 0;
     }
 
-    const drawText = level === 1 ? "Draw 1 card." : `Draw ${level} cards.`;
-    const abilityCost = level === 1 ? ["C3"] : level === 2 ? ["C2"] : level === 3 ? ["C3"] : ["C1"];
-    cardData.activatedAbilities = [
-      {
-        cost: abilityCost,
-        text: drawText
-      }
-    ];
-    cardData.rulesText = drawText;
-    cardData.customDescription = drawText;
+    const drawDesc = level === 1 ? "Draws 1 card each turn." : `Draws ${level} cards each turn.`;
+    cardData.activatedAbilities = [];
+    cardData.rulesText = drawDesc;
+    cardData.customDescription = drawDesc;
     return cardData;
   };
 
@@ -8680,44 +8674,52 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
     const nextPlayerAvailableColors = getActiveManaColors(getEnabledWizardManaColorsForPlayer(nextPlayerIdx, gameState.map));
     
-    const pref = nextPlayer.drawPreference || "creatures";
-    let targetType: "creature" | "spell" = "creature";
-    if (pref === "spells") targetType = "spell";
-    else if (pref === "alternate") targetType = nextPlayer.lastDrawnType === "creature" ? "spell" : "creature";
-    else if (pref === "random") targetType = Math.random() < 0.5 ? "creature" : "spell";
-
-    const normalHandSize = getHandCreatureCount(nextPlayer.hand);
-    const spellHandSize = getHandSpellCount(nextPlayer.hand);
-
-    const canDrawNormalCard = godModeEnabled || !cardLimitEnabled || (normalHandSize < cardLimit);
-    const canDrawSpellCard = godModeEnabled || !spellLimitEnabled || (spellHandSize < spellLimit);
-
-    const canDrawTurnCard = targetType === "spell" ? canDrawSpellCard : canDrawNormalCard;
-    
-    let drawnCard = null;
+    const cardsToDrawCount = Math.min(4, Math.max(1, nextPlayer.wizardLevel || 1));
+    const drawnCards: CardJSON[] = [];
     const logsAdditions: string[] = [];
     let nextPlayerDeck = [...nextPlayer.deck];
-    let updatedNextPlayer = nextPlayer;
+    let updatedNextPlayer = { ...nextPlayer };
 
-    if (canDrawTurnCard) {
-      if (nextPlayer.deck.length === 0) {
-        logsAdditions.push(`⚠️ Library is empty! Cannot draw card for ${nextPlayer.name}.`);
+    for (let drawStep = 0; drawStep < cardsToDrawCount; drawStep++) {
+      const pref = updatedNextPlayer.drawPreference || "creatures";
+      let targetType: "creature" | "spell" = "creature";
+      if (pref === "spells") targetType = "spell";
+      else if (pref === "alternate") targetType = updatedNextPlayer.lastDrawnType === "creature" ? "spell" : "creature";
+      else if (pref === "random") targetType = Math.random() < 0.5 ? "creature" : "spell";
+
+      const normalHandSize = getHandCreatureCount(updatedNextPlayer.hand) + drawnCards.filter(c => isCreatureTabCard(c)).length;
+      const spellHandSize = getHandSpellCount(updatedNextPlayer.hand) + drawnCards.filter(c => !isCreatureTabCard(c)).length;
+
+      const canDrawNormalCard = godModeEnabled || !cardLimitEnabled || (normalHandSize < cardLimit);
+      const canDrawSpellCard = godModeEnabled || !spellLimitEnabled || (spellHandSize < spellLimit);
+      const canDrawTurnCard = targetType === "spell" ? canDrawSpellCard : canDrawNormalCard;
+
+      if (canDrawTurnCard) {
+        if (nextPlayerDeck.length === 0) {
+          logsAdditions.push(`⚠️ Library is empty! Cannot draw card for ${nextPlayer.name}.`);
+          break;
+        } else {
+          const drawResult = drawTurnStartCard({ ...updatedNextPlayer, deck: nextPlayerDeck }, nextPlayerAvailableColors);
+          if (drawResult.drawnCard) {
+            drawnCards.push(drawResult.drawnCard);
+            nextPlayerDeck = drawResult.updatedDeck;
+            updatedNextPlayer = { ...updatedNextPlayer, lastDrawnType: drawResult.updatedPlayer.lastDrawnType };
+          } else {
+            break;
+          }
+        }
       } else {
-        const drawResult = drawTurnStartCard(nextPlayer, nextPlayerAvailableColors);
-        drawnCard = drawResult.drawnCard;
-        nextPlayerDeck = drawResult.updatedDeck;
-        updatedNextPlayer = drawResult.updatedPlayer;
-      }
-    } else {
-      const limitVal = targetType === "spell" ? spellLimit : cardLimit;
-      const typeLabel = targetType === "spell" ? "spells" : "creatures";
-      logsAdditions.push(`⚠️ Hand limit reached! Cannot draw ${targetType} card for ${nextPlayer.name}.`);
-      if (nextPlayerIdx === 0) {
-        setCustomAlert({
-          title: "Hand Limit Reached!",
-          message: `Your hand has reached the maximum limit of ${limitVal} ${typeLabel}. You cannot draw a card this turn.`,
-          type: "warning"
-        });
+        const limitVal = targetType === "spell" ? spellLimit : cardLimit;
+        const typeLabel = targetType === "spell" ? "spells" : "creatures";
+        logsAdditions.push(`⚠️ Hand limit reached! Cannot draw ${targetType} card for ${nextPlayer.name}.`);
+        if (nextPlayerIdx === 0 && drawStep === 0) {
+          setCustomAlert({
+            title: "Hand Limit Reached!",
+            message: `Your hand has reached the maximum limit of ${limitVal} ${typeLabel}. You cannot draw a card this turn.`,
+            type: "warning"
+          });
+        }
+        break;
       }
     }
 
@@ -8743,10 +8745,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         logsAdditions.push(`✨ Replenished ${wAbility.name} to hand.`);
       }
 
-      if (drawnCard) {
-        newHand.push(drawnCard);
+      if (drawnCards.length > 0) {
+        newHand.push(...drawnCards);
         if (idx === 1) {
-          logsAdditions.push(`🤖 ${p.name} drew a card.`);
+          logsAdditions.push(`🤖 ${p.name} drew ${drawnCards.length} card${drawnCards.length === 1 ? "" : "s"}.`);
         }
       }
 
@@ -8761,10 +8763,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       };
     });
 
-    if (nextPlayerIdx === 0) {
-      if (drawnCard) {
-        setGainedCard(drawnCard);
-      }
+    if (nextPlayerIdx === 0 && drawnCards.length > 0) {
+      setGainedCard(drawnCards[drawnCards.length - 1]);
     }
 
     const nextTurn = nextPlayerIdx === 0 ? gameState.turnNumber + 1 : gameState.turnNumber;
