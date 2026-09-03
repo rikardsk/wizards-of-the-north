@@ -3497,18 +3497,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       pool[wizardManaChoice] += wizardLevel;
     }
 
-    const sum = Object.values(pool).reduce((a, b) => a + b, 0);
-    if (sum <= manaCap) return pool;
-    let excess = sum - manaCap;
-    const capped = { ...pool };
-    const keys: Array<keyof typeof capped> = ["C", "W", "U", "B", "R", "G"];
-    for (const key of keys) {
-      const reduce = Math.min(capped[key], excess);
-      capped[key] -= reduce;
-      excess -= reduce;
-      if (excess <= 0) break;
-    }
-    return capped;
+    return pool;
   };
 
   const getWizardLevelUpCost = (currentLevel: number): number => {
@@ -8860,7 +8849,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   const renderManaGauge = (
     pool: { W: number; U: number; B: number; R: number; G: number; C: number } | undefined,
     showConversion = false,
-    isLarge = false
+    isLarge = false,
+    highlightCap = false
   ) => {
     if (!pool) return null;
     const items = [
@@ -8876,6 +8866,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         {items.map((item) => {
           const val = pool[item.key] || 0;
           if (val === 0) return null;
+          const isAtCap = highlightCap && manaCapEnabled && val >= manaCap;
           const isConvertible = item.key !== "C";
           const showConversionButton = showConversion && isConvertible && gameState?.activePlayerIndex === 0 && gameState?.winnerId === null;
           const label = item.key === "W" ? "White" : item.key === "U" ? "Blue" : item.key === "B" ? "Black" : item.key === "R" ? "Red" : item.key === "G" ? "Green" : "Colorless";
@@ -8885,17 +8876,22 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               <div
                 className="mana-gauge-item"
                 style={{
-                  backgroundColor: item.bg,
-                  borderColor: item.border,
-                  color: item.color,
+                  backgroundColor: isAtCap ? "rgba(239, 68, 68, 0.25)" : item.bg,
+                  borderColor: isAtCap ? "#ef4444" : item.border,
+                  color: isAtCap ? "#fca5a5" : item.color,
                   margin: 0,
                   padding: isLarge ? "6px 14px" : undefined,
                   borderRadius: isLarge ? "18px" : undefined,
                   fontSize: isLarge ? "0.95rem" : undefined,
-                  boxShadow: isLarge ? `0 4px 12px rgba(0, 0, 0, 0.3), 0 0 8px ${item.border}` : undefined,
-                  borderWidth: isLarge ? "2px" : undefined
+                  boxShadow: isAtCap
+                    ? "0 0 10px rgba(239, 68, 68, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4)"
+                    : (isLarge ? `0 4px 12px rgba(0, 0, 0, 0.3), 0 0 8px ${item.border}` : undefined),
+                  borderWidth: isLarge || isAtCap ? "2px" : undefined,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px"
                 }}
-                title={`${label} Mana`}
+                title={`${label} Mana: ${val}${isAtCap ? ` (Maximum Limit ${manaCap} Reached)` : ""}`}
               >
                 <img
                   src={getManaDataUri(item.key)}
@@ -8907,6 +8903,20 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                   }}
                 />
                 <span className="mana-gauge-val" style={{ fontSize: isLarge ? "1.05rem" : undefined }}>{val}</span>
+                {isAtCap && (
+                  <span style={{
+                    fontSize: "0.55rem",
+                    fontWeight: 900,
+                    background: "#ef4444",
+                    color: "#ffffff",
+                    padding: "1px 3px",
+                    borderRadius: "3px",
+                    letterSpacing: "0.5px",
+                    lineHeight: 1
+                  }}>
+                    MAX
+                  </span>
+                )}
               </div>
               {showConversionButton && (
                 <button
@@ -9857,12 +9867,44 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                       })()}
                     </div>
                     <div style={{ marginTop: "6px" }}>
-                      <span className="p-stat" style={{ marginBottom: "4px", display: "inline-block" }}>Mana Pool (Total: {p.mana}):</span>
-                      {renderManaGauge(p.manaPool)}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                        <span className="p-stat">
+                          Mana Pool (Total: {p.mana}{manaCapEnabled ? ` / ${manaCap} cap` : ""}):
+                        </span>
+                        {manaCapEnabled && Object.values(p.manaPool || {}).some(v => v >= manaCap) && (
+                          <span style={{
+                            fontSize: "0.62rem",
+                            fontWeight: 800,
+                            color: "#ef4444",
+                            background: "rgba(239, 68, 68, 0.15)",
+                            border: "1px solid rgba(239, 68, 68, 0.4)",
+                            padding: "1px 5px",
+                            borderRadius: "4px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "3px"
+                          }}
+                          title={`Mana pool cap (${manaCap}) reached for one or more colors`}
+                          >
+                            <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: "0.6rem" }}></i>
+                            MAX LIMIT
+                          </span>
+                        )}
+                      </div>
+                      {renderManaGauge(p.manaPool, false, false, true)}
                     </div>
                     <div style={{ marginTop: "8px", borderTop: "1px solid rgba(255,255,255,0.04)", paddingTop: "6px" }}>
-                      <span className="p-stat" style={{ marginBottom: "4px", display: "inline-block" }}>Mana Production (per turn):</span>
-                      {renderManaGauge(turnProduction)}
+                      {(() => {
+                        const totalTurnProduction = Object.values(turnProduction).reduce((a, b) => a + b, 0);
+                        return (
+                          <>
+                            <span className="p-stat" style={{ marginBottom: "4px", display: "inline-block" }}>
+                              Mana Production (per turn): <strong>+{totalTurnProduction}</strong>
+                            </span>
+                            {renderManaGauge(turnProduction, false, false, false)}
+                          </>
+                        );
+                      })()}
                     </div>
                   </div>
                 );
