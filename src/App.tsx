@@ -387,10 +387,10 @@ const getCellCardJson = (cell: MapCell, map: MapCell[][], players: Player[]): Ca
       towerCard.cardSubType = `Level ${towerLevel}`;
       towerCard.color = cardColor;
       towerCard.illustration = `/assets/towers/Wizards Tower L${towerLevel}.jpg`;
-      towerCard.customDescription = `Channels {${chosenMana}} mana (${colorName}) per turn.`;
+      towerCard.customDescription = `Produces ${towerLevel} {${chosenMana}} mana (${colorName}) per turn.`;
       if (towerCard.power === undefined) towerCard.power = "0";
       if (towerCard.toughness === undefined) towerCard.toughness = String(5 + 5 * towerLevel);
-      towerCard.rulesText = `Location: ${coords}\nHP: ${p.towerHp} / ${START_HP}\nChannels {${chosenMana}} mana (${colorName}) per turn.`;
+      towerCard.rulesText = `Location: ${coords}\nHP: ${p.towerHp} / ${START_HP}\nProduces ${towerLevel} {${chosenMana}} mana (${colorName}) per turn.`;
       return towerCard;
     } else {
       return {
@@ -3489,6 +3489,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     wizardManaChoice: "W" | "U" | "B" | "R" | "G" | "C" = "C"
   ) => {
     const pool = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 };
+    let towerLevel = 1;
     map.forEach((col) => {
       col.forEach((cell) => {
         if (cell.ownerId !== playerIdx) return;
@@ -3499,12 +3500,14 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           else if (tile.includes("forrest")) pool.G += level;
           else if (tile.includes("mountain")) pool.R += level;
           else if (tile.includes("swamp")) pool.B += level;
+        } else {
+          towerLevel = level;
         }
       });
     });
 
     if (wizardManaChoice !== "U" && wizardManaChoice !== "C") {
-      pool[wizardManaChoice] += wizardLevel;
+      pool[wizardManaChoice] += towerLevel;
     }
 
     return pool;
@@ -3597,8 +3600,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       type: "Land",
       color: cardColor,
       illustration: `/assets/tiles/Wizards Tower L${level}.png`,
-      rulesText: `Wizards Tower Level ${level}.\nChannels {${chosenMana}} mana (${colorName}) per turn.`,
-      customDescription: `Wizards Tower Level ${level}.\nChannels {${chosenMana}} mana (${colorName}) per turn.`
+      rulesText: `Wizards Tower Level ${level}.\nProduces ${level} {${chosenMana}} mana (${colorName}) per turn.`,
+      customDescription: `Wizards Tower Level ${level}.\nProduces ${level} {${chosenMana}} mana (${colorName}) per turn.`
     };
   };
 
@@ -10576,10 +10579,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           ratioText: isTower ? undefined : `${owned}/${total}`,
                           isSetComplete: isTower ? false : isSetComplete,
                           rulesText: isTower
-                            ? `Wizards Tower Level ${level}.\nChannels {${chosenMana}} mana (${wizardColorName}) per turn.`
+                            ? `Wizards Tower Level ${level}.\nProduces ${level} {${chosenMana}} mana (${wizardColorName}) per turn.`
                             : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`,
                           customDescription: isTower
-                            ? `Wizards Tower Level ${level}.\nChannels {${chosenMana}} mana (${wizardColorName}) per turn.`
+                            ? `Wizards Tower Level ${level}.\nProduces ${level} {${chosenMana}} mana (${wizardColorName}) per turn.`
                             : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`
                         };
 
@@ -10856,7 +10859,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                           <span style={{ fontSize: "0.9rem", fontWeight: "bold", color: "#00f2fe" }}>
-                            {currentTowerLevel >= 4 ? "Level 4 (MAX TOWER)" : `Level ${currentTowerLevel} / 4`}
+                            {currentTowerLevel >= 4 ? "Level 4 (MAX TOWER, +4 Mana)" : `Level ${currentTowerLevel} / 4 (+${currentTowerLevel} Mana)`}
                           </span>
                           <span style={{ fontSize: "0.68rem", color: towerRankColor, fontWeight: 600, background: "rgba(255, 255, 255, 0.04)", padding: "1px 5px", borderRadius: "10px", border: "1px solid rgba(255, 255, 255, 0.06)" }}>
                             {towerRank}
@@ -10882,10 +10885,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         }} />
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.6rem", color: "rgba(255, 255, 255, 0.4)", fontWeight: 500 }}>
-                        <span>Lvl 1 (Spire)</span>
-                        <span>Lvl 2 (Bastion)</span>
-                        <span>Lvl 3 (Citadel)</span>
-                        <span>Lvl 4 (Fortress)</span>
+                        <span>Lvl 1 (+1 Mana)</span>
+                        <span>Lvl 2 (+2 Mana)</span>
+                        <span>Lvl 3 (+3 Mana)</span>
+                        <span>Lvl 4 (+4 Mana)</span>
                       </div>
                     </div>
                   )}
@@ -17453,9 +17456,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           return lower.includes("quest") || lower.includes("tower of power") || lower.includes("tower of terror") || lower.includes("tower");
         };
 
-        const wizardLevel = gameState.players[0]?.wizardLevel || 1;
+        const playerTowerCell = gameState.map.flat().find(c => c.ownerId === 0 && c.tileId.toLowerCase().includes("tower"));
+        const currentTowerLevel = playerTowerCell ? getLevel(playerTowerCell.tileId) : 1;
         const wizardManaChoice = gameState.players[0]?.wizardManaChoice || "W";
-        const wizardManaAmount = wizardManaChoice !== "U" && wizardManaChoice !== "C" ? wizardLevel : 0;
+        const wizardManaAmount = wizardManaChoice !== "U" && wizardManaChoice !== "C" ? currentTowerLevel : 0;
 
         const allMapCells = gameState.map.flat();
         const validMapLands = allMapCells.filter(c => !isExcludedLandTile(c.tileId));
@@ -17819,21 +17823,21 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                             Base Structure
                           </td>
                           <td style={{ padding: "10px 14px", color: "var(--text-muted)" }}>
-                            +{wizardLevel} / turn
+                            +{currentTowerLevel} / turn
                           </td>
                           <td style={{ padding: "10px 14px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-                              <span style={{ fontWeight: 800, color: "#facc15" }}>+{wizardLevel}</span>
+                              <span style={{ fontWeight: 800, color: "#facc15" }}>+{currentTowerLevel}</span>
                               <span style={{ display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", color: getManaColorHex(wizardManaChoice), background: "rgba(255, 255, 255, 0.04)", padding: "1px 5px", borderRadius: "4px" }}>
                                 <img src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "12px", height: "12px" }} />
-                                +{wizardLevel} {getManaLabel(wizardManaChoice)}
+                                +{currentTowerLevel} {getManaLabel(wizardManaChoice)}
                               </span>
                             </div>
                           </td>
                           <td style={{ padding: "10px 14px" }}>
                             <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "4px", background: "rgba(0, 242, 254, 0.08)", border: "1px solid rgba(0, 242, 254, 0.2)", color: "#00f2fe" }}>
                               <img src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "11px", height: "11px" }} />
-                              <span>Channels {getManaLabel(wizardManaChoice)} Mana</span>
+                              <span>Produces {currentTowerLevel} {getManaLabel(wizardManaChoice)} Mana / turn</span>
                             </span>
                           </td>
                         </tr>
@@ -17987,7 +17991,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           <td style={{ padding: "8px 14px" }}>
                             <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontWeight: 700, color: "#facc15" }}>
                               <img src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "13px", height: "13px" }} />
-                              +{wizardLevel} {getManaLabel(wizardManaChoice)}
+                              +{currentTowerLevel} {getManaLabel(wizardManaChoice)}
                             </span>
                           </td>
                           <td style={{ padding: "8px 14px", color: "var(--text-muted)" }}>
