@@ -11827,7 +11827,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               );
             })()}
 
-            {(() => {
+            {(activeTab === "creatures" || activeTab === "spells" || activeTab === "heroes" || activeTab === "artifacts") && (() => {
               const selectedHandCard = (selectedCardIdx !== null && gameState?.players?.[0]?.hand?.[selectedCardIdx]) 
                 ? gameState.players[0].hand[selectedCardIdx] 
                 : null;
