@@ -151,6 +151,11 @@
   font-weight: 600;
   font-size: 0.65rem;
   color: #d1d5db;
+  white-space: nowrap;
+}
+
+.card-subtype-badge {
+  white-space: nowrap;
 }
 
 /* Description Text Box */

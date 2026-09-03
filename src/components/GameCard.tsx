@@ -381,19 +381,22 @@ export const GameCard: React.FC<GameCardProps> = ({
         </div>
 
         {/* Type Bar */}
-        <div className="card-type-display" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span>{card.type}</span>
+        <div className="card-type-display" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", whiteSpace: "nowrap", gap: "4px" }}>
+          <span style={{ flexShrink: 0, whiteSpace: "nowrap" }}>{card.type}</span>
           {card.cardSubType && (
             <span className="card-subtype-badge" style={{
-              fontSize: "0.72rem",
+              fontSize: "0.68rem",
               background: "rgba(0, 255, 204, 0.12)",
               color: "var(--accent-color)",
-              padding: "1px 6px",
+              padding: "1px 5px",
               borderRadius: "4px",
               border: "1px solid rgba(0, 255, 204, 0.2)",
               fontWeight: "bold",
               textTransform: "uppercase",
-              letterSpacing: "0.5px"
+              letterSpacing: "0.3px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis"
             }}>
               {card.cardSubType}
             </span>
