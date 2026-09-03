@@ -383,14 +383,15 @@ const getCellCardJson = (cell: MapCell, map: MapCell[][], players: Player[]): Ca
           }
         ]
       };
+      const manaSymbols = `{${chosenMana}}`.repeat(towerLevel);
       towerCard.name = "Wizards Tower";
       towerCard.cardSubType = `Level ${towerLevel}`;
       towerCard.color = cardColor;
       towerCard.illustration = `/assets/towers/Wizards Tower L${towerLevel}.jpg`;
-      towerCard.customDescription = `Produces ${towerLevel} {${chosenMana}} mana (${colorName}) per turn.`;
+      towerCard.customDescription = `Produces ${manaSymbols} mana per turn.`;
       if (towerCard.power === undefined) towerCard.power = "0";
       if (towerCard.toughness === undefined) towerCard.toughness = String(5 + 5 * towerLevel);
-      towerCard.rulesText = `Location: ${coords}\nHP: ${p.towerHp} / ${START_HP}\nProduces ${towerLevel} {${chosenMana}} mana (${colorName}) per turn.`;
+      towerCard.rulesText = `Location: ${coords}\nHP: ${p.towerHp} / ${START_HP}\nProduces ${manaSymbols} mana per turn.`;
       return towerCard;
     } else {
       return {
@@ -3593,6 +3594,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     else if (chosenMana === "U") { colorName = "Blue"; cardColor = "blue"; }
     else if (chosenMana === "C") { colorName = "Colorless"; cardColor = "colorless"; }
 
+    const manaSymbols = `{${chosenMana}}`.repeat(level);
+
     return {
       name: "Wizards Tower",
       cardSubType: `Level ${level} Territory`,
@@ -3600,8 +3603,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       type: "Land",
       color: cardColor,
       illustration: `/assets/tiles/Wizards Tower L${level}.png`,
-      rulesText: `Wizards Tower Level ${level}.\nProduces ${level} {${chosenMana}} mana (${colorName}) per turn.`,
-      customDescription: `Wizards Tower Level ${level}.\nProduces ${level} {${chosenMana}} mana (${colorName}) per turn.`
+      rulesText: `Wizards Tower Level ${level}.\nProduces ${manaSymbols} mana per turn.`,
+      customDescription: `Wizards Tower Level ${level}.\nProduces ${manaSymbols} mana per turn.`
     };
   };
 
@@ -10569,6 +10572,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         else if (chosenMana === "U") { wizardColorName = "Blue"; wizardCardColor = "blue"; }
                         else if (chosenMana === "C") { wizardColorName = "Colorless"; wizardCardColor = "colorless"; }
 
+                        const manaSymbols = isTower ? `{${chosenMana}}`.repeat(level) : `{${manaType}}`.repeat(level);
+
                         const landCard: CardJSON = {
                           name: baseName,
                           manaCost: "",
@@ -10579,11 +10584,11 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           ratioText: isTower ? undefined : `${owned}/${total}`,
                           isSetComplete: isTower ? false : isSetComplete,
                           rulesText: isTower
-                            ? `Wizards Tower Level ${level}.\nProduces ${level} {${chosenMana}} mana (${wizardColorName}) per turn.`
-                            : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`,
+                            ? `Wizards Tower Level ${level}.\nProduces ${manaSymbols} mana per turn.`
+                            : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${manaSymbols} mana per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`,
                           customDescription: isTower
-                            ? `Wizards Tower Level ${level}.\nProduces ${level} {${chosenMana}} mana (${wizardColorName}) per turn.`
-                            : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`
+                            ? `Wizards Tower Level ${level}.\nProduces ${manaSymbols} mana per turn.`
+                            : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${manaSymbols} mana per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`
                         };
 
                         return (
@@ -17836,8 +17841,11 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           </td>
                           <td style={{ padding: "10px 14px" }}>
                             <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "4px", background: "rgba(0, 242, 254, 0.08)", border: "1px solid rgba(0, 242, 254, 0.2)", color: "#00f2fe" }}>
-                              <img src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "11px", height: "11px" }} />
-                              <span>Produces {currentTowerLevel} {getManaLabel(wizardManaChoice)} Mana / turn</span>
+                              <span>Produces </span>
+                              {Array.from({ length: currentTowerLevel }).map((_, i) => (
+                                <img key={i} src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "12px", height: "12px" }} />
+                              ))}
+                              <span> / turn</span>
                             </span>
                           </td>
                         </tr>
