@@ -3581,39 +3581,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   };
 
   const getTowerCardForLevel = (level: number, playerDeck?: CardJSON[], wizardManaChoice?: "W" | "U" | "B" | "R" | "G" | "C"): CardJSON => {
-    const isMatchingTower = (c: CardJSON, lvl: number): boolean => {
-      const typeLower = (c.type || "").toLowerCase();
-      const nameLower = (c.name || "").toLowerCase();
-      if (typeLower !== "tower" && !nameLower.includes("wizards tower")) return false;
-      return getTowerLevelFromCard(c) === lvl;
-    };
-    const found = allDeckCards?.find(c => isMatchingTower(c, level)) || playerDeck?.find(c => isMatchingTower(c, level));
-    let cardData: CardJSON;
-    if (found) {
-      cardData = JSON.parse(JSON.stringify(found));
-      if (cardData.power === undefined) cardData.power = "0";
-      if (cardData.toughness === undefined) cardData.toughness = String(5 + 5 * level);
-    } else {
-      cardData = {
-        name: "Wizards Tower",
-        cardSubType: `Level ${level}`,
-        manaCost: "",
-        type: "Tower",
-        color: "yellow",
-        illustration: `/assets/towers/Wizards Tower L${level}.jpg`,
-        rulesText: "",
-        customDescription: "",
-        power: "0",
-        toughness: String(5 + 5 * level),
-        activatedAbilities: [
-          {
-            cost: [level === 1 ? "C3" : level === 2 ? "C2" : level === 3 ? "C3" : "C1"],
-            text: level === 3 ? "Draw 2 cards." : "Draw 1 card."
-          }
-        ]
-      };
-    }
-
     const chosenMana = wizardManaChoice || gameState?.players?.[0]?.wizardManaChoice || "W";
     let colorName = "White";
     let cardColor: CardJSON["color"] = "yellow";
@@ -3623,23 +3590,16 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     else if (chosenMana === "U") { colorName = "Blue"; cardColor = "blue"; }
     else if (chosenMana === "C") { colorName = "Colorless"; cardColor = "colorless"; }
 
-    cardData.name = "Wizards Tower";
-    cardData.cardSubType = `Level ${level}`;
-    cardData.color = cardColor;
-    cardData.illustration = `/assets/towers/Wizards Tower L${level}.jpg`;
-    cardData.customDescription = `Channels {${chosenMana}} mana (${colorName}) per turn.`;
-    cardData.rulesText = `Channels {${chosenMana}} mana (${colorName}) per turn.`;
-    cardData.power = "0";
-    cardData.toughness = String(5 + 5 * level);
-    if (!cardData.activatedAbilities || cardData.activatedAbilities.length === 0) {
-      cardData.activatedAbilities = [
-        {
-          cost: [level === 1 ? "C3" : level === 2 ? "C2" : level === 3 ? "C3" : "C1"],
-          text: level === 3 ? "Draw 2 cards." : "Draw 1 card."
-        }
-      ];
-    }
-    return cardData;
+    return {
+      name: "Wizards Tower",
+      cardSubType: `Level ${level} Territory`,
+      manaCost: "",
+      type: "Land",
+      color: cardColor,
+      illustration: `/assets/tiles/Wizards Tower L${level}.png`,
+      rulesText: `Wizards Tower Level ${level}.\nChannels {${chosenMana}} mana (${colorName}) per turn.`,
+      customDescription: `Wizards Tower Level ${level}.\nChannels {${chosenMana}} mana (${colorName}) per turn.`
+    };
   };
 
   const getTowerAbilityCardForLevel = (level: number, playerDeck?: CardJSON[]): CardJSON => {
@@ -10597,20 +10557,29 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         const isTower = (baseName || "").toLowerCase().includes("tower") || (fullTileId || "").toLowerCase().includes("tower");
                         const isSelected = selectedLandTileId?.toLowerCase() === fullTileId.toLowerCase();
 
+                        const chosenMana = gameState?.players?.[0]?.wizardManaChoice || "W";
+                        let wizardColorName = "White";
+                        let wizardCardColor: CardJSON["color"] = "yellow";
+                        if (chosenMana === "G") { wizardColorName = "Green"; wizardCardColor = "green"; }
+                        else if (chosenMana === "R") { wizardColorName = "Red"; wizardCardColor = "red"; }
+                        else if (chosenMana === "B") { wizardColorName = "Black"; wizardCardColor = "black"; }
+                        else if (chosenMana === "U") { wizardColorName = "Blue"; wizardCardColor = "blue"; }
+                        else if (chosenMana === "C") { wizardColorName = "Colorless"; wizardCardColor = "colorless"; }
+
                         const landCard: CardJSON = {
                           name: baseName,
                           manaCost: "",
                           type: "Land",
                           cardSubType: `Level ${level} Territory`,
-                          color,
+                          color: isTower ? wizardCardColor : color,
                           illustration,
                           ratioText: isTower ? undefined : `${owned}/${total}`,
                           isSetComplete: isTower ? false : isSetComplete,
                           rulesText: isTower
-                            ? `Wizards Tower Level ${level}.`
+                            ? `Wizards Tower Level ${level}.\nChannels {${chosenMana}} mana (${wizardColorName}) per turn.`
                             : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`,
                           customDescription: isTower
-                            ? `Wizards Tower Level ${level}.`
+                            ? `Wizards Tower Level ${level}.\nChannels {${chosenMana}} mana (${wizardColorName}) per turn.`
                             : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`
                         };
 
@@ -10733,7 +10702,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
               return (
                 <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
-                  <div className="cards-list tower-list" style={{ flex: 1, alignItems: "center", padding: "18px 240px 75px 12px", overflowY: "hidden" }}>
+                  <div className="cards-list tower-list" style={{ flex: 1, padding: "18px 240px 75px 12px", overflowY: "hidden" }}>
                     {[1, 2, 3, 4].map((level) => {
                       const isActive = currentTowerLevel === level && gameState.winnerId === null;
                       const card = getTowerCardForLevel(level, gameState.players[0].deck, gameState.players[0].wizardManaChoice);
@@ -10766,7 +10735,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           </div>
 
                           {showConnector && (
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: "105px", gap: "8px", flexShrink: 0 }}>
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: "105px", gap: "8px", flexShrink: 0, alignSelf: "center" }}>
                               <div style={{ height: "2px", width: "50px", backgroundColor: isUpgradeStep ? "rgba(0, 242, 254, 0.4)" : "rgba(255, 255, 255, 0.1)", position: "relative" }}>
                                 <div style={{
                                   position: "absolute",
