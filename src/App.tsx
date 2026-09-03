@@ -1111,6 +1111,9 @@ export default function App() {
   const [showFightModal, setShowFightModal] = useState<boolean>(false);
   const [showStrengthGauge, setShowStrengthGauge] = useState<boolean>(true);
   const [showXpGauge, setShowXpGauge] = useState<boolean>(true);
+  const [showLandGauge, setShowLandGauge] = useState<boolean>(true);
+  const [showTowerGauge, setShowTowerGauge] = useState<boolean>(true);
+  const [showQuestGauge, setShowQuestGauge] = useState<boolean>(true);
   interface CounterspellPromptData {
     spellName: string;
     targetName: string;
@@ -9935,7 +9938,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 }}
               >
                 <i className="fa-solid fa-chess-rook"></i>
-                <span>Towers</span>
+                <span>Tower</span>
               </button>
               <button
                 className={`panel-tab-btn ${activeTab === "wizard" ? "active" : ""}`}
@@ -10044,7 +10047,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             </div>
           </div>
           
-          <div className="bottom-panel-content" style={{ overflowY: (activeTab === "wizard" || activeTab === "army") ? "hidden" : "auto" }}>
+          <div className="bottom-panel-content" style={{ overflowY: (activeTab === "wizard" || activeTab === "army" || activeTab === "land" || activeTab === "towers" || activeTab === "quests") ? "hidden" : "auto" }}>
 
             {activeTab === "creatures" && (
               <div className="cards-list">
@@ -10160,35 +10163,146 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               </div>
             )}
 
-            {activeTab === "quests" && (
-              <div className="cards-list">
-                {gameState.players[0].hand
-                  .map((card, idx) => ({ card, originalIdx: idx }))
-                  .filter(({ card }) => {
-                    if (!card.type.toLowerCase().includes("quest")) return false;
-                    if (card.completed && !showCompletedQuestsToggle) return false;
-                    return true;
-                  })
-                  .map(({ card, originalIdx }) => {
-                    const resolvedCard = resolveWizardCard(card);
-                    return (
-                      <GameCard
-                        key={originalIdx}
-                        card={resolvedCard}
-                        isSelected={selectedCardIdx === originalIdx}
-                        onClick={() => handleCardSelect(originalIdx)}
-                        disabled={isBotThinking}
-                        cannotAfford={!canPlayHandCard(resolvedCard, gameState.players[0])}
-                        onActivateAbility={handleActivateAbility}
-                        canPayAbilityCost={(costStr) => canPayManaCost(gameState?.players[0]?.manaPool, costStr, true)}
-                        isInBattle={showFightModal}
-                        cardPool={getMergedCardPool()}
-                        isCollapsed={collapseQuestCardsDetails}
-                      />
-                    );
-                  })}
-              </div>
-            )}
+            {activeTab === "quests" && (() => {
+              const questProg = getPlayerQuestProgress(gameState.players[0]);
+              let questRank = "Novice Pilgrim 🗺️";
+              let questRankColor = "#94a3b8";
+              if (questProg.allCompleted && questProg.totalQuests > 0) {
+                questRank = "Grand Champion 🏆";
+                questRankColor = "#facc15";
+              } else if (questProg.completedQuests >= 4) {
+                questRank = "Realm Hero ⚔️";
+                questRankColor = "#a855f7";
+              } else if (questProg.completedQuests >= 2) {
+                questRank = "Adventurer 📜";
+                questRankColor = "#38bdf8";
+              } else if (questProg.completedQuests >= 1) {
+                questRank = "Initiate 🌟";
+                questRankColor = "#4ade80";
+              }
+
+              const questFillPercent = questProg.totalQuests > 0 ? Math.min(100, (questProg.completedQuests / questProg.totalQuests) * 100) : 0;
+              const questCardsInHand = gameState.players[0].hand
+                .map((card, idx) => ({ card, originalIdx: idx }))
+                .filter(({ card }) => {
+                  if (!card.type.toLowerCase().includes("quest")) return false;
+                  if (card.completed && !showCompletedQuestsToggle) return false;
+                  return true;
+                });
+
+              return (
+                <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
+                  <div className="cards-list quest-list" style={{ flex: 1, padding: "18px 240px 75px 12px", overflowY: "hidden" }}>
+                    {questCardsInHand.length === 0 ? (
+                      <div style={{ padding: "32px", textAlign: "center", color: "var(--text-muted)", width: "100%", fontSize: "0.9rem" }}>
+                        <i className="fa-solid fa-scroll" style={{ fontSize: "2.5rem", marginBottom: "12px", display: "block", color: "rgba(255,255,255,0.15)" }}></i>
+                        {showCompletedQuestsToggle ? "No quest cards currently in hand." : "No active quest cards in hand (completed quests hidden)."}
+                      </div>
+                    ) : (
+                      questCardsInHand.map(({ card, originalIdx }) => {
+                        const resolvedCard = resolveWizardCard(card);
+                        return (
+                          <GameCard
+                            key={originalIdx}
+                            card={resolvedCard}
+                            isSelected={selectedCardIdx === originalIdx}
+                            onClick={() => handleCardSelect(originalIdx)}
+                            disabled={isBotThinking}
+                            cannotAfford={!canPlayHandCard(resolvedCard, gameState.players[0])}
+                            onActivateAbility={handleActivateAbility}
+                            canPayAbilityCost={(costStr) => canPayManaCost(gameState?.players[0]?.manaPool, costStr, true)}
+                            isInBattle={showFightModal}
+                            cardPool={getMergedCardPool()}
+                            isCollapsed={collapseQuestCardsDetails}
+                          />
+                        );
+                      })
+                    )}
+                  </div>
+
+                  {/* Floating Quest Gauge */}
+                  {showQuestGauge && (
+                    <div style={{
+                      position: "absolute",
+                      bottom: "35px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      zIndex: 1000,
+                      background: "rgba(10, 15, 26, 0.95)",
+                      backdropFilter: "blur(12px)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      borderRadius: "10px",
+                      padding: "8px 16px",
+                      boxShadow: "0 8px 24px rgba(0, 0, 0, 0.6), 0 0 15px rgba(234, 179, 8, 0.15)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px",
+                      width: "90%",
+                      maxWidth: "400px",
+                      fontFamily: "'Outfit', sans-serif"
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "rgba(255, 255, 255, 0.7)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                            Quest Mastery Gauge
+                          </span>
+                          <button
+                            onClick={() => setShowQuestGauge(false)}
+                            style={{
+                              background: "rgba(255, 255, 255, 0.05)",
+                              border: "1px solid rgba(255, 255, 255, 0.1)",
+                              color: "rgba(255, 255, 255, 0.6)",
+                              cursor: "pointer",
+                              padding: "2px 6px",
+                              borderRadius: "4px",
+                              fontSize: "0.7rem",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "3px",
+                              transition: "all 0.2s ease"
+                            }}
+                            title="Hide Quest Mastery Gauge"
+                          >
+                            <i className="fa-solid fa-xmark"></i> Hide
+                          </button>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span style={{ fontSize: "0.9rem", fontWeight: "bold", color: "#facc15" }}>
+                            {questProg.allCompleted ? `${questProg.completedQuests} Quests (MAX)` : `${questProg.completedQuests} / ${questProg.totalQuests} Completed`}
+                          </span>
+                          <span style={{ fontSize: "0.68rem", color: questRankColor, fontWeight: 600, background: "rgba(255, 255, 255, 0.04)", padding: "1px 5px", borderRadius: "10px", border: "1px solid rgba(255, 255, 255, 0.06)" }}>
+                            {questRank}
+                          </span>
+                        </div>
+                      </div>
+                      <div style={{
+                        height: "8px",
+                        background: "rgba(255, 255, 255, 0.05)",
+                        borderRadius: "4px",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        overflow: "hidden",
+                        position: "relative",
+                        boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.5)"
+                      }}>
+                        <div style={{
+                          width: `${questFillPercent}%`,
+                          height: "100%",
+                          background: "linear-gradient(90deg, #ca8a04 0%, #eab308 50%, #fde047 100%)",
+                          borderRadius: "4px",
+                          boxShadow: "0 0 10px rgba(234, 179, 8, 0.5)",
+                          transition: "width 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
+                        }} />
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.6rem", color: "rgba(255, 255, 255, 0.4)", fontWeight: 500 }}>
+                        <span>0 (Novice)</span>
+                        <span>{Math.ceil(questProg.totalQuests / 2)} (Adventurer)</span>
+                        <span>{questProg.totalQuests} (Victory)</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {activeTab === "heroes" && (
               <div className="cards-list">
@@ -10265,290 +10379,490 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               </div>
             )}
 
-            {activeTab === "land" && (
-              <div className="cards-list">
-                {(() => {
-                  const allCells = gameState.map.flat();
-                  const grouped: Record<string, { fullTileId: string; baseName: string; level: number; owned: number; total: number; manaType: string }> = {};
+            {activeTab === "land" && (() => {
+              const allCells = gameState.map.flat();
+              const isExcludedLandTile = (id: string): boolean => {
+                const lower = (id || "").toLowerCase();
+                return lower.includes("quest") || lower.includes("tower of power") || lower.includes("tower of terror");
+              };
+              const validLands = allCells.filter(c => !isExcludedLandTile(c.tileId));
+              const totalValidLands = validLands.length;
+              const ownedLandsCount = validLands.filter(c => c.ownerId === 0).length;
+              const landPercent = totalValidLands > 0 ? Math.min(100, Math.round((ownedLandsCount / totalValidLands) * 100)) : 0;
 
-                  const isExcludedLandTile = (id: string): boolean => {
-                    const lower = (id || "").toLowerCase();
-                    return lower.includes("quest") || lower.includes("tower of power") || lower.includes("tower of terror");
+              let landRank = "Wilds Outpost 🏕️";
+              let landRankColor = "#94a3b8";
+              if (ownedLandsCount >= 15 || landPercent >= 60) {
+                landRank = "Grand Empire 👑";
+                landRankColor = "#facc15";
+              } else if (ownedLandsCount >= 10 || landPercent >= 40) {
+                landRank = "High Kingdom 🏰";
+                landRankColor = "#a855f7";
+              } else if (ownedLandsCount >= 5 || landPercent >= 20) {
+                landRank = "Regional Duchy 🌲";
+                landRankColor = "#4ade80";
+              } else if (ownedLandsCount >= 2) {
+                landRank = "Fiefdom 🏡";
+                landRankColor = "#38bdf8";
+              }
+
+              const grouped: Record<string, { fullTileId: string; baseName: string; level: number; owned: number; total: number; manaType: string }> = {};
+
+              allCells.forEach((cell) => {
+                if (isExcludedLandTile(cell.tileId)) return;
+                const fullTileId = cell.tileId;
+                const baseName = cell.tileId.replace(/\s+L\d+/i, "").trim();
+                const level = getLevel(cell.tileId);
+
+                if (!grouped[fullTileId]) {
+                  grouped[fullTileId] = {
+                    fullTileId,
+                    baseName,
+                    level,
+                    owned: 0,
+                    total: 0,
+                    manaType: getManaType(cell.tileId)
                   };
+                }
+                grouped[fullTileId].total++;
+                if (cell.ownerId === 0) {
+                  grouped[fullTileId].owned++;
+                }
+              });
 
-                  allCells.forEach((cell) => {
-                    if (isExcludedLandTile(cell.tileId)) return;
-                    const fullTileId = cell.tileId;
-                    const baseName = cell.tileId.replace(/\s+L\d+/i, "").trim();
-                    const level = getLevel(cell.tileId);
+              const getLandColorKey = (manaType: string): string => {
+                if (manaType === "W") return "white";
+                if (manaType === "G") return "green";
+                if (manaType === "R") return "red";
+                if (manaType === "B") return "black";
+                if (manaType === "U") return "blue";
+                return "colorless";
+              };
 
-                    if (!grouped[fullTileId]) {
-                      grouped[fullTileId] = {
-                        fullTileId,
-                        baseName,
-                        level,
-                        owned: 0,
-                        total: 0,
-                        manaType: getManaType(cell.tileId)
-                      };
-                    }
-                    grouped[fullTileId].total++;
-                    if (cell.ownerId === 0) {
-                      grouped[fullTileId].owned++;
-                    }
-                  });
+              const colorOrder: Record<string, number> = {
+                W: 1,
+                G: 2,
+                R: 3,
+                B: 4,
+                U: 5,
+                C: 6
+              };
 
-                  const getLandColorKey = (manaType: string): string => {
-                    if (manaType === "W") return "white";
-                    if (manaType === "G") return "green";
-                    if (manaType === "R") return "red";
-                    if (manaType === "B") return "black";
-                    if (manaType === "U") return "blue";
-                    return "colorless";
-                  };
+              const playerTowerCell = allCells.find(c => c.ownerId === 0 && c.tileId.toLowerCase().includes("tower") && !isExcludedLandTile(c.tileId));
+              const currentTowerLevel = playerTowerCell ? getLevel(playerTowerCell.tileId) : 1;
 
-                  const colorOrder: Record<string, number> = {
-                    W: 1,
-                    G: 2,
-                    R: 3,
-                    B: 4,
-                    U: 5,
-                    C: 6
-                  };
+              const ownedCountPerColor: Record<string, number> = {};
+              allCells.forEach(c => {
+                if (isExcludedLandTile(c.tileId)) return;
+                if (c.ownerId === 0) {
+                  const key = getLandColorKey(getManaType(c.tileId));
+                  ownedCountPerColor[key] = (ownedCountPerColor[key] || 0) + 1;
+                }
+              });
 
-                  const playerTowerCell = allCells.find(c => c.ownerId === 0 && c.tileId.toLowerCase().includes("tower") && !isExcludedLandTile(c.tileId));
-                  const currentTowerLevel = playerTowerCell ? getLevel(playerTowerCell.tileId) : 1;
+              const filteredOwnedGroups = Object.values(grouped)
+                .filter(g => {
+                  const colorKey = getLandColorKey(g.manaType);
+                  const isTower = (g.baseName || "").toLowerCase().includes("tower") || (g.fullTileId || "").toLowerCase().includes("tower");
 
-                  const ownedCountPerColor: Record<string, number> = {};
-                  allCells.forEach(c => {
-                    if (isExcludedLandTile(c.tileId)) return;
-                    if (c.ownerId === 0) {
-                      const key = getLandColorKey(getManaType(c.tileId));
-                      ownedCountPerColor[key] = (ownedCountPerColor[key] || 0) + 1;
-                    }
-                  });
+                  if (isTower || colorKey === "blue") {
+                    return g.level === currentTowerLevel;
+                  }
 
-                  const filteredOwnedGroups = Object.values(grouped)
-                    .filter(g => {
-                      const colorKey = getLandColorKey(g.manaType);
-                      const isTower = (g.baseName || "").toLowerCase().includes("tower") || (g.fullTileId || "").toLowerCase().includes("tower");
+                  if ((ownedCountPerColor[colorKey] || 0) === 0) {
+                    return false;
+                  }
 
-                      if (isTower || colorKey === "blue") {
-                        return g.level === currentTowerLevel;
-                      }
+                  if (creatureColorFilters[colorKey] === false) {
+                    return false;
+                  }
 
-                      if ((ownedCountPerColor[colorKey] || 0) === 0) {
-                        return false;
-                      }
+                  return true;
+                })
+                .sort((a, b) => {
+                  const isATower = (a.baseName || "").toLowerCase().includes("tower") || (a.fullTileId || "").toLowerCase().includes("tower");
+                  const isBTower = (b.baseName || "").toLowerCase().includes("tower") || (b.fullTileId || "").toLowerCase().includes("tower");
 
-                      if (creatureColorFilters[colorKey] === false) {
-                        return false;
-                      }
+                  if (isATower && !isBTower) return -1;
+                  if (!isATower && isBTower) return 1;
 
-                      return true;
-                    })
-                    .sort((a, b) => {
-                      const isATower = (a.baseName || "").toLowerCase().includes("tower") || (a.fullTileId || "").toLowerCase().includes("tower");
-                      const isBTower = (b.baseName || "").toLowerCase().includes("tower") || (b.fullTileId || "").toLowerCase().includes("tower");
+                  const orderA = colorOrder[a.manaType] || 99;
+                  const orderB = colorOrder[b.manaType] || 99;
+                  if (orderA !== orderB) {
+                    return orderA - orderB;
+                  }
+                  if (a.level !== b.level) {
+                    return a.level - b.level;
+                  }
+                  return a.baseName.localeCompare(b.baseName);
+                });
 
-                      if (isATower && !isBTower) return -1;
-                      if (!isATower && isBTower) return 1;
-
-                      const orderA = colorOrder[a.manaType] || 99;
-                      const orderB = colorOrder[b.manaType] || 99;
-                      if (orderA !== orderB) {
-                        return orderA - orderB;
-                      }
-                      if (a.level !== b.level) {
-                        return a.level - b.level;
-                      }
-                      return a.baseName.localeCompare(b.baseName);
-                    });
-
-                  if (filteredOwnedGroups.length === 0) {
-                    return (
+              return (
+                <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
+                  <div className="cards-list land-list" style={{ flex: 1, padding: "18px 240px 75px 12px", overflowY: "hidden" }}>
+                    {filteredOwnedGroups.length === 0 ? (
                       <div style={{ color: "var(--text-muted)", fontSize: "0.85rem", padding: "20px" }}>
                         No controlled land tiles matching current filters.
                       </div>
-                    );
-                  }
+                    ) : (
+                      filteredOwnedGroups.map((g) => {
+                        const { fullTileId, baseName, level, owned, total, manaType } = g;
+                        const isSetComplete = total > 0 && owned === total;
 
-                  return filteredOwnedGroups.map((g) => {
-                    const { fullTileId, baseName, level, owned, total, manaType } = g;
-                    const isSetComplete = total > 0 && owned === total;
+                        let color: CardJSON["color"] = "colorless";
+                        let manaColorName = "Colorless";
 
-                    let color: CardJSON["color"] = "colorless";
-                    let manaColorName = "Colorless";
+                        if (manaType === "W") {
+                          color = "yellow";
+                          manaColorName = "White";
+                        } else if (manaType === "G") {
+                          color = "green";
+                          manaColorName = "Green";
+                        } else if (manaType === "R") {
+                          color = "red";
+                          manaColorName = "Red";
+                        } else if (manaType === "B") {
+                          color = "black";
+                          manaColorName = "Black";
+                        } else if (manaType === "U") {
+                          color = "blue";
+                          manaColorName = "Blue";
+                        }
 
-                    if (manaType === "W") {
-                      color = "yellow";
-                      manaColorName = "White";
-                    } else if (manaType === "G") {
-                      color = "green";
-                      manaColorName = "Green";
-                    } else if (manaType === "R") {
-                      color = "red";
-                      manaColorName = "Red";
-                    } else if (manaType === "B") {
-                      color = "black";
-                      manaColorName = "Black";
-                    } else if (manaType === "U") {
-                      color = "blue";
-                      manaColorName = "Blue";
-                    }
+                        const illustration = `/assets/tiles/${fullTileId}.png`;
+                        const isTower = (baseName || "").toLowerCase().includes("tower") || (fullTileId || "").toLowerCase().includes("tower");
+                        const isSelected = selectedLandTileId?.toLowerCase() === fullTileId.toLowerCase();
 
-                    const illustration = `/assets/tiles/${fullTileId}.png`;
-                    const isTower = (baseName || "").toLowerCase().includes("tower") || (fullTileId || "").toLowerCase().includes("tower");
-                    const isSelected = selectedLandTileId?.toLowerCase() === fullTileId.toLowerCase();
+                        const landCard: CardJSON = {
+                          name: baseName,
+                          manaCost: "",
+                          type: "Land",
+                          cardSubType: `Level ${level} Territory`,
+                          color,
+                          illustration,
+                          ratioText: isTower ? undefined : `${owned}/${total}`,
+                          isSetComplete: isTower ? false : isSetComplete,
+                          rulesText: isTower
+                            ? `Wizards Tower Level ${level}.\nGenerates ${level} Blue mana ({U}) per turn.`
+                            : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`,
+                          customDescription: isTower
+                            ? `Wizards Tower Level ${level}.\nGenerates ${level} Blue mana ({U}) per turn.`
+                            : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`
+                        };
 
-                    const landCard: CardJSON = {
-                      name: baseName,
-                      manaCost: "",
-                      type: "Land",
-                      cardSubType: `Level ${level} Territory`,
-                      color,
-                      illustration,
-                      ratioText: isTower ? undefined : `${owned}/${total}`,
-                      isSetComplete: isTower ? false : isSetComplete,
-                      rulesText: isTower
-                        ? `Wizards Tower Level ${level}.\nGenerates ${level} Blue mana ({U}) per turn.`
-                        : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`,
-                      customDescription: isTower
-                        ? `Wizards Tower Level ${level}.\nGenerates ${level} Blue mana ({U}) per turn.`
-                        : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${level} ${manaColorName} mana ({${manaType}}) per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`
-                    };
-
-                    return (
-                      <div key={fullTileId} style={{ opacity: owned === 0 ? 0.72 : 1, filter: owned === 0 ? "grayscale(30%)" : "none", transition: "all 0.2s" }}>
-                        <GameCard
-                          card={landCard}
-                          isSelected={isSelected}
-                          onClick={() => setSelectedLandTileId(isSelected ? null : fullTileId)}
-                          disabled={false}
-                          cardPool={getMergedCardPool()}
-                        />
-                      </div>
-                    );
-                  });
-                })()}
-              </div>
-            )}
-
-            {activeTab === "towers" && (
-              <div className="tower-profile-panel" style={{ display: "flex", padding: "12px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "8px", border: "1px solid var(--border-light)", marginTop: "8px", boxSizing: "border-box" }}>
-                <div className="tower-progression-cards" style={{ display: "flex", gap: "10px", alignItems: "center", minWidth: 0, flex: "1 1 auto", overflowX: "auto", paddingBottom: "6px" }}>
-                  {[1, 2, 3, 4].map((level) => {
-                    const playerTowerCell = gameState.map.flat().find(cell => cell.ownerId === 0 && cell.tileId.toLowerCase().includes("tower"));
-                    const currentTowerLevel = playerTowerCell ? getLevel(playerTowerCell.tileId) : 1;
-                    const isActive = currentTowerLevel === level && gameState.winnerId === null;
-                      
-                    const card = getTowerCardForLevel(level, gameState.players[0].deck);
-                    
-                    const showConnector = level < 4;
-                    const reqs = getTowerLevelUpRequirements(level);
-                    const check = checkTowerLevelUpEligibility(gameState.map.flat(), level, 0);
-                    const isUpgradeStep = currentTowerLevel === level && gameState.winnerId === null;
-                    const isLevelUpClickable = isUpgradeStep && check.eligible && gameState.activePlayerIndex === 0 && gameState.winnerId === null;
-
-                    return (
-                      <Fragment key={level}>
-                        <div
-                          style={{
-                            opacity: isActive ? 1 : 0.35,
-                            filter: isActive ? "none" : "grayscale(55%)",
-                            transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                            transform: isActive ? "scale(1.01)" : "scale(0.95)",
-                            boxShadow: isActive ? "0 0 16px rgba(0, 255, 204, 0.25)" : "none",
-                            borderRadius: "12px",
-                            display: "flex",
-                            height: "fit-content",
-                            flexShrink: 0
-                          }}
-                        >
-                          <GameCard
-                            card={card}
-                            disabled={false}
-                            onActivateAbility={isActive ? handleActivateAbility : undefined}
-                            canPayAbilityCost={(costStr) => isActive ? canPayManaCost(gameState?.players[0]?.manaPool, costStr, true) : false}
-                            isInBattle={false}
-                          />
-                        </div>
-
-                        {showConnector && (
-                          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: "105px", gap: "8px", flexShrink: 0 }}>
-                            <div style={{ height: "2px", width: "50px", backgroundColor: isUpgradeStep ? "rgba(0, 242, 254, 0.4)" : "rgba(255, 255, 255, 0.1)", position: "relative" }}>
-                              <div style={{
-                                position: "absolute",
-                                right: "-4px",
-                                top: "-3px",
-                                width: "0",
-                                height: "0",
-                                borderTop: "4px solid transparent",
-                                borderBottom: "4px solid transparent",
-                                borderLeft: `6px solid ${isUpgradeStep ? "rgba(0, 242, 254, 0.4)" : "rgba(255, 255, 255, 0.1)"}`
-                              }} />
-                            </div>
-                            
-                            <button
-                              onClick={handleLevelUpTower}
-                              disabled={!isLevelUpClickable}
-                              style={{
-                                background: isLevelUpClickable
-                                  ? "linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)"
-                                  : isUpgradeStep
-                                    ? "rgba(0, 242, 254, 0.08)"
-                                    : "rgba(255, 255, 255, 0.02)",
-                                color: isLevelUpClickable ? "#0a0f1d" : isUpgradeStep ? "#00f2fe" : "var(--text-muted)",
-                                border: `1px solid ${
-                                  isLevelUpClickable
-                                    ? "transparent"
-                                    : isUpgradeStep
-                                      ? "rgba(0, 242, 254, 0.3)"
-                                      : "rgba(255, 255, 255, 0.08)"
-                                }`,
-                                borderRadius: "8px",
-                                padding: "6px 10px",
-                                fontSize: "0.68rem",
-                                fontWeight: "bold",
-                                cursor: isLevelUpClickable ? "pointer" : "not-allowed",
-                                transition: "all 0.2s",
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                gap: "2px",
-                                boxShadow: isLevelUpClickable ? "0 4px 10px rgba(0, 242, 254, 0.25)" : "none"
-                              }}
-                              onMouseEnter={(e) => {
-                                if (isLevelUpClickable) {
-                                  e.currentTarget.style.transform = "translateY(-1px)";
-                                  e.currentTarget.style.boxShadow = "0 6px 14px rgba(0, 242, 254, 0.4)";
-                                }
-                              }}
-                              onMouseLeave={(e) => {
-                                if (isLevelUpClickable) {
-                                  e.currentTarget.style.transform = "none";
-                                  e.currentTarget.style.boxShadow = isLevelUpClickable ? "0 4px 10px rgba(0, 242, 254, 0.25)" : "none";
-                                }
-                              }}
-                              title={isUpgradeStep ? (check.eligible ? `Upgrade Wizards Tower to Level ${level + 1}!` : check.reason) : `Cannot upgrade to Level ${level + 1} yet`}
-                            >
-                              <span style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                                Level Up
-                              </span>
-                              {reqs && (
-                                <div style={{ fontSize: "0.6rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "1px", opacity: 0.9 }}>
-                                  <span>Lands: {check.totalLands}/{reqs.requiredLands}</span>
-                                </div>
-                              )}
-                            </button>
+                        return (
+                          <div key={fullTileId} style={{ opacity: owned === 0 ? 0.72 : 1, filter: owned === 0 ? "grayscale(30%)" : "none", transition: "all 0.2s" }}>
+                            <GameCard
+                              card={landCard}
+                              isSelected={isSelected}
+                              onClick={() => setSelectedLandTileId(isSelected ? null : fullTileId)}
+                              disabled={false}
+                              cardPool={getMergedCardPool()}
+                            />
                           </div>
-                        )}
-                      </Fragment>
-                    );
-                  })}
+                        );
+                      })
+                    )}
+                  </div>
+
+                  {/* Floating Land Gauge */}
+                  {showLandGauge && (
+                    <div style={{
+                      position: "absolute",
+                      bottom: "35px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      zIndex: 1000,
+                      background: "rgba(10, 15, 26, 0.95)",
+                      backdropFilter: "blur(12px)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      borderRadius: "10px",
+                      padding: "8px 16px",
+                      boxShadow: "0 8px 24px rgba(0, 0, 0, 0.6), 0 0 15px rgba(34, 197, 94, 0.15)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px",
+                      width: "90%",
+                      maxWidth: "400px",
+                      fontFamily: "'Outfit', sans-serif"
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "rgba(255, 255, 255, 0.7)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                            Land Dominion Gauge
+                          </span>
+                          <button
+                            onClick={() => setShowLandGauge(false)}
+                            style={{
+                              background: "rgba(255, 255, 255, 0.05)",
+                              border: "1px solid rgba(255, 255, 255, 0.1)",
+                              color: "rgba(255, 255, 255, 0.6)",
+                              cursor: "pointer",
+                              padding: "2px 6px",
+                              borderRadius: "4px",
+                              fontSize: "0.7rem",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "3px",
+                              transition: "all 0.2s ease"
+                            }}
+                            title="Hide Land Dominion Gauge"
+                          >
+                            <i className="fa-solid fa-xmark"></i> Hide
+                          </button>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span style={{ fontSize: "0.9rem", fontWeight: "bold", color: "#4ade80" }}>
+                            {ownedLandsCount} / {totalValidLands} Lands ({landPercent}%)
+                          </span>
+                          <span style={{ fontSize: "0.68rem", color: landRankColor, fontWeight: 600, background: "rgba(255, 255, 255, 0.04)", padding: "1px 5px", borderRadius: "10px", border: "1px solid rgba(255, 255, 255, 0.06)" }}>
+                            {landRank}
+                          </span>
+                        </div>
+                      </div>
+                      <div style={{
+                        height: "8px",
+                        background: "rgba(255, 255, 255, 0.05)",
+                        borderRadius: "4px",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        overflow: "hidden",
+                        position: "relative",
+                        boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.5)"
+                      }}>
+                        <div style={{
+                          width: `${landPercent}%`,
+                          height: "100%",
+                          background: "linear-gradient(90deg, #15803d 0%, #22c55e 50%, #4ade80 100%)",
+                          borderRadius: "4px",
+                          boxShadow: "0 0 10px rgba(34, 197, 94, 0.5)",
+                          transition: "width 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
+                        }} />
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.6rem", color: "rgba(255, 255, 255, 0.4)", fontWeight: 500 }}>
+                        <span>0 (Wilds)</span>
+                        <span>{Math.round(totalValidLands / 2)} (Dominion)</span>
+                        <span>{totalValidLands} (Total Control)</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
+              );
+            })()}
+
+            {activeTab === "towers" && (() => {
+              const playerTowerCell = gameState.map.flat().find(cell => cell.ownerId === 0 && cell.tileId.toLowerCase().includes("tower"));
+              const currentTowerLevel = playerTowerCell ? getLevel(playerTowerCell.tileId) : 1;
+              const towerFillPercent = currentTowerLevel >= 4 ? 100 : Math.min(100, (currentTowerLevel / 4) * 100);
+
+              let towerRank = "Apprentice Spire 🗼";
+              let towerRankColor = "#94a3b8";
+              if (currentTowerLevel >= 4) {
+                towerRank = "Archon Fortress 🌌";
+                towerRankColor = "#00f2fe";
+              } else if (currentTowerLevel === 3) {
+                towerRank = "High Mage Citadel ⚡";
+                towerRankColor = "#a855f7";
+              } else if (currentTowerLevel === 2) {
+                towerRank = "Arcane Bastion 🔮";
+                towerRankColor = "#38bdf8";
+              }
+
+              return (
+                <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", maxHeight: "100%", overflow: "hidden", position: "relative", boxSizing: "border-box" }}>
+                  <div className="tower-profile-panel" style={{ display: "flex", padding: "12px 12px 75px 12px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "8px", border: "1px solid var(--border-light)", marginTop: "8px", boxSizing: "border-box", flex: "1 1 auto", overflowX: "auto", overflowY: "hidden" }}>
+                    <div className="tower-progression-cards" style={{ display: "flex", gap: "10px", alignItems: "center", minWidth: 0, flex: "1 1 auto", overflowX: "auto", paddingBottom: "6px" }}>
+                      {[1, 2, 3, 4].map((level) => {
+                        const isActive = currentTowerLevel === level && gameState.winnerId === null;
+                        const card = getTowerCardForLevel(level, gameState.players[0].deck);
+                        const showConnector = level < 4;
+                        const reqs = getTowerLevelUpRequirements(level);
+                        const check = checkTowerLevelUpEligibility(gameState.map.flat(), level, 0);
+                        const isUpgradeStep = currentTowerLevel === level && gameState.winnerId === null;
+                        const isLevelUpClickable = isUpgradeStep && check.eligible && gameState.activePlayerIndex === 0 && gameState.winnerId === null;
+
+                        return (
+                          <Fragment key={level}>
+                            <div
+                              style={{
+                                opacity: isActive ? 1 : 0.35,
+                                filter: isActive ? "none" : "grayscale(55%)",
+                                transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                                transform: isActive ? "scale(1.01)" : "scale(0.95)",
+                                boxShadow: isActive ? "0 0 16px rgba(0, 255, 204, 0.25)" : "none",
+                                borderRadius: "12px",
+                                display: "flex",
+                                height: "fit-content",
+                                flexShrink: 0
+                              }}
+                            >
+                              <GameCard
+                                card={card}
+                                disabled={false}
+                                onActivateAbility={isActive ? handleActivateAbility : undefined}
+                                canPayAbilityCost={(costStr) => isActive ? canPayManaCost(gameState?.players[0]?.manaPool, costStr, true) : false}
+                                isInBattle={false}
+                              />
+                            </div>
+
+                            {showConnector && (
+                              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: "105px", gap: "8px", flexShrink: 0 }}>
+                                <div style={{ height: "2px", width: "50px", backgroundColor: isUpgradeStep ? "rgba(0, 242, 254, 0.4)" : "rgba(255, 255, 255, 0.1)", position: "relative" }}>
+                                  <div style={{
+                                    position: "absolute",
+                                    right: "-4px",
+                                    top: "-3px",
+                                    width: "0",
+                                    height: "0",
+                                    borderTop: "4px solid transparent",
+                                    borderBottom: "4px solid transparent",
+                                    borderLeft: `6px solid ${isUpgradeStep ? "rgba(0, 242, 254, 0.4)" : "rgba(255, 255, 255, 0.1)"}`
+                                  }} />
+                                </div>
+                                
+                                <button
+                                  onClick={handleLevelUpTower}
+                                  disabled={!isLevelUpClickable}
+                                  style={{
+                                    background: isLevelUpClickable
+                                      ? "linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)"
+                                      : isUpgradeStep
+                                        ? "rgba(0, 242, 254, 0.08)"
+                                        : "rgba(255, 255, 255, 0.02)",
+                                    color: isLevelUpClickable ? "#0a0f1d" : isUpgradeStep ? "#00f2fe" : "var(--text-muted)",
+                                    border: `1px solid ${
+                                      isLevelUpClickable
+                                        ? "transparent"
+                                        : isUpgradeStep
+                                          ? "rgba(0, 242, 254, 0.3)"
+                                          : "rgba(255, 255, 255, 0.08)"
+                                    }`,
+                                    borderRadius: "8px",
+                                    padding: "6px 10px",
+                                    fontSize: "0.68rem",
+                                    fontWeight: "bold",
+                                    cursor: isLevelUpClickable ? "pointer" : "not-allowed",
+                                    transition: "all 0.2s",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    gap: "2px",
+                                    boxShadow: isLevelUpClickable ? "0 4px 10px rgba(0, 242, 254, 0.25)" : "none"
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    if (isLevelUpClickable) {
+                                      e.currentTarget.style.transform = "translateY(-1px)";
+                                      e.currentTarget.style.boxShadow = "0 6px 14px rgba(0, 242, 254, 0.4)";
+                                    }
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (isLevelUpClickable) {
+                                      e.currentTarget.style.transform = "none";
+                                      e.currentTarget.style.boxShadow = isLevelUpClickable ? "0 4px 10px rgba(0, 242, 254, 0.25)" : "none";
+                                    }
+                                  }}
+                                  title={isUpgradeStep ? (check.eligible ? `Upgrade Wizards Tower to Level ${level + 1}!` : check.reason) : `Cannot upgrade to Level ${level + 1} yet`}
+                                >
+                                  <span style={{ fontSize: "0.65rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                                    Level Up
+                                  </span>
+                                  {reqs && (
+                                    <div style={{ fontSize: "0.6rem", display: "flex", flexDirection: "column", alignItems: "center", gap: "1px", opacity: 0.9 }}>
+                                      <span>Lands: {check.totalLands}/{reqs.requiredLands}</span>
+                                    </div>
+                                  )}
+                                </button>
+                              </div>
+                            )}
+                          </Fragment>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Floating Tower Gauge */}
+                  {showTowerGauge && (
+                    <div style={{
+                      position: "absolute",
+                      bottom: "35px",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      zIndex: 1000,
+                      background: "rgba(10, 15, 26, 0.95)",
+                      backdropFilter: "blur(12px)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      borderRadius: "10px",
+                      padding: "8px 16px",
+                      boxShadow: "0 8px 24px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 242, 254, 0.15)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px",
+                      width: "90%",
+                      maxWidth: "400px",
+                      fontFamily: "'Outfit', sans-serif"
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "rgba(255, 255, 255, 0.7)", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                            Tower Progression Gauge
+                          </span>
+                          <button
+                            onClick={() => setShowTowerGauge(false)}
+                            style={{
+                              background: "rgba(255, 255, 255, 0.05)",
+                              border: "1px solid rgba(255, 255, 255, 0.1)",
+                              color: "rgba(255, 255, 255, 0.6)",
+                              cursor: "pointer",
+                              padding: "2px 6px",
+                              borderRadius: "4px",
+                              fontSize: "0.7rem",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "3px",
+                              transition: "all 0.2s ease"
+                            }}
+                            title="Hide Tower Progression Gauge"
+                          >
+                            <i className="fa-solid fa-xmark"></i> Hide
+                          </button>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span style={{ fontSize: "0.9rem", fontWeight: "bold", color: "#00f2fe" }}>
+                            {currentTowerLevel >= 4 ? "Level 4 (MAX TOWER)" : `Level ${currentTowerLevel} / 4 (+${currentTowerLevel} Blue Mana)`}
+                          </span>
+                          <span style={{ fontSize: "0.68rem", color: towerRankColor, fontWeight: 600, background: "rgba(255, 255, 255, 0.04)", padding: "1px 5px", borderRadius: "10px", border: "1px solid rgba(255, 255, 255, 0.06)" }}>
+                            {towerRank}
+                          </span>
+                        </div>
+                      </div>
+                      <div style={{
+                        height: "8px",
+                        background: "rgba(255, 255, 255, 0.05)",
+                        borderRadius: "4px",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        overflow: "hidden",
+                        position: "relative",
+                        boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.5)"
+                      }}>
+                        <div style={{
+                          width: `${towerFillPercent}%`,
+                          height: "100%",
+                          background: "linear-gradient(90deg, #0284c7 0%, #00f2fe 50%, #38bdf8 100%)",
+                          borderRadius: "4px",
+                          boxShadow: "0 0 10px rgba(0, 242, 254, 0.5)",
+                          transition: "width 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
+                        }} />
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.6rem", color: "rgba(255, 255, 255, 0.4)", fontWeight: 500 }}>
+                        <span>Lvl 1 (Spire)</span>
+                        <span>Lvl 2 (Bastion)</span>
+                        <span>Lvl 3 (Citadel)</span>
+                        <span>Lvl 4 (Fortress)</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {activeTab === "wizard" && (() => {
               const currentLevel = gameState.players[0].wizardLevel;
@@ -11498,6 +11812,30 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                   }}
                 >
                   <button
+                    onClick={() => setShowQuestGauge(prev => !prev)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "8px 12px",
+                      fontSize: "0.82rem",
+                      fontWeight: 700,
+                      borderRadius: "8px",
+                      fontFamily: "'Outfit', sans-serif",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      background: showQuestGauge ? "rgba(234, 179, 8, 0.22)" : "rgba(255, 255, 255, 0.05)",
+                      color: showQuestGauge ? "#facc15" : "var(--text-muted)",
+                      border: showQuestGauge ? "1px solid rgba(234, 179, 8, 0.6)" : "1px solid rgba(255, 255, 255, 0.1)"
+                    }}
+                    title="Toggle Quest Mastery Gauge"
+                  >
+                    <i className="fa-solid fa-chart-line" style={{ fontSize: "0.85rem" }}></i>
+                    <span>Gauge</span>
+                    <i className={`fa-solid ${showQuestGauge ? "fa-toggle-on" : "fa-toggle-off"}`} style={{ fontSize: "1.05rem", marginLeft: "2px" }}></i>
+                  </button>
+
+                  <button
                     onClick={() => setShowCompletedQuestsToggle(prev => !prev)}
                     style={{
                       display: "flex",
@@ -11543,6 +11881,86 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                     <i className={`fa-solid ${collapseQuestCardsDetails ? "fa-expand" : "fa-compress"}`} style={{ fontSize: "0.85rem" }}></i>
                     <span>{collapseQuestCardsDetails ? "Expand Details" : "Collapse Details"}</span>
                     <i className={`fa-solid ${collapseQuestCardsDetails ? "fa-toggle-on" : "fa-toggle-off"}`} style={{ fontSize: "1.05rem", marginLeft: "2px" }}></i>
+                  </button>
+                </div>
+              );
+            })()}
+
+            {activeTab === "land" && (() => {
+              return (
+                <div 
+                  className="land-toggle-panel"
+                  style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: "6px", 
+                    paddingRight: "6px", 
+                    marginRight: "2px", 
+                    borderRight: "1px solid rgba(255, 255, 255, 0.15)" 
+                  }}
+                >
+                  <button
+                    onClick={() => setShowLandGauge(prev => !prev)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "8px 12px",
+                      fontSize: "0.82rem",
+                      fontWeight: 700,
+                      borderRadius: "8px",
+                      fontFamily: "'Outfit', sans-serif",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      background: showLandGauge ? "rgba(34, 197, 94, 0.22)" : "rgba(255, 255, 255, 0.05)",
+                      color: showLandGauge ? "#4ade80" : "var(--text-muted)",
+                      border: showLandGauge ? "1px solid rgba(34, 197, 94, 0.6)" : "1px solid rgba(255, 255, 255, 0.1)"
+                    }}
+                    title="Toggle Land Dominion Gauge"
+                  >
+                    <i className="fa-solid fa-chart-line" style={{ fontSize: "0.85rem" }}></i>
+                    <span>Gauge</span>
+                    <i className={`fa-solid ${showLandGauge ? "fa-toggle-on" : "fa-toggle-off"}`} style={{ fontSize: "1.05rem", marginLeft: "2px" }}></i>
+                  </button>
+                </div>
+              );
+            })()}
+
+            {activeTab === "towers" && (() => {
+              return (
+                <div 
+                  className="tower-toggle-panel"
+                  style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: "6px", 
+                    paddingRight: "6px", 
+                    marginRight: "2px", 
+                    borderRight: "1px solid rgba(255, 255, 255, 0.15)" 
+                  }}
+                >
+                  <button
+                    onClick={() => setShowTowerGauge(prev => !prev)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "8px 12px",
+                      fontSize: "0.82rem",
+                      fontWeight: 700,
+                      borderRadius: "8px",
+                      fontFamily: "'Outfit', sans-serif",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      background: showTowerGauge ? "rgba(0, 242, 254, 0.22)" : "rgba(255, 255, 255, 0.05)",
+                      color: showTowerGauge ? "#00f2fe" : "var(--text-muted)",
+                      border: showTowerGauge ? "1px solid rgba(0, 242, 254, 0.6)" : "1px solid rgba(255, 255, 255, 0.1)"
+                    }}
+                    title="Toggle Tower Progression Gauge"
+                  >
+                    <i className="fa-solid fa-chart-line" style={{ fontSize: "0.85rem" }}></i>
+                    <span>Gauge</span>
+                    <i className={`fa-solid ${showTowerGauge ? "fa-toggle-on" : "fa-toggle-off"}`} style={{ fontSize: "1.05rem", marginLeft: "2px" }}></i>
                   </button>
                 </div>
               );
