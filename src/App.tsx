@@ -3572,15 +3572,16 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       cardData.xp = 0;
     }
 
-    const levelCost = getWizardLevelUpCost(level);
-    cardData.activatedAbilities = [];
-    const levelUpAbility = {
-      cost: [],
-      text: "Level Up!"
-    };
-    if (!found) {
-      cardData.activatedAbilities = [levelUpAbility];
-    }
+    const drawText = level === 1 ? "Draw 1 card." : `Draw ${level} cards.`;
+    const abilityCost = level === 1 ? ["C3"] : level === 2 ? ["C2"] : level === 3 ? ["C3"] : ["C1"];
+    cardData.activatedAbilities = [
+      {
+        cost: abilityCost,
+        text: drawText
+      }
+    ];
+    cardData.rulesText = drawText;
+    cardData.customDescription = drawText;
     return cardData;
   };
 
@@ -3627,16 +3628,24 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   const getWizardAbilityCardForLevel = (level: number, playerDeck?: CardJSON[]): CardJSON => {
     const name = `Wizard L${level} Ability`;
     const found = allDeckCards?.find(c => c.name === name) || playerDeck?.find(c => c.name === name);
-    if (found) return JSON.parse(JSON.stringify(found));
+    const drawText = level === 1 ? "Draw 1 card." : `Draw ${level} cards.`;
+    const cost = level === 1 ? "C3" : level === 2 ? "C2" : level === 3 ? "C3" : "C1";
+    if (found) {
+      const parsed = JSON.parse(JSON.stringify(found));
+      parsed.manaCost = cost;
+      parsed.rulesText = drawText;
+      parsed.customDescription = drawText;
+      return parsed;
+    }
     return {
       name,
-      manaCost: level === 1 ? "C3" : level === 2 ? "C2" : level === 3 ? "C3" : "C1",
+      manaCost: cost,
       type: "Spell",
       cardSubType: "Abilities",
       color: "blue" as const,
       illustration: "Wizard Ability.png",
-      rulesText: level === 3 ? "Add 2 mana of any color." : "Add a mana of any color.",
-      customDescription: level === 3 ? "Add 2 mana of any color." : "Add a mana of any color."
+      rulesText: drawText,
+      customDescription: drawText
     };
   };
 
