@@ -204,6 +204,11 @@ const highlightText = (text: string, query: string) => {
   );
 };
 
+const isExcludedLandTile = (id: string): boolean => {
+  const lower = (id || "").toLowerCase();
+  return lower.includes("tower of power") || lower.includes("ruined mountain pass") || lower.includes("tower of terror");
+};
+
 const getPlayerCreatures = (map: MapCell[][]): { card: CardJSON; col: number; row: number }[] => {
   const list: { card: CardJSON; col: number; row: number }[] = [];
   map.forEach((col) => {
