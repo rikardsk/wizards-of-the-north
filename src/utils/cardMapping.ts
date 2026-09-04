@@ -350,7 +350,29 @@ const getTargetFolder = (
   const effectiveNameLower = nameLower.replace(/\s+ability$/i, "").trim();
   const effectiveFileLower = fileLower.replace(/\s+ability/i, "").trim();
 
-  if (typeLower.includes("spell") && !nameLower.includes("ability") && (fileLower.includes("_art") || !isHero(typeLower, nameLower, fileLower, subTypeLower))) {
+  const isKnownCreatureAsset =
+    effectiveNameLower.includes("nightmare") ||
+    effectiveNameLower.includes("balrog") ||
+    effectiveNameLower.includes("forest golem") ||
+    effectiveNameLower.includes("stone golem") ||
+    effectiveNameLower.includes("litch king") ||
+    effectiveNameLower.includes("lich king") ||
+    effectiveNameLower.includes("hellkite") ||
+    effectiveNameLower.includes("ogre sunderer") ||
+    effectiveNameLower.includes("skirk prospector") ||
+    effectiveNameLower.includes("magma rifter") ||
+    effectiveFileLower.includes("nightmare") ||
+    effectiveFileLower.includes("balrog") ||
+    effectiveFileLower.includes("forest golem") ||
+    effectiveFileLower.includes("stone golem") ||
+    effectiveFileLower.includes("litch king") ||
+    effectiveFileLower.includes("lich king") ||
+    effectiveFileLower.includes("hellkite") ||
+    effectiveFileLower.includes("ogre sunderer") ||
+    effectiveFileLower.includes("skirk prospector") ||
+    effectiveFileLower.includes("magma rifter");
+
+  if (typeLower.includes("spell") && !nameLower.includes("ability") && !isKnownCreatureAsset && (fileLower.includes("_art") || !isHero(typeLower, nameLower, fileLower, subTypeLower))) {
     return "spells";
   }
   if (isHero(typeLower, effectiveNameLower, effectiveFileLower, subTypeLower)) {
@@ -462,11 +484,6 @@ export const resolveIllustrationPath = (type: string, rawIllusion: string, name?
 
   if (isExternalOrAbsolutePath(file)) {
     if (file.includes("/assets/") || file.includes("assets/")) {
-      if (nameLower.includes("ability") && (file.includes("assets/creatures/") || file.includes("assets/heroes/") || file.includes("assets/legends/") || file.includes("assets/wizards/") || file.includes("assets/towers/"))) {
-        const isJpg = !file.includes("Ultimate Victory.png") && !file.includes("Tower Ability.png") && !file.includes("Wizard Ability.png");
-        const resolvedPath = isJpg ? file.replace(/\.png$/i, ".jpg") : file;
-        return getAssetUrl(resolvedPath);
-      }
       const folder = isTowerCard ? "towers" : targetFolder;
       const isJpgTarget = isTowerCard || folder === "wizards" || folder === "creatures" || folder === "heroes" || folder === "legends" || nameLower.includes("festering bog-rot human zombie") || fileLower.includes("festering bog-rot human zombie");
       const resolvedFilename = isJpgTarget && cleanFilename !== "Ultimate Victory.png" && cleanFilename !== "Tower Ability.png" && cleanFilename !== "Wizard Ability.png"

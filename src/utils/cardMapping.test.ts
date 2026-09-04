@@ -127,12 +127,18 @@ describe("cardMapping", () => {
     const hellkitePath = resolveIllustrationPath("Spell", "Hellkite Ancient Dragon.jpg", "Hellkite Ancient Dragon Ability", "Battle");
     const hellkiteAbilityRawPath = resolveIllustrationPath("Spell", "/assets/spells/Hellkite Ancient Dragon Ability.png", "Hellkite Ancient Dragon Ability", "Battle");
     const nightmareAbilityPath = resolveIllustrationPath("Spell", "Nightmare Ability.jpg", "Nightmare Ability", "Battle");
+    const nightmareSpellTypePath = resolveIllustrationPath("Spell", "", "Nightmare", "Battle");
+    const nightmareSpellRawPath = resolveIllustrationPath("Spell", "/assets/spells/Nightmare.png", "Nightmare Ability", "Battle");
+    const balrogAbilityPath = resolveIllustrationPath("Spell", "", "Balrog Ability", "Battle");
 
     expect(litchPath).toBe("/assets/creatures/Litch King.jpg");
     expect(lichPath).toBe("/assets/creatures/Litch King.jpg");
     expect(hellkitePath).toBe("/assets/creatures/Hellkite Ancient Dragon.jpg");
     expect(hellkiteAbilityRawPath).toBe("/assets/creatures/Hellkite Ancient Dragon.jpg");
     expect(nightmareAbilityPath).toBe("/assets/creatures/Nightmare.jpg");
+    expect(nightmareSpellTypePath).toBe("/assets/creatures/Nightmare.jpg");
+    expect(nightmareSpellRawPath).toBe("/assets/creatures/Nightmare.jpg");
+    expect(balrogAbilityPath).toBe("/assets/creatures/Balrog.jpg");
   });
 
   it("resolves wizard artwork paths to /assets/wizards/", () => {
