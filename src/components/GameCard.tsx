@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { CardJSON, ActivatedAbility } from "../types/game";
 import { getManaDataUri } from "../assets/mana/manaIcons";
-import { resolveIllustrationPath, resolveOpponentCard, resolveCardNameFromRef, isWizardCard } from "../utils/cardMapping";
+import { resolveIllustrationPath, resolveOpponentCard, resolveCardNameFromRef, isWizardCard, getTowerLevelFromCard } from "../utils/cardMapping";
 import "./GameCard.css";
 
 interface GameCardProps {
@@ -667,31 +667,63 @@ export const GameCard: React.FC<GameCardProps> = ({
           )}
         </div>
 
-        {!cardTypeLower.includes("spell") && (isCreature || cardTypeLower.includes("tower") || isWizardCard(card) || cardTypeLower.includes("wizard") || cardTypeLower.includes("hero")) && card.power !== undefined && card.toughness !== undefined && card.power !== "" && card.toughness !== "" && (
-          <div
-            className={`card-stats-bubble ${hasTemporaryDebuff || card.hasTemporaryDebuff ? "debuffed" : (hasTemporaryBoost || card.hasTemporaryBoost || (card as any).isBuffed ? "boosted" : "")}`}
-            onClick={(e) => {
-              const isWiz = isWizardCard(card) || cardTypeLower.includes("wizard") || cardTypeLower.includes("hero") || cardNameLower.includes("wizard");
-              if (isWiz) {
-                e.stopPropagation();
-                e.preventDefault();
-                if (onShowWizardBuffs) {
-                  onShowWizardBuffs();
-                }
-                window.dispatchEvent(new CustomEvent("openWizardBuffsModal", { detail: { card } }));
-              }
-            }}
-            style={{
-              cursor: (isWizardCard(card) || cardTypeLower.includes("wizard") || cardTypeLower.includes("hero") || cardNameLower.includes("wizard")) ? "pointer" : undefined,
-              zIndex: 35
-            }}
-            title={(isWizardCard(card) || cardTypeLower.includes("wizard") || cardTypeLower.includes("hero") || cardNameLower.includes("wizard")) ? "Click to view Wizard Attribute Buffs" : undefined}
-          >
-            <span>
-              {card.power}/{card.toughness}
-            </span>
-          </div>
-        )}
+        {(() => {
+          const isTowerCard = cardTypeLower.includes("tower") || cardNameLower.includes("tower") || card.type === "Tower";
+
+          if (isTowerCard) {
+            const getTowerHpValue = () => {
+              if (card.towerHp !== undefined) return card.towerHp;
+              if (card.hp !== undefined) return card.hp;
+              if (card.toughness !== undefined && card.toughness !== "") return card.toughness;
+              const lvl = getTowerLevelFromCard(card);
+              return 20 + 5 * lvl;
+            };
+            return (
+              <div
+                className="card-stats-bubble"
+                style={{
+                  zIndex: 35,
+                  borderColor: "rgba(56, 189, 248, 0.8)",
+                  color: "#38bdf8",
+                  boxShadow: "0 0 10px rgba(56, 189, 248, 0.4)"
+                }}
+                title="Tower HP"
+              >
+                <span>{getTowerHpValue()} HP</span>
+              </div>
+            );
+          }
+
+          if (!cardTypeLower.includes("spell") && (isCreature || isWizardCard(card) || cardTypeLower.includes("wizard") || cardTypeLower.includes("hero")) && card.power !== undefined && card.toughness !== undefined && card.power !== "" && card.toughness !== "") {
+            return (
+              <div
+                className={`card-stats-bubble ${hasTemporaryDebuff || card.hasTemporaryDebuff ? "debuffed" : (hasTemporaryBoost || card.hasTemporaryBoost || (card as any).isBuffed ? "boosted" : "")}`}
+                onClick={(e) => {
+                  const isWiz = isWizardCard(card) || cardTypeLower.includes("wizard") || cardTypeLower.includes("hero") || cardNameLower.includes("wizard");
+                  if (isWiz) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (onShowWizardBuffs) {
+                      onShowWizardBuffs();
+                    }
+                    window.dispatchEvent(new CustomEvent("openWizardBuffsModal", { detail: { card } }));
+                  }
+                }}
+                style={{
+                  cursor: (isWizardCard(card) || cardTypeLower.includes("wizard") || cardTypeLower.includes("hero") || cardNameLower.includes("wizard")) ? "pointer" : undefined,
+                  zIndex: 35
+                }}
+                title={(isWizardCard(card) || cardTypeLower.includes("wizard") || cardTypeLower.includes("hero") || cardNameLower.includes("wizard")) ? "Click to view Wizard Attribute Buffs" : undefined}
+              >
+                <span>
+                  {card.power}/{card.toughness}
+                </span>
+              </div>
+            );
+          }
+
+          return null;
+        })()}
 
         {/* Quest Power Gauge */}
         {isQuestCard && (() => {

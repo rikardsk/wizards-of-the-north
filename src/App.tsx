@@ -375,7 +375,8 @@ const getCellCardJson = (cell: MapCell, map: MapCell[][], players: Player[]): Ca
         rulesText: "",
         customDescription: "",
         power: "0",
-        toughness: String(5 + 5 * towerLevel),
+        toughness: String(p.towerHp),
+        towerHp: p.towerHp,
         activatedAbilities: [
           {
             cost: [towerLevel === 1 ? "C3" : towerLevel === 2 ? "C2" : towerLevel === 3 ? "C3" : "C1"],
@@ -389,9 +390,10 @@ const getCellCardJson = (cell: MapCell, map: MapCell[][], players: Player[]): Ca
       towerCard.color = cardColor;
       towerCard.illustration = `/assets/towers/Wizards Tower L${towerLevel}.jpg`;
       towerCard.customDescription = `Produces ${manaSymbols} mana per turn.`;
-      if (towerCard.power === undefined) towerCard.power = "0";
-      if (towerCard.toughness === undefined) towerCard.toughness = String(5 + 5 * towerLevel);
-      towerCard.rulesText = `Location: ${coords}\nHP: ${p.towerHp} / ${START_HP}\nProduces ${manaSymbols} mana per turn.`;
+      towerCard.power = "0";
+      towerCard.towerHp = p.towerHp;
+      towerCard.toughness = String(p.towerHp);
+      towerCard.rulesText = `Location: ${coords}\nHP: ${p.towerHp}\nProduces ${manaSymbols} mana per turn.`;
       return towerCard;
     } else {
       return {
@@ -4911,14 +4913,14 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       );
 
       const updatedPlayers = prev.players.map((pl, idx) =>
-        idx === 0 ? { ...pl, manaPool: nextPool, mana: totalMana } : pl
+        idx === 0 ? { ...pl, manaPool: nextPool, mana: totalMana, towerHp: pl.towerHp + 5 } : pl
       );
 
       return {
         ...prev,
         map: updatedMap,
         players: updatedPlayers,
-        logs: [...prev.logs, `🏰 Wizards Tower upgraded to Level ${nextLevel}!`],
+        logs: [...prev.logs, `🏰 Wizards Tower upgraded to Level ${nextLevel}! (+5 Max Tower HP)`],
         manaHistory: [...(prev.manaHistory || []), newEvent]
       };
     });
@@ -24619,9 +24621,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               }}>
                 Wizards of the North
               </h2>
-              <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "0.92rem" }}>
-                Customize your hero, select your realm, and prepare for battle.
-              </p>
             </div>
 
             <div className="modal-divider" style={{ margin: 0 }}></div>
