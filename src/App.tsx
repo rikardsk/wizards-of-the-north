@@ -3456,6 +3456,38 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     return highlights;
   };
 
+  const calculatePlayerLandManaPool = (map: MapCell[][], playerIdx: number) => {
+    const pool = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 };
+    const setTracker: Record<string, { manaType: string; owned: number; total: number }> = {};
+
+    map.forEach((col) => {
+      col.forEach((cell) => {
+        if (isExcludedLandTile(cell.tileId)) return;
+        const fullTileId = cell.tileId;
+        if (fullTileId.toLowerCase().includes("tower")) return;
+
+        const manaType = getManaType(fullTileId);
+        if (!setTracker[fullTileId]) {
+          setTracker[fullTileId] = { manaType, owned: 0, total: 0 };
+        }
+        setTracker[fullTileId].total++;
+        if (cell.ownerId === playerIdx) {
+          setTracker[fullTileId].owned++;
+        }
+      });
+    });
+
+    Object.values(setTracker).forEach(({ manaType, owned, total }) => {
+      if (owned > 0 && (manaType === "W" || manaType === "G" || manaType === "R" || manaType === "B" || manaType === "U")) {
+        const isSetComplete = total > 0 && owned === total;
+        const manaGain = owned + (isSetComplete ? 1 : 0);
+        pool[manaType as "W" | "G" | "R" | "B" | "U"] += manaGain;
+      }
+    });
+
+    return pool;
+  };
+
   const getInitialManaPool = (
     map: MapCell[][],
     playerIdx: number
@@ -3481,21 +3513,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       return pool;
     }
 
-    map.forEach((col) => {
-      col.forEach((cell) => {
-        if (cell.ownerId !== playerIdx) return;
-        const tile = cell.tileId.toLowerCase();
-        const level = getLevel(cell.tileId);
-        if (!tile.includes("tower")) {
-          if (tile.includes("plain")) pool.W += level;
-          else if (tile.includes("forrest")) pool.G += level;
-          else if (tile.includes("mountain")) pool.R += level;
-          else if (tile.includes("swamp")) pool.B += level;
-        }
-      });
-    });
-
-    return pool;
+    return calculatePlayerLandManaPool(map, playerIdx);
   };
 
   const getManaPoolForTurn = (
@@ -3504,20 +3522,13 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     wizardLevel: number = 1,
     wizardManaChoice: "W" | "U" | "B" | "R" | "G" | "C" = "C"
   ) => {
-    const pool = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 };
+    const pool = calculatePlayerLandManaPool(map, playerIdx);
+
     let towerLevel = 1;
     map.forEach((col) => {
       col.forEach((cell) => {
-        if (cell.ownerId !== playerIdx) return;
-        const tile = cell.tileId.toLowerCase();
-        const level = getLevel(cell.tileId);
-        if (!tile.includes("tower")) {
-          if (tile.includes("plain")) pool.W += level;
-          else if (tile.includes("forrest")) pool.G += level;
-          else if (tile.includes("mountain")) pool.R += level;
-          else if (tile.includes("swamp")) pool.B += level;
-        } else {
-          towerLevel = level;
+        if (cell.ownerId === playerIdx && cell.tileId.toLowerCase().includes("tower")) {
+          towerLevel = getLevel(cell.tileId);
         }
       });
     });
@@ -10643,7 +10654,12 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         else if (chosenMana === "U") { wizardColorName = "Blue"; wizardCardColor = "blue"; }
                         else if (chosenMana === "C") { wizardColorName = "Colorless"; wizardCardColor = "colorless"; }
 
-                        const manaSymbols = isTower ? `{${chosenMana}}`.repeat(level) : `{${manaType}}`.repeat(level);
+                        const manaOutputForLand = isTower ? level : (owned + (isSetComplete ? 1 : 0));
+                        const manaSymbols = isTower ? `{${chosenMana}}`.repeat(level) : `{${manaType}}`.repeat(manaOutputForLand);
+
+                        const landCardText = isTower
+                          ? `Wizards Tower Level ${level}.\nProduces ${manaSymbols} mana per turn.`
+                          : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates +${manaOutputForLand} ${manaColorName} mana per turn (1 per land${isSetComplete ? " + 1 Set Completion Bonus" : ""}).\n${isSetComplete ? "🎉 Set Complete (+1 Bonus Mana)!" : `Collect all ${total} ${fullTileId} to complete this level set (+1 bonus Mana)!`}`;
 
                         const landCard: CardJSON = {
                           name: baseName,
@@ -10654,12 +10670,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           illustration,
                           ratioText: isTower ? undefined : `${owned}/${total}`,
                           isSetComplete: isTower ? false : isSetComplete,
-                          rulesText: isTower
-                            ? `Wizards Tower Level ${level}.\nProduces ${manaSymbols} mana per turn.`
-                            : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${manaSymbols} mana per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`,
-                          customDescription: isTower
-                            ? `Wizards Tower Level ${level}.\nProduces ${manaSymbols} mana per turn.`
-                            : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates ${manaSymbols} mana per turn.\n${isSetComplete ? "🎉 Set Complete!" : `Collect all ${total} ${fullTileId} to complete this level set!`}`
+                          rulesText: landCardText,
+                          customDescription: landCardText
                         };
 
                         return (
@@ -17639,8 +17651,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           }
 
           levelMap[level].count++;
-          levelMap[level].manaByColor[manaType] = (levelMap[level].manaByColor[manaType] || 0) + level;
-          levelMap[level].totalMana += level;
+          levelMap[level].manaByColor[manaType] = (levelMap[level].manaByColor[manaType] || 0) + 1;
+          levelMap[level].totalMana += 1;
 
           if (!levelMap[level].territories[baseName]) {
             levelMap[level].territories[baseName] = {
@@ -17651,6 +17663,19 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             };
           }
           levelMap[level].territories[baseName].count++;
+        });
+
+        // Add set completion bonus (+1 mana) to levelMap for completed territory groups
+        Object.values(territoryGroups).forEach((g) => {
+          const isTower = (g.baseName || "").toLowerCase().includes("tower") || (g.fullTileId || "").toLowerCase().includes("tower");
+          if (!isTower && g.owned > 0 && g.total > 0 && g.owned === g.total) {
+            const level = g.level;
+            const manaType = g.manaType;
+            if (levelMap[level]) {
+              levelMap[level].manaByColor[manaType] = (levelMap[level].manaByColor[manaType] || 0) + 1;
+              levelMap[level].totalMana += 1;
+            }
+          }
         });
 
         const sortedLevels = Object.values(levelMap).sort((a, b) => a.level - b.level);
@@ -17861,7 +17886,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                 </div>
                               </td>
                               <td style={{ padding: "10px 14px", color: "var(--text-muted)" }}>
-                                +{lvl.level} / land
+                                1 / land (+1 set bonus)
                               </td>
                               <td style={{ padding: "10px 14px" }}>
                                 {lvl.totalMana > 0 ? (
@@ -18006,7 +18031,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           const isSetComplete = t.total > 0 && t.owned === t.total;
                           const isTower = (t.baseName || "").toLowerCase().includes("tower");
                           const share = grandTotalLands > 0 ? (t.owned / grandTotalLands) * 100 : 0;
-                          const manaOutput = t.level * t.owned;
+                          const manaOutput = isTower ? t.level : (t.owned + (isSetComplete ? 1 : 0));
 
                           return (
                             <tr key={t.fullTileId} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.04)" }}>
@@ -18046,6 +18071,11 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                 <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontWeight: 700, color: "#facc15" }}>
                                   <img src={getManaDataUri(t.manaType)} alt={t.manaType} style={{ width: "13px", height: "13px" }} />
                                   +{manaOutput} {getManaLabel(t.manaType)}
+                                  {isSetComplete && !isTower && (
+                                    <span style={{ fontSize: "0.68rem", color: "#4ade80", marginLeft: "4px" }} title="Includes +1 Bonus Mana for Set Completion">
+                                      (1/land + 1 bonus)
+                                    </span>
+                                  )}
                                 </span>
                               </td>
                               <td style={{ padding: "8px 14px", color: "var(--text-muted)" }}>
@@ -18900,10 +18930,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                       Your controlled territories generate specialized mana colors each turn:
                     </p>
                     <ul className="modal-text" style={{ paddingLeft: "20px", marginTop: "4px", listStyleType: "square" }}>
-                      <li><strong>Plains (Yellow):</strong> {renderTextWithManaSymbols("Generates White mana ({W}) equal to tile level.")}</li>
-                      <li><strong>Forests (Green):</strong> {renderTextWithManaSymbols("Generates Green mana ({G}) equal to tile level.")}</li>
-                      <li><strong>Mountains (Red):</strong> {renderTextWithManaSymbols("Generates Red mana ({R}) equal to tile level.")}</li>
-                      <li><strong>Swamps (Purple):</strong> {renderTextWithManaSymbols("Generates Black mana ({B}) equal to tile level.")}</li>
+                      <li><strong>Plains (Yellow):</strong> {renderTextWithManaSymbols("Generates 1 White mana ({W}) per land (plus +1 bonus mana upon completing a level set).")}</li>
+                      <li><strong>Forests (Green):</strong> {renderTextWithManaSymbols("Generates 1 Green mana ({G}) per land (plus +1 bonus mana upon completing a level set).")}</li>
+                      <li><strong>Mountains (Red):</strong> {renderTextWithManaSymbols("Generates 1 Red mana ({R}) per land (plus +1 bonus mana upon completing a level set).")}</li>
+                      <li><strong>Swamps (Purple):</strong> {renderTextWithManaSymbols("Generates 1 Black mana ({B}) per land (plus +1 bonus mana upon completing a level set).")}</li>
                       <li><strong>Other lands:</strong> {renderTextWithManaSymbols("Generates 1 Colorless mana ({C}).")}</li>
                     </ul>
                     <p className="modal-text" style={{ marginTop: "6px" }}>
