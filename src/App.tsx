@@ -11194,10 +11194,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 {/* Right: Mana Pool Status & Conversion */}
                 <div style={{ flex: "0 0 350px", display: "flex", flexDirection: "column", gap: "16px", borderLeft: "1px solid rgba(255,255,255,0.05)", paddingLeft: "24px" }}>
                   <div>
-                    <h3 style={{ margin: "0 0 4px 0", fontSize: "1rem", color: "var(--text-main)", fontFamily: "'Outfit', sans-serif" }}>Mana Pool Status</h3>
-                    <p style={{ margin: "0 0 12px 0", fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                      Convert colored mana to colorless (`C`) to pay for level-ups or generic casting costs.
-                    </p>
+                    <h3 style={{ margin: "0 0 12px 0", fontSize: "1rem", color: "var(--text-main)", fontFamily: "'Outfit', sans-serif" }}>Mana Pool Status</h3>
                   </div>
                   {renderManaGauge(gameState.players[0].manaPool, true, true)}
                 </div>
