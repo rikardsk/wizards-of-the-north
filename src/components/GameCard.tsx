@@ -337,6 +337,22 @@ export const GameCard: React.FC<GameCardProps> = ({
             className="card-artwork-img"
             loading="eager"
             draggable={false}
+            onError={(e) => {
+              const target = e.currentTarget;
+              const currentSrc = target.src || "";
+              if (card.name && card.name.toLowerCase().includes("ability")) {
+                const baseName = card.name.replace(/\s+ability$/i, "").trim();
+                const fallbackPath = resolveIllustrationPath("Creature", "", baseName);
+                if (fallbackPath && !currentSrc.includes(fallbackPath)) {
+                  target.src = fallbackPath;
+                  return;
+                }
+              }
+              const genericFallback = resolveIllustrationPath("Spell", "Wizard Ability.png", "Wizard Ability");
+              if (genericFallback && !currentSrc.includes(genericFallback)) {
+                target.src = genericFallback;
+              }
+            }}
           />
           {card.completed && (
             <div className="card-completed-badge">

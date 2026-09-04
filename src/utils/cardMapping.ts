@@ -5,6 +5,14 @@ export const cardNameMap: Record<string, string> = {
   "Ogre Sunderer": "Ogre Sunderer.jpg",
   "Magma Rifter Elemental": "Magma Rifter Elemental.jpg",
   "Hellkite Ancient Dragon": "Hellkite Ancient Dragon.jpg",
+  "Hellkite Ancient Dragon Ability": "Hellkite Ancient Dragon.jpg",
+  "Litch King Ability": "Litch King.jpg",
+  "Lich King Ability": "Litch King.jpg",
+  "Nightmare Ability": "Nightmare.jpg",
+  "Balrog Ability": "Balrog.jpg",
+  "Ogre Sunderer Ability": "Ogre Sunderer.jpg",
+  "Skirk Prospector Goblin Ability": "Skirk Prospector Goblin.jpg",
+  "Magma Rifter Elemental Ability": "Magma Rifter Elemental.jpg",
   "Field Sentry Human": "Field Sentry Human.jpg",
   "White Knight": "White Knight.jpg",
   "Leonin Sun-Stalker": "Leonin Sun-Stalker.jpg",
@@ -422,6 +430,20 @@ export const resolveIllustrationPath = (type: string, rawIllusion: string, name?
 
   const targetFolder = getTargetFolder(typeLower, nameLower, fileLower, subTypeLower);
 
+  const isGenericAbilityFile = filename === "Wizard Ability.png" || filename === "Tower Ability.png" || filename === "Wizard Ability.jpg" || filename === "Tower Ability.jpg";
+
+  let cleanFilename = filename;
+  if (nameLower.includes("ability") && !isGenericAbilityFile) {
+    cleanFilename = cleanFilename.replace(/\s+ability/i, "");
+    const baseCandidate = (name || "").replace(/\s+ability$/i, "").trim();
+    if (cardNameMap[baseCandidate]) {
+      cleanFilename = cardNameMap[baseCandidate];
+    }
+  }
+  if (oldFilesMap[cleanFilename]) {
+    cleanFilename = oldFilesMap[cleanFilename];
+  }
+
   if (isExternalOrAbsolutePath(file)) {
     if (file.includes("/assets/") || file.includes("assets/")) {
       if (nameLower.includes("ability") && (file.includes("assets/creatures/") || file.includes("assets/heroes/") || file.includes("assets/legends/") || file.includes("assets/wizards/") || file.includes("assets/towers/"))) {
@@ -431,18 +453,18 @@ export const resolveIllustrationPath = (type: string, rawIllusion: string, name?
       }
       const folder = isTowerCard ? "towers" : targetFolder;
       const isJpgTarget = isTowerCard || folder === "wizards" || folder === "creatures" || folder === "heroes" || folder === "legends" || nameLower.includes("festering bog-rot human zombie") || fileLower.includes("festering bog-rot human zombie");
-      const resolvedFilename = isJpgTarget && filename !== "Ultimate Victory.png" && filename !== "Tower Ability.png" && filename !== "Wizard Ability.png"
-        ? filename.replace(/\.png$/i, ".jpg")
-        : filename;
+      const resolvedFilename = isJpgTarget && cleanFilename !== "Ultimate Victory.png" && cleanFilename !== "Tower Ability.png" && cleanFilename !== "Wizard Ability.png"
+        ? cleanFilename.replace(/\.png$/i, ".jpg")
+        : cleanFilename;
       return getAssetUrl(`assets/${folder}/${resolvedFilename}`);
     }
     return file;
   }
 
   const isJpgTarget = isTowerCard || targetFolder === "wizards" || targetFolder === "creatures" || nameLower.includes("festering bog-rot human zombie") || fileLower.includes("festering bog-rot human zombie");
-  const finalFilename = isJpgTarget && filename !== "Ultimate Victory.png"
-    ? filename.replace(/\.png$/i, ".jpg")
-    : filename;
+  const finalFilename = isJpgTarget && cleanFilename !== "Ultimate Victory.png"
+    ? cleanFilename.replace(/\.png$/i, ".jpg")
+    : cleanFilename;
   return getAssetUrl(`assets/${targetFolder}/${finalFilename}`);
 };
 

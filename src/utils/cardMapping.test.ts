@@ -125,9 +125,14 @@ describe("cardMapping", () => {
     const litchPath = resolveIllustrationPath("Spell", "Litch King.jpg", "Litch King Ability", "Battle");
     const lichPath = resolveIllustrationPath("Spell", "", "Lich King Ability", "Battle");
     const hellkitePath = resolveIllustrationPath("Spell", "Hellkite Ancient Dragon.jpg", "Hellkite Ancient Dragon Ability", "Battle");
+    const hellkiteAbilityRawPath = resolveIllustrationPath("Spell", "/assets/spells/Hellkite Ancient Dragon Ability.png", "Hellkite Ancient Dragon Ability", "Battle");
+    const nightmareAbilityPath = resolveIllustrationPath("Spell", "Nightmare Ability.jpg", "Nightmare Ability", "Battle");
+
     expect(litchPath).toBe("/assets/creatures/Litch King.jpg");
     expect(lichPath).toBe("/assets/creatures/Litch King.jpg");
     expect(hellkitePath).toBe("/assets/creatures/Hellkite Ancient Dragon.jpg");
+    expect(hellkiteAbilityRawPath).toBe("/assets/creatures/Hellkite Ancient Dragon.jpg");
+    expect(nightmareAbilityPath).toBe("/assets/creatures/Nightmare.jpg");
   });
 
   it("resolves wizard artwork paths to /assets/wizards/", () => {
