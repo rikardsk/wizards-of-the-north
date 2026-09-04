@@ -121,6 +121,15 @@ describe("cardMapping", () => {
     expect(towerAbilityPath).toBe("/assets/abilities/Tower Ability.png");
   });
 
+  it("resolves creature ability artwork to creature card image (e.g. Litch King Ability / Lich King Ability)", () => {
+    const litchPath = resolveIllustrationPath("Spell", "Litch King.jpg", "Litch King Ability", "Battle");
+    const lichPath = resolveIllustrationPath("Spell", "", "Lich King Ability", "Battle");
+    const hellkitePath = resolveIllustrationPath("Spell", "Hellkite Ancient Dragon.jpg", "Hellkite Ancient Dragon Ability", "Battle");
+    expect(litchPath).toBe("/assets/creatures/Litch King.jpg");
+    expect(lichPath).toBe("/assets/creatures/Litch King.jpg");
+    expect(hellkitePath).toBe("/assets/creatures/Hellkite Ancient Dragon.jpg");
+  });
+
   it("resolves wizard artwork paths to /assets/wizards/", () => {
     const wizard1 = resolveIllustrationPath("Creature", "Wizard L1.png", "Wizard L1");
     const wizard2 = resolveIllustrationPath("Creature", "Wizard L2.jpg", "Wizard L2");

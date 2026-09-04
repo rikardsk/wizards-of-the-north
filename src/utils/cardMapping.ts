@@ -17,6 +17,7 @@ export const cardNameMap: Record<string, string> = {
   "Carrion Crow Swarm": "Carrion Crow Swarm.png",
   "Fen Haunt Spirit": "Fen Haunt Spirit.png",
   "Litch King": "Litch King.png",
+  "Lich King": "Litch King.png",
   "Wizard Lv1": "Wizard L1.jpg",
   "Wizard Lv2": "Wizard L2.jpg",
   "Wizard Lv3": "Wizard L3.jpg",
@@ -101,6 +102,8 @@ export const oldFilesMap: Record<string, string> = {
   "Swamp creature L2.png": "Carrion Crow Swarm.png",
   "Swamp creature L3.png": "Fen Haunt Spirit.png",
   "Swamp creature L4.png": "Litch King.png",
+  "Lich King.png": "Litch King.png",
+  "Lich King.jpg": "Litch King.jpg",
   "Mountain creature L1.png": "Skirk Prospector Goblin.png",
   "Mountain creature L2.png": "Ogre Sunderer.png",
   "Mountain creature L3.png": "Magma Rifter Elemental.png",
@@ -115,6 +118,8 @@ const isExternalOrAbsolutePath = (path: string): boolean => {
   if (!path) return false;
   return (
     path.startsWith("/") ||
+    path.startsWith("assets/") ||
+    path.includes("/assets/") ||
     path.startsWith("data:") ||
     path.startsWith("http://") ||
     path.startsWith("https://") ||
@@ -304,9 +309,12 @@ const getTargetFolder = (
   if (typeLower.includes("quest") || nameLower.includes("quest") || fileLower.includes("quest")) {
     return "quests";
   }
-  if (typeLower.includes("ability") || nameLower.includes("ability") || fileLower.includes("ability")) {
+
+  const isGenericAbility = fileLower.includes("wizard ability") || fileLower.includes("tower ability") || fileLower.includes("abilities/") || nameLower === "wizard ability" || nameLower === "tower ability";
+  if (isGenericAbility) {
     return "abilities";
   }
+
   if (typeLower === "tower" || nameLower.includes("wizards tower") || fileLower.includes("wizards tower")) {
     return "towers";
   }
@@ -330,13 +338,17 @@ const getTargetFolder = (
   if (typeLower.includes("portal") || nameLower.includes("portal") || fileLower.includes("portal") || nameLower.includes("sol ring") || fileLower.includes("sol ring")) {
     return "portals";
   }
-  if (typeLower.includes("spell") || fileLower.includes("_art")) {
+
+  const effectiveNameLower = nameLower.replace(/\s+ability$/i, "").trim();
+  const effectiveFileLower = fileLower.replace(/\s+ability/i, "").trim();
+
+  if (typeLower.includes("spell") && !nameLower.includes("ability") && (fileLower.includes("_art") || !isHero(typeLower, nameLower, fileLower, subTypeLower))) {
     return "spells";
   }
-  if (isHero(typeLower, nameLower, fileLower, subTypeLower)) {
+  if (isHero(typeLower, effectiveNameLower, effectiveFileLower, subTypeLower)) {
     return "heroes";
   }
-  if (isLegend(typeLower, nameLower, fileLower, subTypeLower)) {
+  if (isLegend(typeLower, effectiveNameLower, effectiveFileLower, subTypeLower)) {
     return "legends";
   }
   return "creatures";
@@ -354,6 +366,13 @@ export function getAssetUrl(path: string): string {
 
 export const resolveIllustrationPath = (type: string, rawIllusion: string, name?: string, subType?: string): string => {
   let file = rawIllusion || (name ? cardNameMap[name] : "") || "";
+  if (!file && name) {
+    const baseNameCandidate = name.replace(/\s+ability$/i, "").trim();
+    if (cardNameMap[baseNameCandidate]) {
+      file = cardNameMap[baseNameCandidate];
+    }
+  }
+
   const nameLower = (name || "").toLowerCase();
   const subTypeLower = (subType || "").toLowerCase();
   const typeLower = (type || "").toLowerCase();
@@ -403,7 +422,7 @@ export const resolveIllustrationPath = (type: string, rawIllusion: string, name?
 
   if (isExternalOrAbsolutePath(file)) {
     if (file.includes("/assets/") || file.includes("assets/")) {
-      if (nameLower.includes("ability") && (file.includes("assets/creatures/") || file.includes("assets/heroes/") || file.includes("assets/legends/"))) {
+      if (nameLower.includes("ability") && (file.includes("assets/creatures/") || file.includes("assets/heroes/") || file.includes("assets/legends/") || file.includes("assets/wizards/") || file.includes("assets/towers/"))) {
         return getAssetUrl(file);
       }
       const folder = isTowerCard ? "towers" : targetFolder;

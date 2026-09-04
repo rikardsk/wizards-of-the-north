@@ -1609,13 +1609,12 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       });
     } else if (current.type === "mana") {
       const amount = current.amount || 1;
-      const colors: Array<{ code: "W" | "U" | "B" | "R" | "G" | "C"; name: string }> = [
+      const colors: Array<{ code: "W" | "U" | "B" | "R" | "G"; name: string }> = [
         { code: "W", name: "White" },
         { code: "U", name: "Blue" },
         { code: "B", name: "Black" },
         { code: "R", name: "Red" },
         { code: "G", name: "Green" },
-        { code: "C", name: "Colorless" },
       ];
       const options: CardJSON[] = colors.map((col) => ({
         id: `mana_option_${col.code}_${Date.now()}`,
@@ -8860,7 +8859,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   };
 
   const renderManaGauge = (
-    pool: { W: number; U: number; B: number; R: number; G: number; C: number } | undefined,
+    pool: { W: number; U: number; B: number; R: number; G: number; C?: number } | undefined,
     showConversion = false,
     isLarge = false,
     highlightCap = false
@@ -8868,21 +8867,19 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     if (!pool) return null;
     const items = [
       { key: "W" as const, color: "#ffeb3b", bg: "rgba(255, 235, 59, 0.15)", border: "rgba(255, 235, 59, 0.4)" },
+      { key: "U" as const, color: "#38bdf8", bg: "rgba(56, 189, 248, 0.15)", border: "rgba(56, 189, 248, 0.4)" },
       { key: "B" as const, color: "#9c27b0", bg: "rgba(156, 39, 176, 0.15)", border: "rgba(156, 39, 176, 0.4)" },
       { key: "R" as const, color: "#f44336", bg: "rgba(244, 67, 54, 0.15)", border: "rgba(244, 67, 54, 0.4)" },
       { key: "G" as const, color: "#4caf50", bg: "rgba(76, 175, 80, 0.15)", border: "rgba(76, 175, 80, 0.4)" },
-      { key: "C" as const, color: "#9e9e9e", bg: "rgba(158, 158, 158, 0.15)", border: "rgba(158, 158, 158, 0.4)" },
     ];
     
     return (
-      <div className="mana-gauge-container" style={showConversion ? { alignItems: "flex-start", gap: isLarge ? "14px" : "10px" } : undefined}>
+      <div className="mana-gauge-container">
         {items.map((item) => {
           const val = pool[item.key] || 0;
           if (val === 0) return null;
           const isAtCap = highlightCap && manaCapEnabled && val >= manaCap;
-          const isConvertible = item.key !== "C";
-          const showConversionButton = showConversion && isConvertible && gameState?.activePlayerIndex === 0 && gameState?.winnerId === null;
-          const label = item.key === "W" ? "White" : item.key === "U" ? "Blue" : item.key === "B" ? "Black" : item.key === "R" ? "Red" : item.key === "G" ? "Green" : "Colorless";
+          const label = item.key === "W" ? "White" : item.key === "U" ? "Blue" : item.key === "B" ? "Black" : item.key === "R" ? "Red" : "Green";
           
           return (
             <div key={item.key} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: isLarge ? "8px" : "5px" }}>
@@ -8931,56 +8928,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                   </span>
                 )}
               </div>
-              {showConversionButton && (
-                <button
-                  className="conversion-btn"
-                  onClick={() => handleConvertManaToColorless(item.key as any)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: isLarge ? "5px" : "3px",
-                    background: "rgba(255, 255, 255, 0.03)",
-                    border: `1px solid rgba(255, 255, 255, 0.08)`,
-                    borderRadius: isLarge ? "6px" : "4px",
-                    padding: isLarge ? "5px 10px" : "2px 5px",
-                    cursor: "pointer",
-                    color: "var(--text-main)",
-                    fontSize: isLarge ? "0.78rem" : "0.62rem",
-                    fontWeight: "bold",
-                    transition: "all 0.2s",
-                    width: "100%",
-                    boxSizing: "border-box"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
-                    e.currentTarget.style.borderColor = item.color;
-                    if (isLarge) {
-                      e.currentTarget.style.transform = "translateY(-1px)";
-                      e.currentTarget.style.boxShadow = `0 4px 10px ${item.border}`;
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.03)";
-                    e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
-                    if (isLarge) {
-                      e.currentTarget.style.transform = "none";
-                      e.currentTarget.style.boxShadow = "none";
-                    }
-                  }}
-                  title={`Convert 1 ${label} mana to Colorless`}
-                >
-                  <span style={{ color: "var(--text-muted)", fontSize: isLarge ? "0.75rem" : "0.58rem" }}>→</span>
-                  <img
-                    src={getManaDataUri("C")}
-                    alt="C"
-                    style={{
-                      width: isLarge ? "12px" : "9px",
-                      height: isLarge ? "12px" : "9px"
-                    }}
-                  />
-                </button>
-              )}
             </div>
           );
         })}
@@ -12310,8 +12257,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 { key: "white", label: "White", symbol: "W", color: "#fef08a", activeBg: "rgba(254, 240, 138, 0.22)", activeBorder: "rgba(248, 240, 138, 0.6)" },
                 { key: "black", label: "Black", symbol: "B", color: "#c084fc", activeBg: "rgba(192, 132, 252, 0.22)", activeBorder: "rgba(192, 132, 252, 0.6)" },
                 { key: "red", label: "Red", symbol: "R", color: "#f87171", activeBg: "rgba(248, 113, 113, 0.22)", activeBorder: "rgba(248, 113, 113, 0.6)" },
-                { key: "green", label: "Green", symbol: "G", color: "#4ade80", activeBg: "rgba(74, 222, 128, 0.22)", activeBorder: "rgba(74, 222, 128, 0.6)" },
-                { key: "colorless", label: "Colorless", symbol: "C", color: "#cbd5e1", activeBg: "rgba(203, 213, 225, 0.22)", activeBorder: "rgba(203, 213, 225, 0.6)" }
+                { key: "green", label: "Green", symbol: "G", color: "#4ade80", activeBg: "rgba(74, 222, 128, 0.22)", activeBorder: "rgba(74, 222, 128, 0.6)" }
               ].filter(col => (colorCounts[col.key] || 0) > 0);
 
               if (availableConfigs.length === 0) return null;
@@ -13732,38 +13678,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                     </div>
                   </div>
 
-                  <div className="modal-divider"></div>
-
-                  <div className="modal-section">
-                    <h4>Colorless Mana Count Size</h4>
-                    <div className="setting-row">
-                      <span>Colorless mana font size:</span>
-                      <div className="starting-lands-control" style={{ display: "flex", alignItems: "center", gap: "8px", width: "220px", flexShrink: 0 }}>
-                        <button 
-                          onClick={() => handleAbilityManaFontSizeChange(Math.max(8, abilityManaFontSize - 1))}
-                          className="modal-btn secondary"
-                          style={{ padding: 0, width: "24px", minWidth: "24px", flexShrink: 0, fontSize: "0.9rem", height: "24px", display: "flex", alignItems: "center", justifyContent: "center" }}
-                        >
-                          -
-                        </button>
-                        <input
-                          type="range"
-                          min="8"
-                          max="18"
-                          value={abilityManaFontSize}
-                          onChange={(e) => handleAbilityManaFontSizeChange(parseInt(e.target.value, 10))}
-                        />
-                        <button 
-                          onClick={() => handleAbilityManaFontSizeChange(Math.min(18, abilityManaFontSize + 1))}
-                          className="modal-btn secondary"
-                          style={{ padding: 0, width: "24px", minWidth: "24px", flexShrink: 0, fontSize: "0.9rem", height: "24px", display: "flex", alignItems: "center", justifyContent: "center" }}
-                        >
-                          +
-                        </button>
-                        <span className="lands-badge">{abilityManaFontSize}</span>
-                      </div>
-                    </div>
-                  </div>
                 </>
               )}
 
@@ -17778,7 +17692,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                       <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>Mana / turn</span>
                     </div>
                     <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "6px" }}>
-                      {(["W", "G", "R", "B", "U", "C"] as const).map((color) => {
+                      {(["W", "G", "R", "B", "U"] as const).map((color) => {
                         const amt = grandTotalManaByColor[color] || 0;
                         if (amt === 0) return null;
                         return (
@@ -17868,7 +17782,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                 {lvl.totalMana > 0 ? (
                                   <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
                                     <span style={{ fontWeight: 800, color: "#facc15" }}>+{lvl.totalMana}</span>
-                                    {(["W", "G", "R", "B", "U", "C"] as const).map((color) => {
+                                    {(["W", "G", "R", "B", "U"] as const).map((color) => {
                                       const amt = lvl.manaByColor[color] || 0;
                                       if (amt === 0) return null;
                                       return (
@@ -17962,7 +17876,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           <td style={{ padding: "12px 14px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
                               <span style={{ fontSize: "0.95rem", color: "#facc15" }}>+{overallTotalMana} Mana</span>
-                              {(["W", "G", "R", "B", "U", "C"] as const).map((color) => {
+                              {(["W", "G", "R", "B", "U"] as const).map((color) => {
                                 const amt = grandTotalManaByColor[color] || 0;
                                 if (amt === 0) return null;
                                 return (
@@ -18910,7 +18824,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                       <li><strong>Forests (Green):</strong> {renderTextWithManaSymbols("Generates 1 Green mana ({G}) per land (plus +1 bonus mana upon completing a level set).")}</li>
                       <li><strong>Mountains (Red):</strong> {renderTextWithManaSymbols("Generates 1 Red mana ({R}) per land (plus +1 bonus mana upon completing a level set).")}</li>
                       <li><strong>Swamps (Purple):</strong> {renderTextWithManaSymbols("Generates 1 Black mana ({B}) per land (plus +1 bonus mana upon completing a level set).")}</li>
-                      <li><strong>Other lands:</strong> {renderTextWithManaSymbols("Generates 1 Colorless mana ({C}).")}</li>
                     </ul>
                     <p className="modal-text" style={{ marginTop: "6px" }}>
                       Mana accumulates and persists across turns, but the total pool cannot exceed 10.
@@ -19203,7 +19116,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                       <i className="fa-solid fa-battery-three-quarters"></i> Mana Boost
                     </h5>
                     <p className="modal-text" style={{ margin: 0, fontSize: "0.8rem" }}>
-                      {renderTextWithManaSymbols("Costs 1 Green Mana ({G}). Gain +3 Colorless Mana ({C}) for this turn.")}
+                      {renderTextWithManaSymbols("Costs 1 Green Mana ({G}). Gain +3 Green Mana ({G}) for this turn.")}
                     </p>
                   </div>
 
