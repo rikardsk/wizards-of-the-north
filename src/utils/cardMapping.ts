@@ -2119,7 +2119,7 @@ export const resolveOpponentCard = (ref: string, allCards: CardJSON[]): CardJSON
     type,
     cardSubType,
     color,
-    illustration: resolveIllustrationPath(type === "Spell" ? "Spell" : "Creature", illustration, name, cardSubType),
+    illustration: resolveIllustrationPath(type, illustration, name, cardSubType),
     rulesText,
     customDescription: customDescription || (name && !name.toLowerCase().startsWith("card_") ? "" : "Quest Opponent"),
     power,
@@ -2361,8 +2361,9 @@ export const preloadAllGameImages = async (cards?: CardJSON[]) => {
   // 1. Preload images mapped in cardNameMap
   Object.entries(cardNameMap).forEach(([name, file]) => {
     if (file) {
-      const path = resolveIllustrationPath("Spell", file, name);
-      urlsToPreload.add(path);
+      const cardObj = cards?.find((c) => (c.name || "").toLowerCase() === name.toLowerCase());
+      const path = resolveIllustrationPath(cardObj?.type || "", file, name, cardObj?.cardSubType);
+      if (path) urlsToPreload.add(path);
     }
   });
 
