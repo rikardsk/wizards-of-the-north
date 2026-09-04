@@ -4679,49 +4679,20 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   };
 
   const handleDismissGainedCard = () => {
-    if (!gainedCard || !gameState) return;
-    const player = gameState.players[0];
-    const normalHandSize = player.hand.filter(isCreatureTabCard).length;
-    const limitReached = cardLimitEnabled && isCreatureTabCard(gainedCard) && (normalHandSize >= cardLimit);
-
-    setGameState((prev) => {
-      if (!prev) return null;
-      const updatedPlayers = prev.players.map((p, idx) => {
-        if (idx !== 0) return p;
-        if (limitReached) return p;
-        return { ...p, hand: [...p.hand, gainedCard] };
-      });
-      const logMsg = limitReached 
-        ? `⚠️ Hand limit reached! Discarded ${gainedCard.name}.` 
-        : `Added ${gainedCard.name} to hand.`;
-      return {
-        ...prev,
-        players: updatedPlayers,
-        logs: [...prev.logs, logMsg]
-      };
-    });
-
-    if (limitReached) {
-      setCustomAlert({
-        title: "Hand Limit Reached!",
-        message: `Your hand has reached the maximum limit of ${cardLimit} cards. ${gainedCard.name} has been discarded.`,
-        type: "warning"
-      });
-    } else {
-      const resolved = resolveWizardCard(gainedCard);
-      if (isArtifactCard(resolved)) {
-        setActiveTab("artifacts");
-      } else if (isHeroCard(resolved)) {
-        setActiveTab("heroes");
-      } else if (isPortalCard(resolved)) {
-        setActiveTab("portals");
-      } else if (resolved.type.toLowerCase().includes("quest")) {
-        setActiveTab("quests");
-      } else if (resolved.type.toLowerCase().includes("spell")) {
-        setActiveTab("spells");
-      } else if (isCreatureTabCard(resolved)) {
-        setActiveTab("creatures");
-      }
+    if (!gainedCard) return;
+    const resolved = resolveWizardCard(gainedCard);
+    if (isArtifactCard(resolved)) {
+      setActiveTab("artifacts");
+    } else if (isHeroCard(resolved)) {
+      setActiveTab("heroes");
+    } else if (isPortalCard(resolved)) {
+      setActiveTab("portals");
+    } else if (resolved.type.toLowerCase().includes("quest")) {
+      setActiveTab("quests");
+    } else if (resolved.type.toLowerCase().includes("spell")) {
+      setActiveTab("spells");
+    } else if (isCreatureTabCard(resolved)) {
+      setActiveTab("creatures");
     }
 
     setGainedCard(null);
@@ -8521,7 +8492,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     const actualDraw = Math.min(drawn.length, space);
     const finalPool = { ...nextPool };
     const finalMana = (Object.values(finalPool) as number[]).reduce((a, b) => a + b, 0);
-    const cardsToAdd = drawn.slice(0, actualDraw - 1);
+    const cardsToAdd = drawn.slice(0, actualDraw);
     const updatedPlayers: Player[] = gameState!.players.map((p, idx) => idx !== 0 ? p : { ...p, mana: finalMana, manaPool: finalPool, hand: [...p.hand, ...cardsToAdd] });
     const newLogs = [...gameState!.logs, `${player.name} activated ${card.name}'s ability: "${ability.text}" (Spent: ${spentStr})`];
     cardsToAdd.forEach(c => newLogs.push(`Added ${c.name} to hand.`));
