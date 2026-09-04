@@ -1,23 +1,23 @@
 import type { CardJSON, ActivatedAbility } from "../types/game";
 
 export const cardNameMap: Record<string, string> = {
-  "Skirk Prospector Goblin": "Skirk Prospector Goblin.png",
-  "Ogre Sunderer": "Ogre Sunderer.png",
-  "Magma Rifter Elemental": "Magma Rifter Elemental.png",
-  "Hellkite Ancient Dragon": "Hellkite Ancient Dragon.png",
-  "Field Sentry Human": "Field Sentry Human.png",
-  "White Knight": "White Knight.png",
-  "Leonin Sun-Stalker": "Leonin Sun-Stalker.png",
-  "Archon of Grace": "Archon of Grace.png",
-  "Leaf-Crowned Elf Scout": "Leaf-Crowned Elf Scout.png",
-  "Rootwalla Lizard": "Rootwalla Lizard.png",
-  "Heartwood Dryad": "Heartwood Dryad.png",
-  "Sylvan Primordial": "Sylvan Primordial.png",
+  "Skirk Prospector Goblin": "Skirk Prospector Goblin.jpg",
+  "Ogre Sunderer": "Ogre Sunderer.jpg",
+  "Magma Rifter Elemental": "Magma Rifter Elemental.jpg",
+  "Hellkite Ancient Dragon": "Hellkite Ancient Dragon.jpg",
+  "Field Sentry Human": "Field Sentry Human.jpg",
+  "White Knight": "White Knight.jpg",
+  "Leonin Sun-Stalker": "Leonin Sun-Stalker.jpg",
+  "Archon of Grace": "Archon of Grace.jpg",
+  "Leaf-Crowned Elf Scout": "Leaf-Crowned Elf Scout.jpg",
+  "Rootwalla Lizard": "Rootwalla Lizard.jpg",
+  "Heartwood Dryad": "Heartwood Dryad.jpg",
+  "Sylvan Primordial": "Sylvan Primordial.jpg",
   "Festering Bog-Rot Human Zombie": "Festering Bog-Rot Human Zombie.jpg",
-  "Carrion Crow Swarm": "Carrion Crow Swarm.png",
-  "Fen Haunt Spirit": "Fen Haunt Spirit.png",
-  "Litch King": "Litch King.png",
-  "Lich King": "Litch King.png",
+  "Carrion Crow Swarm": "Carrion Crow Swarm.jpg",
+  "Fen Haunt Spirit": "Fen Haunt Spirit.jpg",
+  "Litch King": "Litch King.jpg",
+  "Lich King": "Lich King.jpg",
   "Wizard Lv1": "Wizard L1.jpg",
   "Wizard Lv2": "Wizard L2.jpg",
   "Wizard Lv3": "Wizard L3.jpg",
@@ -90,28 +90,28 @@ export const cardNameMap: Record<string, string> = {
 };
 
 export const oldFilesMap: Record<string, string> = {
-  "Wizard creature L1.png": "Wizard L1.png",
-  "Wizard creature L2.png": "Wizard L2.png",
-  "Wizard creature L3.png": "Wizard L3.png",
-  "Wizard creature L4.png": "Wizard L4.png",
-  "Forrest creature L1.png": "Leaf-Crowned Elf Scout.png",
-  "Forrest creature L2.png": "Rootwalla Lizard.png",
-  "Forrest creature L3.png": "Heartwood Dryad.png",
-  "Forrest creature L4.png": "Sylvan Primordial.png",
-  "Swamp creature L1.png": "Festering Bog-Rot Human Zombie.png",
-  "Swamp creature L2.png": "Carrion Crow Swarm.png",
-  "Swamp creature L3.png": "Fen Haunt Spirit.png",
-  "Swamp creature L4.png": "Litch King.png",
-  "Lich King.png": "Litch King.png",
+  "Wizard creature L1.png": "Wizard L1.jpg",
+  "Wizard creature L2.png": "Wizard L2.jpg",
+  "Wizard creature L3.png": "Wizard L3.jpg",
+  "Wizard creature L4.png": "Wizard L4.jpg",
+  "Forrest creature L1.png": "Leaf-Crowned Elf Scout.jpg",
+  "Forrest creature L2.png": "Rootwalla Lizard.jpg",
+  "Forrest creature L3.png": "Heartwood Dryad.jpg",
+  "Forrest creature L4.png": "Sylvan Primordial.jpg",
+  "Swamp creature L1.png": "Festering Bog-Rot Human Zombie.jpg",
+  "Swamp creature L2.png": "Carrion Crow Swarm.jpg",
+  "Swamp creature L3.png": "Fen Haunt Spirit.jpg",
+  "Swamp creature L4.png": "Litch King.jpg",
+  "Lich King.png": "Litch King.jpg",
   "Lich King.jpg": "Litch King.jpg",
-  "Mountain creature L1.png": "Skirk Prospector Goblin.png",
-  "Mountain creature L2.png": "Ogre Sunderer.png",
-  "Mountain creature L3.png": "Magma Rifter Elemental.png",
-  "Mountain creature L4.png": "Balrog.png",
-  "Plain creature L1.png": "Field Sentry Human.png",
-  "Plain creature L2.png": "White Knight.png",
-  "Plain creature L3.png": "Leonin Sun-Stalker.png",
-  "Plain creature L4.png": "Archon of Grace.png"
+  "Mountain creature L1.png": "Skirk Prospector Goblin.jpg",
+  "Mountain creature L2.png": "Ogre Sunderer.jpg",
+  "Mountain creature L3.png": "Magma Rifter Elemental.jpg",
+  "Mountain creature L4.png": "Balrog.jpg",
+  "Plain creature L1.png": "Field Sentry Human.jpg",
+  "Plain creature L2.png": "White Knight.jpg",
+  "Plain creature L3.png": "Leonin Sun-Stalker.jpg",
+  "Plain creature L4.png": "Archon of Grace.jpg"
 };
 
 const isExternalOrAbsolutePath = (path: string): boolean => {
@@ -370,6 +370,8 @@ export const resolveIllustrationPath = (type: string, rawIllusion: string, name?
     const baseNameCandidate = name.replace(/\s+ability$/i, "").trim();
     if (cardNameMap[baseNameCandidate]) {
       file = cardNameMap[baseNameCandidate];
+    } else {
+      file = `${baseNameCandidate}.jpg`;
     }
   }
 
@@ -423,11 +425,13 @@ export const resolveIllustrationPath = (type: string, rawIllusion: string, name?
   if (isExternalOrAbsolutePath(file)) {
     if (file.includes("/assets/") || file.includes("assets/")) {
       if (nameLower.includes("ability") && (file.includes("assets/creatures/") || file.includes("assets/heroes/") || file.includes("assets/legends/") || file.includes("assets/wizards/") || file.includes("assets/towers/"))) {
-        return getAssetUrl(file);
+        const isJpg = !file.includes("Ultimate Victory.png") && !file.includes("Tower Ability.png") && !file.includes("Wizard Ability.png");
+        const resolvedPath = isJpg ? file.replace(/\.png$/i, ".jpg") : file;
+        return getAssetUrl(resolvedPath);
       }
       const folder = isTowerCard ? "towers" : targetFolder;
-      const isJpgTarget = isTowerCard || folder === "wizards" || folder === "creatures" || nameLower.includes("festering bog-rot human zombie") || fileLower.includes("festering bog-rot human zombie");
-      const resolvedFilename = isJpgTarget && filename !== "Ultimate Victory.png"
+      const isJpgTarget = isTowerCard || folder === "wizards" || folder === "creatures" || folder === "heroes" || folder === "legends" || nameLower.includes("festering bog-rot human zombie") || fileLower.includes("festering bog-rot human zombie");
+      const resolvedFilename = isJpgTarget && filename !== "Ultimate Victory.png" && filename !== "Tower Ability.png" && filename !== "Wizard Ability.png"
         ? filename.replace(/\.png$/i, ".jpg")
         : filename;
       return getAssetUrl(`assets/${folder}/${resolvedFilename}`);
