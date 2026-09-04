@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData } from "./cardMapping";
 
 describe("cardMapping", () => {
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
@@ -1367,6 +1367,38 @@ describe("cardMapping", () => {
       expect(freezeSpell.type).toBe("Spell");
       expect(freezeSpell.cardSubType).toBe("Battle");
       expect(isBattleSpell(freezeSpell)).toBe(true);
+    });
+  });
+
+  describe("adjustQuestOpponentForDifficulty", () => {
+    const baseCreature = {
+      name: "Goblin Raider",
+      power: "3",
+      toughness: "3",
+      type: "Creature"
+    } as any;
+
+    it("leaves stats unchanged for medium difficulty", () => {
+      const adjusted = adjustQuestOpponentForDifficulty(baseCreature, "medium");
+      expect(adjusted.power).toBe("3");
+      expect(adjusted.toughness).toBe("3");
+    });
+
+    it("reduces stats by 1 (min 1) for easy difficulty", () => {
+      const adjusted = adjustQuestOpponentForDifficulty(baseCreature, "easy");
+      expect(adjusted.power).toBe("2");
+      expect(adjusted.toughness).toBe("2");
+
+      const weakCreature = { name: "Weakling", power: "1", toughness: "1", type: "Creature" } as any;
+      const adjustedWeak = adjustQuestOpponentForDifficulty(weakCreature, "easy");
+      expect(adjustedWeak.power).toBe("1");
+      expect(adjustedWeak.toughness).toBe("1");
+    });
+
+    it("increases stats by +1/+1 for hard difficulty", () => {
+      const adjusted = adjustQuestOpponentForDifficulty(baseCreature, "hard");
+      expect(adjusted.power).toBe("4");
+      expect(adjusted.toughness).toBe("4");
     });
   });
 });

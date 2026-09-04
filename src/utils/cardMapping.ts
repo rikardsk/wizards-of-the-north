@@ -1810,6 +1810,26 @@ export const KNOWN_SPELL_METADATA: Record<string, { rulesText: string; customDes
   }
 };
 
+export const adjustQuestOpponentForDifficulty = (card: CardJSON, difficulty: "easy" | "medium" | "hard"): CardJSON => {
+  if (difficulty === "medium") return card;
+  const modified: CardJSON = JSON.parse(JSON.stringify(card));
+  if (modified.power !== undefined) {
+    const p = parseInt(modified.power, 10);
+    if (!isNaN(p)) {
+      const delta = difficulty === "easy" ? -1 : 1;
+      modified.power = String(Math.max(1, p + delta));
+    }
+  }
+  if (modified.toughness !== undefined) {
+    const t = parseInt(modified.toughness, 10);
+    if (!isNaN(t)) {
+      const delta = difficulty === "easy" ? -1 : 1;
+      modified.toughness = String(Math.max(1, t + delta));
+    }
+  }
+  return modified;
+};
+
 export const resolveOpponentCard = (ref: string, allCards: CardJSON[]): CardJSON => {
   const targetName = knownCardIdMap[ref] || (ref.toLowerCase().startsWith("card_") ? "" : ref);
   const found = allCards.find(c => 

@@ -7,7 +7,7 @@ import type { GameState, MapCell, Player, CardJSON, MapDataJSON, ActivatedAbilit
 import { getManaDataUri, setColorlessManaFontSize } from "./assets/mana/manaIcons";
 import type { UploadHistoryItem } from "./utils/db";
 import { saveHistoryItem, getHistoryItems, deleteHistoryItem } from "./utils/db";
-import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem } from "./utils/cardMapping";
+import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem } from "./utils/cardMapping";
 import "./App.css";
 
 export interface QuestTileConfig {
@@ -979,7 +979,7 @@ const resolveQuestRewardCard = (levelObj: QuestLevelJSON | undefined, cardPool: 
   return cards.length > 0 ? cards[0] : null;
 };
 
-const getQuestLevelOccupant = (levelObj: QuestLevelJSON | undefined, cardPool: CardJSON[]): CardJSON | null => {
+const getQuestLevelOccupant = (levelObj: QuestLevelJSON | undefined, cardPool: CardJSON[], difficulty?: "easy" | "medium" | "hard"): CardJSON | null => {
   if (!levelObj) return null;
   
   let opponentsList: CardJSON[] = [];
@@ -989,6 +989,10 @@ const getQuestLevelOccupant = (levelObj: QuestLevelJSON | undefined, cardPool: C
     opponentsList = generateQuestOpponents(levelObj, cardPool);
   }
   
+  if (difficulty && difficulty !== "medium") {
+    opponentsList = opponentsList.map(c => adjustQuestOpponentForDifficulty(c, difficulty));
+  }
+
   if (opponentsList.length === 0) return null;
 
   let highestPowerCreature = opponentsList[0];
@@ -2364,6 +2368,15 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   useEffect(() => {
     localStorage.setItem("solo", String(solo));
   }, [solo]);
+
+  const [soloDifficulty, setSoloDifficulty] = useState<"easy" | "medium" | "hard">(() => {
+    const saved = localStorage.getItem("soloDifficulty");
+    return (saved === "easy" || saved === "medium" || saved === "hard") ? saved : "medium";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("soloDifficulty", soloDifficulty);
+  }, [soloDifficulty]);
   const [playerSide, setPlayerSide] = useState<"left" | "right">(() => {
     const saved = localStorage.getItem("playerSide");
     return (saved === "left" || saved === "right") ? saved : "left";
@@ -4152,7 +4165,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       const levelIndex = quest.questLevel ?? 0;
       const levelObj = qData?.levels?.[levelIndex];
       if (levelObj && targetX >= 0 && targetY >= 0) {
-        const occupant = getQuestLevelOccupant(levelObj, cards);
+        const occupant = getQuestLevelOccupant(levelObj, cards, solo ? soloDifficulty : undefined);
         if (occupant) {
           hydratedMap[targetX][targetY].occupant = occupant;
           hydratedMap[targetX][targetY].ownerId = 1;
@@ -4182,6 +4195,15 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     const p1Name = playerName && playerName.trim() !== "" ? playerName.trim() : "Player (You)";
     const p1Color = playerSide === "right" ? "#ff3333" : "#0077ff";
     const p1 = createPlayer(0, p1Name, p1Color, false, availableCards);
+    if (solo) {
+      if (soloDifficulty === "easy") {
+        p1.towerHp = 30;
+      } else if (soloDifficulty === "hard") {
+        p1.towerHp = 20;
+      } else {
+        p1.towerHp = 25;
+      }
+    }
     const p1Tower = hydratedMap.flat().find(cell => cell.ownerId === 0 && cell.tileId.toLowerCase().includes("tower"));
     p1.wizardLevel = p1Tower ? getLevel(p1Tower.tileId) : 1;
 
@@ -6893,6 +6915,9 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         questOpponentCards = (cell.occupant as any).questArmy;
       } else {
         questOpponentCards = generateQuestOpponents(levelObj, cardPool);
+        if (solo && soloDifficulty !== "medium") {
+          questOpponentCards = questOpponentCards.map(c => adjustQuestOpponentForDifficulty(c, soloDifficulty));
+        }
       }
 
       enemyArmy = questOpponentCards.map((opCard, idx) => ({
@@ -7536,7 +7561,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       );
       if (hasOpponents) {
         const cardPool = getMergedCardPool();
-        const questOpponentCards = generateQuestOpponents(currentLevelObj, cardPool);
+        let questOpponentCards = generateQuestOpponents(currentLevelObj, cardPool);
+        if (solo && soloDifficulty !== "medium") {
+          questOpponentCards = questOpponentCards.map(c => adjustQuestOpponentForDifficulty(c, soloDifficulty));
+        }
 
         const enemyArmy: MockFightCreature[] = questOpponentCards.map((opCard, idx) => ({
           id: `quest-enemy-${idx}-${Date.now()}`,
@@ -9837,7 +9865,26 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 const turnProduction = getManaPoolForTurn(gameState.map, p.id, p.wizardLevel, p.wizardManaChoice);
                 return (
                   <div key={p.id} className="player-row" style={{ borderLeftColor: p.color }}>
-                    <span className="p-name">{p.name}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span className="p-name">{p.name}</span>
+                      {solo && (
+                        <span 
+                          style={{
+                            fontSize: "0.72rem",
+                            fontWeight: 800,
+                            padding: "2px 8px",
+                            borderRadius: "10px",
+                            textTransform: "capitalize",
+                            background: soloDifficulty === "easy" ? "rgba(34, 197, 94, 0.2)" : soloDifficulty === "hard" ? "rgba(239, 68, 68, 0.2)" : "rgba(234, 179, 8, 0.2)",
+                            color: soloDifficulty === "easy" ? "#4ade80" : soloDifficulty === "hard" ? "#f87171" : "#facc15",
+                            border: soloDifficulty === "easy" ? "1px solid rgba(34, 197, 94, 0.5)" : soloDifficulty === "hard" ? "1px solid rgba(239, 68, 68, 0.5)" : "1px solid rgba(234, 179, 8, 0.5)",
+                          }}
+                          title={`Solo Mode Difficulty: ${soloDifficulty}`}
+                        >
+                          {soloDifficulty}
+                        </span>
+                      )}
+                    </div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
                       <span className="p-stat">Tower HP: <strong>{p.towerHp}</strong></span>
                       {(() => {
@@ -12979,6 +13026,32 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         </button>
                       </div>
                     </div>
+
+                    {solo && (
+                      <div className="setting-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "12px" }}>
+                        <span>Solo Difficulty:</span>
+                        <div className="toggle-group" style={{ display: "flex", gap: "6px" }}>
+                          {(["easy", "medium", "hard"] as const).map((diff) => (
+                            <button
+                              key={diff}
+                              onClick={() => setSoloDifficulty(diff)}
+                              className={`modal-btn-sm ${soloDifficulty === diff ? "primary-btn-sm" : "secondary-btn-sm"}`}
+                              style={{
+                                padding: "6px 12px",
+                                fontWeight: "700",
+                                fontSize: "0.8rem",
+                                borderRadius: "6px",
+                                textTransform: "capitalize",
+                                cursor: "pointer",
+                                transition: "all 0.2s"
+                              }}
+                            >
+                              {diff}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="modal-divider"></div>
@@ -24649,6 +24722,100 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 </div>
               </div>
             </div>
+
+            {/* Solo Difficulty Level Selector */}
+            {solo && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                <label style={{ fontSize: "0.88rem", fontWeight: 700, color: "#e2e8f0", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <i className="fa-solid fa-gauge-high" style={{ color: "#c084fc" }}></i> Solo Difficulty Level:
+                </label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
+                  {/* Easy Card */}
+                  <div
+                    onClick={() => setSoloDifficulty("easy")}
+                    style={{
+                      padding: "14px 12px",
+                      borderRadius: "12px",
+                      background: soloDifficulty === "easy" ? "linear-gradient(135deg, rgba(34, 197, 94, 0.22) 0%, rgba(15, 23, 42, 0.8) 100%)" : "rgba(15, 23, 42, 0.4)",
+                      border: soloDifficulty === "easy" ? "2px solid #22c55e" : "1px solid rgba(255, 255, 255, 0.08)",
+                      cursor: "pointer",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px",
+                      boxShadow: soloDifficulty === "easy" ? "0 0 18px rgba(34, 197, 94, 0.3)" : "none",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 800, fontSize: "0.92rem", color: soloDifficulty === "easy" ? "#4ade80" : "var(--text-muted)" }}>
+                        <i className="fa-solid fa-leaf" style={{ color: soloDifficulty === "easy" ? "#4ade80" : "var(--text-muted)" }}></i>
+                        <span>Easy</span>
+                      </div>
+                      {soloDifficulty === "easy" && <i className="fa-solid fa-circle-check" style={{ color: "#4ade80", fontSize: "1rem" }}></i>}
+                    </div>
+                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", lineHeight: "1.3" }}>
+                      30 Tower HP (+5 HP), gentler quest enemies.
+                    </span>
+                  </div>
+
+                  {/* Medium Card (Default Choice) */}
+                  <div
+                    onClick={() => setSoloDifficulty("medium")}
+                    style={{
+                      padding: "14px 12px",
+                      borderRadius: "12px",
+                      background: soloDifficulty === "medium" ? "linear-gradient(135deg, rgba(234, 179, 8, 0.22) 0%, rgba(15, 23, 42, 0.8) 100%)" : "rgba(15, 23, 42, 0.4)",
+                      border: soloDifficulty === "medium" ? "2px solid #eab308" : "1px solid rgba(255, 255, 255, 0.08)",
+                      cursor: "pointer",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px",
+                      boxShadow: soloDifficulty === "medium" ? "0 0 18px rgba(234, 179, 8, 0.3)" : "none",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 800, fontSize: "0.92rem", color: soloDifficulty === "medium" ? "#facc15" : "var(--text-muted)" }}>
+                        <i className="fa-solid fa-scale-balanced" style={{ color: soloDifficulty === "medium" ? "#facc15" : "var(--text-muted)" }}></i>
+                        <span>Medium</span>
+                      </div>
+                      {soloDifficulty === "medium" && <i className="fa-solid fa-circle-check" style={{ color: "#facc15", fontSize: "1rem" }}></i>}
+                    </div>
+                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", lineHeight: "1.3" }}>
+                      25 Tower HP, standard balanced quest challenge.
+                    </span>
+                  </div>
+
+                  {/* Hard Card */}
+                  <div
+                    onClick={() => setSoloDifficulty("hard")}
+                    style={{
+                      padding: "14px 12px",
+                      borderRadius: "12px",
+                      background: soloDifficulty === "hard" ? "linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(15, 23, 42, 0.8) 100%)" : "rgba(15, 23, 42, 0.4)",
+                      border: soloDifficulty === "hard" ? "2px solid #ef4444" : "1px solid rgba(255, 255, 255, 0.08)",
+                      cursor: "pointer",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "6px",
+                      boxShadow: soloDifficulty === "hard" ? "0 0 18px rgba(239, 68, 68, 0.3)" : "none",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 800, fontSize: "0.92rem", color: soloDifficulty === "hard" ? "#f87171" : "var(--text-muted)" }}>
+                        <i className="fa-solid fa-skull" style={{ color: soloDifficulty === "hard" ? "#f87171" : "var(--text-muted)" }}></i>
+                        <span>Hard</span>
+                      </div>
+                      {soloDifficulty === "hard" && <i className="fa-solid fa-circle-check" style={{ color: "#f87171", fontSize: "1rem" }}></i>}
+                    </div>
+                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", lineHeight: "1.3" }}>
+                      20 Tower HP (-5 HP), +1/+1 fiercer quest enemies.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* 3. Side Selection (Red vs Blue) */}
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
