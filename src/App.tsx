@@ -1120,11 +1120,11 @@ export default function App() {
   const [showShortcutsModal, setShowShortcutsModal] = useState<boolean>(false);
   const [showScoreBreakdownModal, setShowScoreBreakdownModal] = useState<boolean>(false);
   const [showFightModal, setShowFightModal] = useState<boolean>(false);
-  const [showStrengthGauge, setShowStrengthGauge] = useState<boolean>(true);
-  const [showXpGauge, setShowXpGauge] = useState<boolean>(true);
-  const [showLandGauge, setShowLandGauge] = useState<boolean>(true);
-  const [showTowerGauge, setShowTowerGauge] = useState<boolean>(true);
-  const [showQuestGauge, setShowQuestGauge] = useState<boolean>(true);
+  const [showStrengthGauge, setShowStrengthGauge] = useState<boolean>(false);
+  const [showXpGauge, setShowXpGauge] = useState<boolean>(false);
+  const [showLandGauge, setShowLandGauge] = useState<boolean>(false);
+  const [showTowerGauge, setShowTowerGauge] = useState<boolean>(false);
+  const [showQuestGauge, setShowQuestGauge] = useState<boolean>(false);
   const [showLandOverviewModal, setShowLandOverviewModal] = useState<boolean>(false);
   interface CounterspellPromptData {
     spellName: string;
