@@ -11328,16 +11328,13 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                               {player.name}'s Deck:
                             </div>
                             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                              {["white", "blue", "black", "red", "green", "gold", "artifact"].map((col) => {
+                              {["white", "green", "red", "black"].map((col) => {
                                 const isSelected = pColors.includes(col);
                                 const colorMap: Record<string, string> = {
                                   white: "#e2e8f0",
-                                  blue: "#3b82f6",
-                                  black: "#475569",
-                                  red: "#ef4444",
                                   green: "#10b981",
-                                  gold: "#fbbf24",
-                                  artifact: "#94a3b8"
+                                  red: "#ef4444",
+                                  black: "#475569"
                                 };
                                 const colorHex = colorMap[col] || "#fff";
 
