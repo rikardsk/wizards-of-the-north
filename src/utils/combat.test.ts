@@ -814,6 +814,32 @@ describe("Subtype Buffs & Always-Active Abilities", () => {
       expect(spell.rulesText).toBe("Gain +8/+0");
     });
 
+    it("should correctly resolve ability spell artwork for raw deck cards with cardName / cardType properties (e.g. Litch King, Nightmare, Hellkite)", () => {
+      const rawLitchKing: any = {
+        cardName: "Litch King",
+        cardType: "Creature",
+        frameStyle: "black",
+        illustration: "Litch King.jpg",
+        activatedAbilities: [{ cost: ["B", "B"], text: "Deals 2 damage to any target" }]
+      };
+
+      const rawNightmare: any = {
+        cardName: "Nightmare",
+        cardType: "Creature",
+        frameStyle: "black",
+        illustration: "Nightmare.jpg",
+        activatedAbilities: [{ cost: ["B", "B"], text: "Gain +6/+0" }]
+      };
+
+      const litchSpell = getOrCreateAbilitySpellCard(rawLitchKing, rawLitchKing.activatedAbilities[0]);
+      expect(litchSpell.name).toBe("Litch King Ability");
+      expect(litchSpell.illustration).toBe("/assets/creatures/Litch King.jpg");
+
+      const nightmareSpell = getOrCreateAbilitySpellCard(rawNightmare, rawNightmare.activatedAbilities[0]);
+      expect(nightmareSpell.name).toBe("Nightmare Ability");
+      expect(nightmareSpell.illustration).toBe("/assets/creatures/Nightmare.jpg");
+    });
+
     it("should correctly parse and apply stats from activeSpells", () => {
       const creature: MockFightCreature = {
         id: "balrog_unit",

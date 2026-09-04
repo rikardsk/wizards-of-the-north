@@ -703,24 +703,33 @@ export const formatManaSymbol = (s: string): string => {
 };
 
 export const getOrCreateAbilitySpellCard = (creatureCard: CardJSON, ability: ActivatedAbility): CardJSON => {
-  const cacheKey = `${creatureCard.name}-${ability.text}-${ability.cost.join(",")}`;
+  const realName = creatureCard.name || (creatureCard as any).cardName || "";
+  const realType = creatureCard.type || (creatureCard as any).cardType || "Creature";
+  const realSubType = creatureCard.cardSubType || (creatureCard as any).subType || "";
+  const realIll = creatureCard.illustration || (creatureCard as any).artBase64 || "";
+
+  const resolvedIllustration = resolveIllustrationPath(realType, realIll, realName, realSubType);
+
+  const cacheKey = `${realName}-${ability.text}-${ability.cost.join(",")}`;
   if (abilitySpellsCache.has(cacheKey)) {
-    return abilitySpellsCache.get(cacheKey)!;
+    const cached = abilitySpellsCache.get(cacheKey)!;
+    if (cached.illustration !== resolvedIllustration) {
+      cached.illustration = resolvedIllustration;
+    }
+    return cached;
   }
 
   // Parse mana cost: extract and format all parts in cost that look like mana symbols
   const manaCostSymbols = ability.cost.filter(isManaSymbol).map(formatManaSymbol);
   const manaCost = manaCostSymbols.join("");
 
-  const resolvedIllustration = resolveIllustrationPath(creatureCard.type, creatureCard.illustration, creatureCard.name, creatureCard.cardSubType);
-
   const spellCard: CardJSON = {
-    id: `ability-spell-${creatureCard.name.replace(/\s+/g, "-").toLowerCase()}-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-    name: `${creatureCard.name} Ability`,
+    id: `ability-spell-${realName.replace(/\s+/g, "-").toLowerCase()}-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    name: `${realName} Ability`,
     manaCost: manaCost || "{0}",
     type: "Spell",
     cardSubType: "Battle",
-    color: creatureCard.color,
+    color: creatureCard.color || (creatureCard as any).frameStyle || "black",
     illustration: resolvedIllustration,
     rulesText: ability.text,
     customDescription: ability.text
