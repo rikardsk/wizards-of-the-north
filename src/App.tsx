@@ -9840,6 +9840,19 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                     <span className="p-name">{p.name}</span>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
                       <span className="p-stat">Tower HP: <strong>{p.towerHp}</strong></span>
+                      {(() => {
+                        const landsCount = gameState.map ? gameState.map.flat().filter(cell => cell.ownerId === p.id).length : 0;
+                        return (
+                          <span 
+                            className="p-stat"
+                            onClick={p.id === 0 ? () => setShowLandOverviewModal(true) : undefined}
+                            style={{ cursor: p.id === 0 ? "pointer" : "default" }}
+                            title={p.id === 0 ? "Click to view Land Overview" : undefined}
+                          >
+                            Lands: <strong style={{ color: "#38bdf8" }}>{landsCount}</strong>
+                          </span>
+                        );
+                      })()}
                       {p.id === 0 && (() => {
                         const landsCount = gameState.map ? gameState.map.flat().filter(cell => cell.ownerId === 0).length : 0;
                         const liveScore = calculateGameScore(
