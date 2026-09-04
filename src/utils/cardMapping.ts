@@ -373,9 +373,25 @@ export function getAssetUrl(path: string): string {
 }
 
 export const resolveIllustrationPath = (type: string, rawIllusion: string, name?: string, subType?: string): string => {
-  let file = rawIllusion || (name ? cardNameMap[name] : "") || "";
-  if (!file && name) {
-    const baseNameCandidate = name.replace(/\s+ability$/i, "").trim();
+  let effectiveName = name || "";
+  if (effectiveName.toLowerCase().startsWith("card_")) {
+    const rawId = effectiveName.replace(/\s+ability$/i, "").trim();
+    if (knownCardIdMap[rawId]) {
+      effectiveName = effectiveName.toLowerCase().endsWith(" ability")
+        ? `${knownCardIdMap[rawId]} Ability`
+        : knownCardIdMap[rawId];
+    }
+  }
+
+  const baseNameCandidate = effectiveName.replace(/\s+ability$/i, "").trim();
+  const isGenericAbilityIllusion = rawIllusion.includes("Wizard Ability") || rawIllusion.includes("Tower Ability") || rawIllusion.includes("abilities/");
+  const isNamedSpecificAbility = Boolean(baseNameCandidate && baseNameCandidate.toLowerCase() !== "wizard" && baseNameCandidate.toLowerCase() !== "tower");
+
+  let file = (!isGenericAbilityIllusion || !isNamedSpecificAbility ? rawIllusion : "") ||
+    (effectiveName ? cardNameMap[effectiveName] : "") ||
+    (baseNameCandidate ? cardNameMap[baseNameCandidate] : "") || "";
+
+  if (!file && effectiveName) {
     if (cardNameMap[baseNameCandidate]) {
       file = cardNameMap[baseNameCandidate];
     } else {
@@ -383,7 +399,7 @@ export const resolveIllustrationPath = (type: string, rawIllusion: string, name?
     }
   }
 
-  const nameLower = (name || "").toLowerCase();
+  const nameLower = effectiveName.toLowerCase();
   const subTypeLower = (subType || "").toLowerCase();
   const typeLower = (type || "").toLowerCase();
 
@@ -1060,10 +1076,10 @@ export const resolveCompanionGrantForLevel = (
 
     if (candidates.length === 0) {
       const defaultCompanions = [
-        { id: "tmpl_balrog", name: "Balrog", type: "Creature", cardSubType: "Monster" },
-        { id: "tmpl_nightmare", name: "Nightmare", type: "Creature", cardSubType: "Monster" },
-        { id: "tmpl_forest_golem", name: "Forest Golem", type: "Creature", cardSubType: "Monster" },
-        { id: "tmpl_stone_golem", name: "Stone Golem", type: "Creature", cardSubType: "Monster" }
+        { id: "tmpl_balrog", name: "Balrog", type: "Creature", cardSubType: "Monster", illustration: "Balrog.jpg" },
+        { id: "tmpl_nightmare", name: "Nightmare", type: "Creature", cardSubType: "Monster", illustration: "Nightmare.jpg" },
+        { id: "tmpl_forest_golem", name: "Forest Golem", type: "Creature", cardSubType: "Monster", illustration: "Forest Golem.jpg" },
+        { id: "tmpl_stone_golem", name: "Stone Golem", type: "Creature", cardSubType: "Monster", illustration: "Stone Golem.jpg" }
       ];
       let pool = defaultCompanions;
       if (subType) {

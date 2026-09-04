@@ -340,6 +340,7 @@ export const GameCard: React.FC<GameCardProps> = ({
             onError={(e) => {
               const target = e.currentTarget;
               const currentSrc = target.src || "";
+              console.error(`[Card Image Load Error] Failed to load illustration for card "${card.name}":`, currentSrc);
               if (card.name && card.name.toLowerCase().includes("ability")) {
                 const baseName = card.name.replace(/\s+ability$/i, "").trim();
                 const fallbackPath = resolveIllustrationPath("Creature", "", baseName);
@@ -348,9 +349,9 @@ export const GameCard: React.FC<GameCardProps> = ({
                   return;
                 }
               }
-              const genericFallback = resolveIllustrationPath("Spell", "Wizard Ability.png", "Wizard Ability");
-              if (genericFallback && !currentSrc.includes(genericFallback)) {
-                target.src = genericFallback;
+              target.style.display = "none";
+              if (target.parentElement) {
+                target.parentElement.classList.add("card-art-error");
               }
             }}
           />
