@@ -2756,9 +2756,9 @@ export const filterDefenderCreatures = (cardPool: CardJSON[], opponentColors: st
 
 export const generateDefenderArmyForTile = (
   cardPool: CardJSON[],
-  opponentColors: string[]
+  colors: string[]
 ): { occupant: CardJSON; questArmy: CardJSON[] } | null => {
-  const validCreatures = filterDefenderCreatures(cardPool, opponentColors);
+  const validCreatures = filterDefenderCreatures(cardPool, colors);
   if (validCreatures.length === 0) return null;
 
   const targetPower = Math.floor(Math.random() * 11) + 10;
@@ -2787,6 +2787,23 @@ export const generateDefenderArmyForTile = (
   return { occupant, questArmy: armyList };
 };
 
+export const isBorderTileBetweenBiomes = (cell: MapCell, map: MapCell[][]): boolean => {
+  const cols = map.length;
+  const rows = map[0].length;
+  const odd = cell.col % 2 === 1;
+  const neighbors = [
+    [cell.col, cell.row - 1], [cell.col, cell.row + 1],
+    [cell.col - 1, cell.row], [cell.col + 1, cell.row],
+    [cell.col - 1, odd ? cell.row + 1 : cell.row - 1],
+    [cell.col + 1, odd ? cell.row + 1 : cell.row - 1]
+  ];
+  return neighbors.some(([nc, nr]) => {
+    if (nc < 0 || nc >= cols || nr < 0 || nr >= rows) return false;
+    const t = map[nc][nr].tileId.toLowerCase();
+    return t.includes("swamp") || t.includes("mountain") || t.includes("crypt") || t.includes("dead") || t.includes("forge") || t.includes("scorched");
+  });
+};
+
 export const checkAndSpawnDefenderArmiesOnMap = (
   map: MapCell[][],
   cardPool: CardJSON[],
@@ -2801,8 +2818,8 @@ export const checkAndSpawnDefenderArmiesOnMap = (
 
   for (let c = 0; c < cols; c++) {
     for (let r = 0; r < rows; r++) {
-      const cell = newMap[c][r];
-      if (cell.ownerId === 0 || cell.occupant) continue;
+      const cell = newMap[c][r] as any;
+      if (cell.ownerId === 0 || cell.occupant || cell.defenderEvaluated) continue;
 
       const odd = c % 2 === 1;
       const neighbors = [
@@ -2813,7 +2830,13 @@ export const checkAndSpawnDefenderArmiesOnMap = (
         nc >= 0 && nc < cols && nr >= 0 && nr < rows && newMap[nc][nr].ownerId === 0
       );
 
-      if (isAdjacentToPlayer) {
+      if (!isAdjacentToPlayer) continue;
+
+      cell.defenderEvaluated = true;
+      const isBorder = isBorderTileBetweenBiomes(cell, newMap);
+      const shouldSpawn = isBorder || Math.random() < 0.5;
+
+      if (shouldSpawn) {
         const tileColors = getTileLandColors(cell.tileId, opponentColors);
         const result = generateDefenderArmyForTile(cardPool, tileColors);
         if (result) {
@@ -2826,6 +2849,7 @@ export const checkAndSpawnDefenderArmiesOnMap = (
 
   return { map: newMap, spawnedCount };
 };
+
 
 
 

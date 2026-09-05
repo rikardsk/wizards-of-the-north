@@ -4381,10 +4381,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     ];
 
     setCollapsedQuestPanels({});
-    const p2ColorsForDefenders = getColorsFromManaPool(p2.manaPool);
-    const mapWithDefenders = checkAndSpawnDefenderArmiesOnMap(hydratedMap, availableCards, p2ColorsForDefenders).map;
     setGameState({
-      map: mapWithDefenders,
+      map: hydratedMap,
       cols: mapJson.cols,
       rows: mapJson.rows,
       players: [p1, p2],
@@ -6424,6 +6422,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
     if (currentQuestBattle) {
       const { questCard, cardIdx, playerIdx: pIdx, col: qCol, row: qRow } = currentQuestBattle;
+      const isDefenderBattle = (currentQuestBattle as any).isDefenderBattle || (questCard as any).isDefenderArmyCard;
       const qData = resolveQuestData(questCard, getMergedCardPool());
       const currentLevelIndex = questCard.questLevel ?? 0;
       const totalLevels = qData?.levels?.length ?? questCard.totalQuestLevels ?? 1;
@@ -6439,12 +6438,18 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           if (!prev) return null;
           const newMap = prev.map.map(colArr => colArr.map(cell => {
             if (cell.col === qCol && cell.row === qRow) {
-              return { ...cell, ownerId: pIdx };
+              return { ...cell, ownerId: pIdx, occupant: null, defenderEvaluated: true };
             }
             return cell;
           }));
           return { ...prev, map: newMap };
         });
+
+        if (isDefenderBattle) {
+          addLog("🏆 Victory! You defeated the defender army and claimed the land!");
+          setActiveQuestBattle(null);
+          return;
+        }
 
         const activeColors = gameState ? getActiveManaColors(getEnabledWizardManaColorsForPlayer(pIdx, gameState.map)) : ["black"];
         const cardPool = getMergedCardPool();
@@ -6614,10 +6619,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 }
                 return cell;
               }));
-
-              const p2ColorsForDefenders = getColorsFromManaPool(prev.players[1]?.manaPool || { W: 1, U: 1, B: 1, R: 1, G: 1, C: 1 });
-              const cardsPool = masterDeckCards.length > 0 ? masterDeckCards : allDeckCards;
-              updatedMap = checkAndSpawnDefenderArmiesOnMap(updatedMap, cardsPool, p2ColorsForDefenders).map;
             }
 
             const currentXp = p.xp || 0;
@@ -6907,11 +6908,12 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
     let enemyArmy: MockFightCreature[] = [];
 
+    const isDefender = (cell.occupant as any)?.isDefenderArmy;
     const isQuestOccupant = cell.occupant && (
       cell.occupant.name === "Necromancer" ||
       cell.occupant.customDescription?.includes("Quest") ||
       cell.occupant.id?.includes("quest") ||
-      !!(cell.occupant as any).questArmy
+      isDefender
     );
 
     let qBattleObj: typeof activeQuestBattle = null;
@@ -6942,20 +6944,20 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         row
       }));
 
-      const questCardToUse = (cell.occupant && (cell.occupant as any).isDefenderArmy) ? {
-        name: cell.occupant.name || "Defender Army",
-        manaCost: "0",
+      const questCardToUse = pQuestCard || (isDefender ? {
+        id: `defender_quest_${Date.now()}`,
+        name: "Defender Army",
+        cardName: "Defender Army",
         type: "Quest",
-        color: cell.occupant.color || "red",
-        illustration: cell.occupant.illustration || "",
-        rulesText: "Defeat defender army to claim land ownership",
-        completed: false
-      } : pQuestCard;
+        cardType: "Quest",
+        illustration: cell.occupant?.illustration || "",
+        isDefenderArmyCard: true
+      } as CardJSON : null);
 
       if (questCardToUse) {
         const cardIdx = pQuestCard ? gameState.players[0].hand.indexOf(pQuestCard) : -1;
-        const currentLevelIndex = pQuestCard?.questLevel ?? 0;
-        const initialHp = pQuestCard ? getQuestInitialHp(pQuestCard, currentLevelIndex) : 0;
+        const currentLevelIndex = questCardToUse.questLevel ?? 0;
+        const initialHp = isDefender ? 100 : getQuestInitialHp(questCardToUse, currentLevelIndex);
         qBattleObj = {
           questCard: questCardToUse,
           cardIdx,
@@ -6963,12 +6965,12 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           col,
           row,
           questHp: initialHp,
-          maxQuestHp: initialHp
+          maxQuestHp: initialHp,
+          isDefenderBattle: isDefender
         };
         setActiveQuestBattle(qBattleObj);
-      }
 
-        if (pQuestCard && (pQuestCard.name || "").toLowerCase().includes("tower of power")) {
+        if ((questCardToUse.name || "").toLowerCase().includes("tower of power")) {
           setGameState(g => {
             if (!g || !g.players[1]) return g;
             const newPlayers = [...g.players];
@@ -6979,6 +6981,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             return { ...g, players: newPlayers };
           });
         }
+      }
     } else {
       enemyArmy = enemyBoard.map((item, idx) => ({
         id: `board-enemy-${idx}-${Date.now()}`,
@@ -7087,7 +7090,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     if (cell.occupant) {
       const isQuestOccupant = cell.occupant.name === "Necromancer" ||
                               cell.occupant.customDescription?.includes("Quest") ||
-                              cell.occupant.id?.includes("quest");
+                              cell.occupant.id?.includes("quest") ||
+                              (cell.occupant as any).isDefenderArmy;
 
       const isAdjacent = hasAdjacentOwnership(col, row, gameState.activePlayerIndex);
 
@@ -8183,7 +8187,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       return { ...p, mana: totalMana, manaPool: nextPool, hand: updatedHand };
     });
 
-    let updatedMap = [...gameState.map];
+    const updatedMap = [...gameState.map];
     const existingOccupant = updatedMap[col][row].occupant;
     let finalCard = { ...card };
     let isStacked = false;
@@ -8208,10 +8212,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       occupant: finalCard,
       ownerId: playerIdx,
     };
-
-    const p2ColorsForDefenders = getColorsFromManaPool(gameState.players[1]?.manaPool || { W: 1, U: 1, B: 1, R: 1, G: 1, C: 1 });
-    const cardsPool = masterDeckCards.length > 0 ? masterDeckCards : allDeckCards;
-    updatedMap = checkAndSpawnDefenderArmiesOnMap(updatedMap, cardsPool, p2ColorsForDefenders).map;
 
     let finalPlayers = updatedPlayers;
     if (card.name === "Wizard Apprentice") {
