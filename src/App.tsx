@@ -6468,6 +6468,9 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       if (isQuestVictory) {
         setShowFightModal(false);
         removeGiftSpellsFromHand();
+        setSelectedCell(null);
+        setInspectedCard(null);
+        setSelectedCardIdx(null);
 
         setGameState(prev => {
           if (!prev) return null;
@@ -7188,6 +7191,9 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               ]
             };
           });
+          setSelectedCell(null);
+          setInspectedCard(null);
+          setSelectedCardIdx(null);
           return;
         } else {
           addLog(`❌ Cannot claim ${cell.tileId} at (${col}, ${row}) - it is not adjacent to your territory!`);
