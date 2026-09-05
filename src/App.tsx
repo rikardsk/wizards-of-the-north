@@ -6958,7 +6958,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         setActiveQuestBattle(qBattleObj);
       }
 
-        if ((pQuestCard.name || "").toLowerCase().includes("tower of power")) {
+        if (pQuestCard && (pQuestCard.name || "").toLowerCase().includes("tower of power")) {
           setGameState(g => {
             if (!g || !g.players[1]) return g;
             const newPlayers = [...g.players];
@@ -6969,7 +6969,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             return { ...g, players: newPlayers };
           });
         }
-      }
     } else {
       enemyArmy = enemyBoard.map((item, idx) => ({
         id: `board-enemy-${idx}-${Date.now()}`,
@@ -8174,7 +8173,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       return { ...p, mana: totalMana, manaPool: nextPool, hand: updatedHand };
     });
 
-    const updatedMap = [...gameState.map];
+    let updatedMap = [...gameState.map];
     const existingOccupant = updatedMap[col][row].occupant;
     let finalCard = { ...card };
     let isStacked = false;
