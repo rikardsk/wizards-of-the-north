@@ -1622,7 +1622,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         manaCost: `{${col.code}}`,
         type: "Mana Reward",
         color: col.code === "W" ? "white" : col.code === "U" ? "blue" : col.code === "B" ? "black" : col.code === "R" ? "red" : col.code === "G" ? "green" : "gold",
-        illustration: "Mana Boost.jpg",
+        illustration: "",
         rulesText: `Increases your ${col.name} mana pool permanently by +${amount}.`
       }));
 

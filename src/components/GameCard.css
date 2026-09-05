@@ -142,18 +142,15 @@
 }
 
 .card-art-box.card-art-error {
-  background: rgba(220, 38, 38, 0.15) !important;
-  border: 1.5px dashed rgba(239, 68, 68, 0.6) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
 
 .card-art-box.card-art-error::after {
-  content: "⚠️ Image Error";
-  color: #ef4444;
-  font-size: 0.72rem;
-  font-weight: 700;
+  display: none !important;
 }
 
 /* Type Bar */

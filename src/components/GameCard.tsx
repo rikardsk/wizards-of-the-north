@@ -118,6 +118,66 @@ const renderTextWithManaSymbols = (text: string) => {
   return <>{parts}</>;
 };
 
+const getCardColorTheme = (colorStr?: string, manaCostStr?: string, nameStr?: string) => {
+  const c = (colorStr || "").toLowerCase();
+  const cost = (manaCostStr || "").toUpperCase();
+  const name = (nameStr || "").toLowerCase();
+
+  let code: "W" | "U" | "B" | "R" | "G" | "C" = "C";
+  if (c === "white" || c === "w" || cost.includes("{W}") || cost.includes("W") || name.includes("white")) code = "W";
+  else if (c === "blue" || c === "u" || cost.includes("{U}") || cost.includes("U") || name.includes("blue")) code = "U";
+  else if (c === "black" || c === "b" || cost.includes("{B}") || cost.includes("B") || name.includes("black")) code = "B";
+  else if (c === "red" || c === "r" || cost.includes("{R}") || cost.includes("R") || name.includes("red")) code = "R";
+  else if (c === "green" || c === "g" || cost.includes("{G}") || cost.includes("G") || name.includes("green")) code = "G";
+
+  const themeMap = {
+    W: {
+      symbol: "W",
+      name: "White",
+      bgGradient: "radial-gradient(circle at center, rgba(254, 240, 138, 0.45) 0%, rgba(234, 179, 8, 0.25) 50%, rgba(15, 23, 42, 0.95) 100%), linear-gradient(135deg, #fef08a 0%, #ca8a04 100%)",
+      glowColor: "rgba(254, 240, 138, 0.9)",
+      textColor: "#fef9c3"
+    },
+    U: {
+      symbol: "U",
+      name: "Blue",
+      bgGradient: "radial-gradient(circle at center, rgba(56, 189, 248, 0.45) 0%, rgba(2, 132, 199, 0.25) 50%, rgba(15, 23, 42, 0.95) 100%), linear-gradient(135deg, #38bdf8 0%, #0369a1 100%)",
+      glowColor: "rgba(56, 189, 248, 0.9)",
+      textColor: "#e0f2fe"
+    },
+    B: {
+      symbol: "B",
+      name: "Black",
+      bgGradient: "radial-gradient(circle at center, rgba(192, 132, 252, 0.45) 0%, rgba(126, 34, 206, 0.25) 50%, rgba(15, 23, 42, 0.95) 100%), linear-gradient(135deg, #6b21a8 0%, #0f172a 100%)",
+      glowColor: "rgba(192, 132, 252, 0.9)",
+      textColor: "#f3e8ff"
+    },
+    R: {
+      symbol: "R",
+      name: "Red",
+      bgGradient: "radial-gradient(circle at center, rgba(248, 113, 113, 0.45) 0%, rgba(220, 38, 38, 0.25) 50%, rgba(15, 23, 42, 0.95) 100%), linear-gradient(135deg, #f87171 0%, #991b1b 100%)",
+      glowColor: "rgba(248, 113, 113, 0.9)",
+      textColor: "#fee2e2"
+    },
+    G: {
+      symbol: "G",
+      name: "Green",
+      bgGradient: "radial-gradient(circle at center, rgba(74, 222, 128, 0.45) 0%, rgba(22, 163, 74, 0.25) 50%, rgba(15, 23, 42, 0.95) 100%), linear-gradient(135deg, #4ade80 0%, #14532d 100%)",
+      glowColor: "rgba(74, 222, 128, 0.9)",
+      textColor: "#dcfce7"
+    },
+    C: {
+      symbol: "C",
+      name: "Mana",
+      bgGradient: "radial-gradient(circle at center, rgba(251, 191, 36, 0.45) 0%, rgba(217, 119, 6, 0.25) 50%, rgba(15, 23, 42, 0.95) 100%), linear-gradient(135deg, #fbbf24 0%, #78350f 100%)",
+      glowColor: "rgba(251, 191, 36, 0.9)",
+      textColor: "#fef3c7"
+    }
+  };
+
+  return themeMap[code];
+};
+
 export const GameCard: React.FC<GameCardProps> = ({
   card,
   isSelected = false,
@@ -143,10 +203,15 @@ export const GameCard: React.FC<GameCardProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLocallyCollapsed, setIsLocallyCollapsed] = useState<boolean | null>(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     setIsLocallyCollapsed(null);
   }, [isCollapsed]);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [card?.illustration, card?.name]);
 
   const effectiveCollapsed = isLocallyCollapsed !== null ? isLocallyCollapsed : (isCollapsed ?? false);
 
@@ -331,30 +396,99 @@ export const GameCard: React.FC<GameCardProps> = ({
 
         {/* Artwork Frame */}
         <div className="card-art-box">
-          <img
-            src={resolveIllustrationPath(card.type, card.illustration, card.name, card.cardSubType)}
-            alt={card.name}
-            className="card-artwork-img"
-            loading="eager"
-            draggable={false}
-            onError={(e) => {
-              const target = e.currentTarget;
-              const currentSrc = target.src || "";
-              console.error(`[Card Image Load Error] Failed to load illustration for card "${card.name}":`, currentSrc);
-              if (card.name && card.name.toLowerCase().includes("ability")) {
-                const baseName = card.name.replace(/\s+ability$/i, "").trim();
-                const fallbackPath = resolveIllustrationPath("Creature", "", baseName);
-                if (fallbackPath && !currentSrc.includes(fallbackPath)) {
-                  target.src = fallbackPath;
-                  return;
-                }
-              }
-              target.style.display = "none";
-              if (target.parentElement) {
-                target.parentElement.classList.add("card-art-error");
-              }
-            }}
-          />
+          {(() => {
+            const isManaReward = (card.type || "").toLowerCase().includes("mana reward");
+            const illPath = resolveIllustrationPath(card.type, card.illustration, card.name, card.cardSubType);
+            const hasNoIll = !card.illustration || card.illustration.trim() === "" || illPath === "";
+            const showColorArt = isManaReward || hasNoIll || imageError;
+
+            if (showColorArt) {
+              const colorTheme = getCardColorTheme(card.color, card.manaCost, card.name);
+              return (
+                <div
+                  className="card-color-art-display"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    background: colorTheme.bgGradient,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    position: "relative",
+                    overflow: "hidden",
+                    borderRadius: "4px",
+                    boxShadow: "inset 0 0 15px rgba(0,0,0,0.5)"
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      width: "80px",
+                      height: "80px",
+                      borderRadius: "50%",
+                      background: colorTheme.glowColor,
+                      filter: "blur(20px)",
+                      opacity: 0.4,
+                      pointerEvents: "none"
+                    }}
+                  />
+                  <img
+                    src={getManaDataUri(colorTheme.symbol)}
+                    alt={colorTheme.name}
+                    style={{
+                      width: "48px",
+                      height: "48px",
+                      filter: `drop-shadow(0 0 12px ${colorTheme.glowColor})`,
+                      zIndex: 2,
+                      transform: "scale(1.15)"
+                    }}
+                    draggable={false}
+                  />
+                  {isManaReward && (
+                    <span
+                      style={{
+                        marginTop: "6px",
+                        fontSize: "0.72rem",
+                        fontWeight: 900,
+                        color: colorTheme.textColor,
+                        textShadow: "0 2px 4px rgba(0,0,0,0.9)",
+                        zIndex: 2,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px"
+                      }}
+                    >
+                      {colorTheme.name} Mana
+                    </span>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <img
+                src={illPath}
+                alt={card.name}
+                className="card-artwork-img"
+                loading="eager"
+                draggable={false}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  const currentSrc = target.src || "";
+                  console.error(`[Card Image Load Error] Failed to load illustration for card "${card.name}":`, currentSrc);
+                  if (card.name && card.name.toLowerCase().includes("ability")) {
+                    const baseName = card.name.replace(/\s+ability$/i, "").trim();
+                    const fallbackPath = resolveIllustrationPath("Creature", "", baseName);
+                    if (fallbackPath && !currentSrc.includes(fallbackPath)) {
+                      target.src = fallbackPath;
+                      return;
+                    }
+                  }
+                  setImageError(true);
+                }}
+              />
+            );
+          })()}
           {card.completed && (
             <div className="card-completed-badge">
               <i className="fa-solid fa-circle-check"></i> Completed
