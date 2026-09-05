@@ -7,7 +7,7 @@ import type { GameState, MapCell, Player, CardJSON, MapDataJSON, ActivatedAbilit
 import { getManaDataUri, setColorlessManaFontSize } from "./assets/mana/manaIcons";
 import type { UploadHistoryItem } from "./utils/db";
 import { saveHistoryItem, getHistoryItems, deleteHistoryItem } from "./utils/db";
-import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem, getPlayerProducedColors, canPlayerProduceSpellMana, canPlayerCastCard, checkAndSpawnDefenderArmiesOnMap, generateDefenderArmyForTile } from "./utils/cardMapping";
+import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem, getPlayerProducedColors, canPlayerProduceSpellMana, canPlayerCastCard, checkAndSpawnDefenderArmiesOnMap, generateDefenderArmyForTile, isPlainOrForestTile } from "./utils/cardMapping";
 import "./App.css";
 
 export interface QuestTileConfig {
@@ -7162,6 +7162,37 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       if (!isStackingAttempt) {
         setInspectedCard(cell.occupant);
         return;
+      }
+    }
+
+    if (!cell.occupant && cell.ownerId !== gameState.activePlayerIndex) {
+      const tileLower = (cell.tileId || "").toLowerCase();
+      const isWizardsTower = tileLower.includes("tower");
+      const isGrass = tileLower.includes("grass");
+      const isExcluded = isExcludedLandTile(cell.tileId);
+
+      if (!isWizardsTower && !isGrass && !isExcluded) {
+        const isAdjacent = isSandboxMode || autoWinBattle || hasAdjacentOwnership(col, row, gameState.activePlayerIndex);
+        if (isAdjacent) {
+          setGameState(prev => {
+            if (!prev) return null;
+            const updatedMap = prev.map.map(colArr =>
+              colArr.map(c => c.col === col && c.row === row ? { ...c, ownerId: prev.activePlayerIndex } : c)
+            );
+            return {
+              ...prev,
+              map: updatedMap,
+              logs: [
+                ...prev.logs,
+                `🚩 Claimed undefended ${cell.tileId} at (${col}, ${row})!`
+              ]
+            };
+          });
+          return;
+        } else {
+          addLog(`❌ Cannot claim ${cell.tileId} at (${col}, ${row}) - it is not adjacent to your territory!`);
+          return;
+        }
       }
     }
 
