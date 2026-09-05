@@ -986,10 +986,103 @@ export const resolveCardNameFromRef = (ref: string, cardPool: CardJSON[] = []): 
   return trimmed || "Not Found";
 };
 
+export const getPlayerProducedColors = (player?: any, map?: any[][]): string[] => {
+  const colors = new Set<string>();
+
+  if (player?.manaPool) {
+    if ((player.manaPool.W || 0) > 0) colors.add("white");
+    if ((player.manaPool.U || 0) > 0) colors.add("blue");
+    if ((player.manaPool.B || 0) > 0) colors.add("black");
+    if ((player.manaPool.R || 0) > 0) colors.add("red");
+    if ((player.manaPool.G || 0) > 0) colors.add("green");
+  }
+
+  if (map && player) {
+    const playerIdx = player.id ?? 0;
+    map.forEach(col => col.forEach((cell: any) => {
+      if (cell.ownerId === playerIdx && cell.tileId) {
+        const tLower = cell.tileId.toLowerCase();
+        if (tLower.includes("plains") || tLower.includes("white")) colors.add("white");
+        if (tLower.includes("island") || tLower.includes("blue")) colors.add("blue");
+        if (tLower.includes("swamp") || tLower.includes("black")) colors.add("black");
+        if (tLower.includes("mountain") || tLower.includes("red")) colors.add("red");
+        if (tLower.includes("forest") || tLower.includes("green")) colors.add("green");
+      }
+    }));
+  }
+
+  if (player?.deck) {
+    const wizardCard = player.deck.find((c: any) => isWizardCard(c));
+    if (wizardCard && wizardCard.color) {
+      const cLower = wizardCard.color.toLowerCase();
+      if (["white", "blue", "black", "red", "green"].includes(cLower)) {
+        colors.add(cLower);
+      }
+    }
+  }
+
+  if (colors.size === 0) {
+    return ["white", "blue", "black", "red", "green"];
+  }
+
+  return Array.from(colors);
+};
+
+export const canPlayerProduceSpellMana = (spell: CardJSON, producedColors?: string[]): boolean => {
+  if (!spell) return false;
+  if (!producedColors || producedColors.length === 0) return true;
+
+  const codes = new Set<string>();
+  producedColors.forEach(c => {
+    const upper = (c || "").toUpperCase();
+    if (upper === "W" || upper === "WHITE") codes.add("W");
+    else if (upper === "U" || upper === "BLUE") codes.add("U");
+    else if (upper === "B" || upper === "BLACK") codes.add("B");
+    else if (upper === "R" || upper === "RED") codes.add("R");
+    else if (upper === "G" || upper === "GREEN") codes.add("G");
+  });
+
+  const manaCost = spell.manaCost || "";
+  const requiredColors = new Set<string>();
+
+  const braced = Array.from(manaCost.matchAll(/\{([WUBRGwubrg])\}/g)).map(m => m[1].toUpperCase());
+  if (braced.length > 0) {
+    braced.forEach(sym => requiredColors.add(sym));
+  } else {
+    const cleaned = manaCost.replace(/\d+/g, "").replace(/[{}]/g, "");
+    for (const char of cleaned) {
+      const upper = char.toUpperCase();
+      if (["W", "U", "B", "R", "G"].includes(upper)) {
+        requiredColors.add(upper);
+      }
+    }
+  }
+
+  if (requiredColors.size === 0 && spell.color) {
+    const cLower = spell.color.toLowerCase();
+    if (["white", "w"].includes(cLower)) requiredColors.add("W");
+    else if (["blue", "u"].includes(cLower)) requiredColors.add("U");
+    else if (["black", "b"].includes(cLower)) requiredColors.add("B");
+    else if (["red", "r"].includes(cLower)) requiredColors.add("R");
+    else if (["green", "g"].includes(cLower)) requiredColors.add("G");
+  }
+
+  if (requiredColors.size === 0) return true;
+
+  for (const req of requiredColors) {
+    if (!codes.has(req)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 export const resolveSpellGrantForLevel = (
   levelObj: QuestLevelJSON | undefined,
   currentWizardSpells: string[] = [],
-  availableSpellCards: CardJSON[] = []
+  availableSpellCards: CardJSON[] = [],
+  producedColors?: string[]
 ): { spellToGrant?: string; isChoice: boolean; isRandom: boolean } => {
   if (!levelObj || !hasSpellReward(levelObj)) return { isChoice: false, isRandom: false };
 
@@ -1018,6 +1111,10 @@ export const resolveSpellGrantForLevel = (
     ).toLowerCase();
 
     let pool = availableSpellCards.filter(c => (c.type || "").toLowerCase().includes("spell"));
+    if (producedColors && producedColors.length > 0) {
+      const colorFiltered = pool.filter(c => canPlayerProduceSpellMana(c, producedColors));
+      if (colorFiltered.length > 0) pool = colorFiltered;
+    }
     if (subType) {
       const subTypePool = pool.filter(c => 
         (c.cardSubType || "").toLowerCase().includes(subType) ||
@@ -1028,17 +1125,23 @@ export const resolveSpellGrantForLevel = (
     }
     if (pool.length === 0) {
       pool = availableSpellCards.filter(c => isBattleSpell(c));
+      if (producedColors && producedColors.length > 0) {
+        const colorFiltered = pool.filter(c => canPlayerProduceSpellMana(c, producedColors));
+        if (colorFiltered.length > 0) pool = colorFiltered;
+      }
     }
     if (pool.length === 0) {
-      pool = [
-        { id: "tmpl_fireball", name: "Fireball", type: "Spell", cardSubType: "battle" },
-        { id: "tmpl_lightning", name: "Lightning Strike", type: "Spell", cardSubType: "battle" },
-        { id: "tmpl_counterspell_red", name: "Counterspell Red", type: "Spell", cardSubType: "battle" },
-        { id: "tmpl_counterspell_white", name: "Counterspell White", type: "Spell", cardSubType: "battle" },
-        { id: "tmpl_counterspell_green", name: "Counterspell Green", type: "Spell", cardSubType: "battle" },
-        { id: "tmpl_counterspell_black", name: "Counterspell Black", type: "Spell", cardSubType: "battle" },
-        { id: "tmpl_clone", name: "Clone", type: "Spell", cardSubType: "battle" }
+      const defaults = [
+        { id: "tmpl_fireball", name: "Fireball", type: "Spell", cardSubType: "battle", manaCost: "2R", color: "red" },
+        { id: "tmpl_lightning", name: "Lightning Strike", type: "Spell", cardSubType: "battle", manaCost: "1R", color: "red" },
+        { id: "tmpl_counterspell_red", name: "Counterspell Red", type: "Spell", cardSubType: "battle", manaCost: "RR", color: "red" },
+        { id: "tmpl_counterspell_white", name: "Counterspell White", type: "Spell", cardSubType: "battle", manaCost: "WW", color: "white" },
+        { id: "tmpl_counterspell_green", name: "Counterspell Green", type: "Spell", cardSubType: "battle", manaCost: "GG", color: "green" },
+        { id: "tmpl_counterspell_black", name: "Counterspell Black", type: "Spell", cardSubType: "battle", manaCost: "BB", color: "black" },
+        { id: "tmpl_clone", name: "Clone", type: "Spell", cardSubType: "battle", manaCost: "3U", color: "blue" }
       ] as CardJSON[];
+      const colorFiltered = defaults.filter(c => canPlayerProduceSpellMana(c, producedColors));
+      pool = colorFiltered.length > 0 ? colorFiltered : defaults;
     }
     const currentLower = currentWizardSpells.map(s => s.toLowerCase());
     const unlearned = pool.filter(c => !currentLower.includes(c.name.toLowerCase()));
@@ -1119,7 +1222,8 @@ export const resolveCompanionGrantForLevel = (
 
 export const resolveCardGrantForLevel = (
   levelObj: QuestLevelJSON | undefined,
-  cardPool: CardJSON[] = []
+  cardPool: CardJSON[] = [],
+  producedColors?: string[]
 ): { cardToGrant?: CardJSON; cardsToGrant?: CardJSON[]; isChoice: boolean; isRandom: boolean; choiceOptions?: CardJSON[] } => {
   if (!levelObj || !hasCardReward(levelObj)) return { isChoice: false, isRandom: false };
 
@@ -1143,7 +1247,13 @@ export const resolveCardGrantForLevel = (
         ""
       ).toLowerCase();
 
-      let remainingPool = cardPool.filter(c => !isSpecialRewardExcludedCard(c));
+      let remainingPool = cardPool.filter(c => {
+        if (isSpecialRewardExcludedCard(c)) return false;
+        if (producedColors && (c.type || "").toLowerCase().includes("spell")) {
+          return canPlayerProduceSpellMana(c, producedColors);
+        }
+        return true;
+      });
 
       if (subType) {
         const filteredBySubType = remainingPool.filter(c => 
@@ -1175,7 +1285,13 @@ export const resolveCardGrantForLevel = (
       ""
     ).toLowerCase();
 
-    let pool = cardPool.filter(c => !isSpecialRewardExcludedCard(c));
+    let pool = cardPool.filter(c => {
+      if (isSpecialRewardExcludedCard(c)) return false;
+      if (producedColors && (c.type || "").toLowerCase().includes("spell")) {
+        return canPlayerProduceSpellMana(c, producedColors);
+      }
+      return true;
+    });
 
     if (subType) {
       const filteredBySubType = pool.filter(c => 

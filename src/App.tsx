@@ -7,7 +7,7 @@ import type { GameState, MapCell, Player, CardJSON, MapDataJSON, ActivatedAbilit
 import { getManaDataUri, setColorlessManaFontSize } from "./assets/mana/manaIcons";
 import type { UploadHistoryItem } from "./utils/db";
 import { saveHistoryItem, getHistoryItems, deleteHistoryItem } from "./utils/db";
-import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem } from "./utils/cardMapping";
+import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem, getPlayerProducedColors, canPlayerProduceSpellMana } from "./utils/cardMapping";
 import "./App.css";
 
 export interface QuestTileConfig {
@@ -1416,14 +1416,20 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     if (current.type === "spell") {
       let options: CardJSON[] = [];
       const rawSpells = getSpellRawList(current.levelObj);
+      const playerProducedColors = getPlayerProducedColors(gameState?.players[0], gameState?.map);
+
       if (rawSpells.length >= 2) {
         options = rawSpells
           .map((ref: string) => resolveOpponentCard(ref, cardPool))
-          .filter((c): c is CardJSON => Boolean(c) && isBattleSpell(c));
+          .filter((c): c is CardJSON => Boolean(c) && isBattleSpell(c) && canPlayerProduceSpellMana(c, playerProducedColors));
       }
       if (options.length < 3) {
-        const battleSpells = cardPool.filter(c => isBattleSpell(c));
-        const allSpells = [...battleSpells, ...DEFAULT_BATTLE_SPELLS.filter(c => isBattleSpell(c))];
+        const battleSpells = cardPool.filter(c => isBattleSpell(c) && canPlayerProduceSpellMana(c, playerProducedColors));
+        const defaultSpells = DEFAULT_BATTLE_SPELLS.filter(c => isBattleSpell(c) && canPlayerProduceSpellMana(c, playerProducedColors));
+        let allSpells = [...battleSpells, ...defaultSpells];
+        if (allSpells.length < 3) {
+          allSpells = [...cardPool.filter(c => isBattleSpell(c)), ...DEFAULT_BATTLE_SPELLS.filter(c => isBattleSpell(c))];
+        }
         const existingNames = options.map(o => o.name.toLowerCase());
         const available = allSpells.filter(c => !existingNames.includes(c.name.toLowerCase()));
         const seen = new Set(existingNames);
@@ -6437,7 +6443,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         const bootsXpBonus = playerHasBootsOfLuck(pIdx) ? 10 : 0;
         const questXpReward = xpInfo.totalXp + bootsXpBonus;
 
-        const spellGrant = resolveSpellGrantForLevel(levelObj, gameState?.players[pIdx]?.wizardSpells || [], cardPool);
+        const playerProducedColors = getPlayerProducedColors(gameState?.players[pIdx], gameState?.map);
+        const spellGrant = resolveSpellGrantForLevel(levelObj, gameState?.players[pIdx]?.wizardSpells || [], cardPool, playerProducedColors);
         const compGrant = resolveCompanionGrantForLevel(levelObj, gameState?.players[pIdx]?.wizardCompanions || [], cardPool);
 
         const cardRewardMode = getCardRewardMode(levelObj);
@@ -7695,7 +7702,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           const rewardCard = rewardCards.length > 0 ? rewardCards[0] : null;
           rewardForModal = rewardCard;
 
-          const spellGrant = resolveSpellGrantForLevel(currentLevelObj, p.wizardSpells || [], cardPool);
+          const playerProducedColors = getPlayerProducedColors(p, gameState?.map);
+          const spellGrant = resolveSpellGrantForLevel(currentLevelObj, p.wizardSpells || [], cardPool, playerProducedColors);
           const compGrant = resolveCompanionGrantForLevel(currentLevelObj, p.wizardCompanions || [], cardPool);
 
           const cardRewardMode = getCardRewardMode(currentLevelObj);
@@ -7924,7 +7932,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         const rewardCard = rewardCards.length > 0 ? rewardCards[0] : null;
         rewardForModal = rewardCard;
 
-        const spellGrant = resolveSpellGrantForLevel(currentLevelObj, p.wizardSpells || [], cardPool);
+        const playerProducedColors = getPlayerProducedColors(p, gameState?.map);
+        const spellGrant = resolveSpellGrantForLevel(currentLevelObj, p.wizardSpells || [], cardPool, playerProducedColors);
         const compGrant = resolveCompanionGrantForLevel(currentLevelObj, p.wizardCompanions || [], cardPool);
 
         const cardRewardMode = getCardRewardMode(currentLevelObj);

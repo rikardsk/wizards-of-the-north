@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors } from "./cardMapping";
 
 describe("cardMapping", () => {
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
@@ -662,6 +662,35 @@ describe("cardMapping", () => {
       expect(hasSpellReward(level4)).toBe(true);
       const res = resolveSpellGrantForLevel(level4);
       expect(res.isRandom).toBe(true);
+    });
+
+    it("filters random spell rewards by player produced mana colors", () => {
+      const levelObj = { learnSpellMode: "random" } as any;
+      const mockSpells = [
+        { id: "s1", name: "Fireball", type: "Spell", manaCost: "2R", color: "red" },
+        { id: "s2", name: "Counterspell Black", type: "Spell", manaCost: "BB", color: "black" },
+        { id: "s3", name: "Clone", type: "Spell", manaCost: "3U", color: "blue" }
+      ] as any[];
+
+      // Player produces only Red mana
+      const resRed = resolveSpellGrantForLevel(levelObj, [], mockSpells, ["red"]);
+      expect(resRed.spellToGrant).toBe("Fireball");
+
+      // Player produces only Blue mana
+      const resBlue = resolveSpellGrantForLevel(levelObj, [], mockSpells, ["blue"]);
+      expect(resBlue.spellToGrant).toBe("Clone");
+    });
+
+    it("canPlayerProduceSpellMana evaluates spell color compatibility correctly", () => {
+      const redSpell = { name: "Fireball", manaCost: "2R", color: "red" } as any;
+      const blackSpell = { name: "Dark Ritual", manaCost: "B", color: "black" } as any;
+      const colorlessSpell = { name: "Sol Ring", manaCost: "1", color: "colorless" } as any;
+
+      expect(canPlayerProduceSpellMana(redSpell, ["red"])).toBe(true);
+      expect(canPlayerProduceSpellMana(redSpell, ["blue"])).toBe(false);
+      expect(canPlayerProduceSpellMana(blackSpell, ["red", "blue"])).toBe(false);
+      expect(canPlayerProduceSpellMana(blackSpell, ["black"])).toBe(true);
+      expect(canPlayerProduceSpellMana(colorlessSpell, ["red"])).toBe(true);
     });
   });
 
