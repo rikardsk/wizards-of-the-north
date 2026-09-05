@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, filterDefenderCreatures, generateDefenderArmyForTile, checkAndSpawnDefenderArmiesOnMap } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, filterDefenderCreatures, generateDefenderArmyForTile, checkAndSpawnDefenderArmiesOnMap, getTileLandColors } from "./cardMapping";
 
 describe("cardMapping", () => {
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
@@ -1477,14 +1477,21 @@ describe("cardMapping", () => {
       }
     });
 
-    it("spawns defender armies on uncaptured opponent lands adjacent to player lands", () => {
+    it("maps tile IDs to land colors correctly", () => {
+      expect(getTileLandColors("Forrest L2")).toEqual(["green"]);
+      expect(getTileLandColors("Plain L3")).toEqual(["white"]);
+      expect(getTileLandColors("Mountain L1")).toEqual(["red"]);
+      expect(getTileLandColors("Swamp L4")).toEqual(["black"]);
+    });
+
+    it("spawns defender armies on uncaptured opponent lands (ownerId: 1 or null) adjacent to player lands", () => {
       const map: any[][] = [
         [
           { col: 0, row: 0, tileId: "Plain L1", ownerId: 0, occupant: null },
           { col: 0, row: 1, tileId: "Mountain L1", ownerId: 1, occupant: null }
         ],
         [
-          { col: 1, row: 0, tileId: "Forest L1", ownerId: 1, occupant: null },
+          { col: 1, row: 0, tileId: "Forrest L1", ownerId: null, occupant: null },
           { col: 1, row: 1, tileId: "Swamp L1", ownerId: null, occupant: null }
         ]
       ];
@@ -1493,10 +1500,9 @@ describe("cardMapping", () => {
       expect(result.spawnedCount).toBe(2);
       expect(result.map[0][1].occupant).not.toBeNull();
       expect(result.map[0][1].occupant.isDefenderArmy).toBe(true);
+      // Uncaptured Forrest tile adjacent to player Plain tile should spawn a defender army!
       expect(result.map[1][0].occupant).not.toBeNull();
       expect(result.map[1][0].occupant.isDefenderArmy).toBe(true);
-      // Unclaimed tile (ownerId: null) should not spawn defender army
-      expect(result.map[1][1].occupant).toBeNull();
     });
   });
 });

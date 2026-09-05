@@ -2718,6 +2718,17 @@ export const checkTowerLevelUpEligibility = (
   };
 };
 
+export const getTileLandColors = (tileId: string, fallbackColors?: string[]): string[] => {
+  if (!tileId) return fallbackColors || [];
+  const t = tileId.toLowerCase();
+  if (t.includes("forrest")) return ["green"];
+  if (t.includes("plain") || t.includes("grass")) return ["white"];
+  if (t.includes("mountain") || t.includes("forge") || t.includes("scorched")) return ["red"];
+  if (t.includes("swamp") || t.includes("crypt") || t.includes("dead")) return ["black"];
+  if (t.includes("tower")) return ["blue"];
+  return fallbackColors && fallbackColors.length > 0 ? fallbackColors : ["white", "blue", "black", "red", "green"];
+};
+
 export const filterDefenderCreatures = (cardPool: CardJSON[], opponentColors: string[]): CardJSON[] => {
   if (!cardPool || cardPool.length === 0) return [];
   const normColors = (opponentColors || []).map(c => c.toLowerCase());
@@ -2784,7 +2795,7 @@ export const checkAndSpawnDefenderArmiesOnMap = (
   for (let c = 0; c < cols; c++) {
     for (let r = 0; r < rows; r++) {
       const cell = newMap[c][r];
-      if (cell.ownerId !== 1 || cell.occupant) continue;
+      if (cell.ownerId === 0 || cell.occupant) continue;
 
       const odd = c % 2 === 1;
       const neighbors = [
@@ -2796,7 +2807,8 @@ export const checkAndSpawnDefenderArmiesOnMap = (
       );
 
       if (isAdjacentToPlayer) {
-        const result = generateDefenderArmyForTile(cardPool, opponentColors);
+        const tileColors = getTileLandColors(cell.tileId, opponentColors);
+        const result = generateDefenderArmyForTile(cardPool, tileColors);
         if (result) {
           cell.occupant = result.occupant;
           spawnedCount++;
@@ -2807,5 +2819,6 @@ export const checkAndSpawnDefenderArmiesOnMap = (
 
   return { map: newMap, spawnedCount };
 };
+
 
 
