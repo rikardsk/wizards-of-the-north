@@ -1298,6 +1298,7 @@ export default function App() {
     questCardName: string;
     col: number;
     row: number;
+    isDefenderBattle?: boolean;
   } | null>(null);
 
   useEffect(() => {
@@ -6313,6 +6314,39 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           currentP.graveyard = trimGraveyard([...currentP.graveyard, ...deadCards]);
         }
 
+        if (idx === 0 && deadPlayerCreatures.length > 0) {
+          if (currentP.armyCards && currentP.armyCards.length > 0) {
+            let nextArmyCards = [...currentP.armyCards];
+            deadPlayerCreatures.forEach(dc => {
+              if ((dc as any).source === "reserve" || (!dc.col && dc.col !== 0)) {
+                const cIdx = nextArmyCards.findIndex(ac => ac.id === dc.card.id || (ac.name === dc.card.name && !isWizardCard(ac)));
+                if (cIdx !== -1) {
+                  nextArmyCards.splice(cIdx, 1);
+                }
+              }
+            });
+            currentP.armyCards = nextArmyCards;
+          }
+
+          let nextHand = [...currentP.hand];
+          let nextDeck = [...currentP.deck];
+          deadPlayerCreatures.forEach(dc => {
+            if ((dc as any).source === "hero") {
+              const hIdx = nextHand.findIndex(hc => hc.id === dc.card.id || hc.name === dc.card.name);
+              if (hIdx !== -1) {
+                nextHand.splice(hIdx, 1);
+              } else {
+                const dIdx = nextDeck.findIndex(dkc => dkc.id === dc.card.id || dkc.name === dc.card.name);
+                if (dIdx !== -1) {
+                  nextDeck.splice(dIdx, 1);
+                }
+              }
+            }
+          });
+          currentP.hand = nextHand;
+          currentP.deck = nextDeck;
+        }
+
         if (idx === 0 && playerWonNormalBattle) {
           const killedOpponentsPower = deadEnemyCreatures.reduce((sum, item) => {
             const pVal = parseInt(resolveWizardCard(item.card).power || "0", 10);
@@ -6779,12 +6813,23 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       } else if (isQuestDefeat) {
         setShowFightModal(false);
         removeGiftSpellsFromHand();
-        addLog(`💀 Quest Battle Defeat: Your forces were defeated by the quest guardians.`);
-        setQuestDefeatInfo({
-          questCardName: currentQuestBattle.questCard.name,
-          col: currentQuestBattle.col,
-          row: currentQuestBattle.row
-        });
+        if (isDefenderBattle) {
+          addLog(`💀 Resistance Battle Defeat: Your forces were defeated by the defender army.`);
+          setQuestDefeatInfo({
+            questCardName: "Defender Army",
+            col: currentQuestBattle.col,
+            row: currentQuestBattle.row,
+            isDefenderBattle: true
+          });
+        } else {
+          addLog(`💀 Quest Battle Defeat: Your forces were defeated by the quest guardians.`);
+          setQuestDefeatInfo({
+            questCardName: currentQuestBattle.questCard.name,
+            col: currentQuestBattle.col,
+            row: currentQuestBattle.row,
+            isDefenderBattle: false
+          });
+        }
         setActiveQuestBattle(null);
       } else {
         const deadCount = (mockFightCreatures?.enemy.length || 0) - result.enemyCreatures.length;
@@ -6871,30 +6916,33 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       .filter((c, i, self) => self.findIndex(x => resolveWizardCard(x).name === resolveWizardCard(c).name) === i);
 
     const boardArmy: MockFightCreature[] = playerBoard.map((item, idx) => ({
-      id: `${prefix}-${idx}-${Date.now()}`,
+      id: `${prefix}-board-${idx}-${Date.now()}`,
       card: JSON.parse(JSON.stringify(item.card)),
       damage: 0,
       isAttacking: false,
       blockingId: null,
       col: item.col,
-      row: item.row
-    }));
+      row: item.row,
+      source: "board"
+    } as any));
 
     const reserveArmy: MockFightCreature[] = (p.armyCards || []).map((card, idx) => ({
       id: `reserve-join-${idx}-${Date.now()}`,
       card: JSON.parse(JSON.stringify(card)),
       damage: 0,
       isAttacking: false,
-      blockingId: null
-    }));
+      blockingId: null,
+      source: "reserve"
+    } as any));
 
     const heroArmy: MockFightCreature[] = extraHeroes.map((card, idx) => ({
       id: `hero-join-${idx}-${Date.now()}`,
       card: JSON.parse(JSON.stringify(card)),
       damage: 0,
       isAttacking: false,
-      blockingId: null
-    }));
+      blockingId: null,
+      source: "hero"
+    } as any));
 
     return [...boardArmy, ...reserveArmy, ...heroArmy];
   };
@@ -6945,7 +6993,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         row
       }));
 
-      const questCardToUse = pQuestCard || (isDefender ? {
+      const questCardToUse = isDefender ? ({
         id: `defender_quest_${Date.now()}`,
         name: "Defender Army",
         cardName: "Defender Army",
@@ -6953,7 +7001,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         cardType: "Quest",
         illustration: cell.occupant?.illustration || "",
         isDefenderArmyCard: true
-      } as CardJSON : null);
+      } as CardJSON) : pQuestCard;
 
       if (questCardToUse) {
         const cardIdx = pQuestCard ? gameState.players[0].hand.indexOf(pQuestCard) : -1;
@@ -24117,10 +24165,13 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             <div style={{ textAlign: "center", width: "100%" }}>
               <div style={{ fontSize: "3rem", marginBottom: "8px", lineHeight: "1", filter: "drop-shadow(0 0 15px rgba(239, 68, 68, 0.6))" }}>💀</div>
               <h2 style={{ margin: "4px 0", fontSize: "1.8rem", color: "#ef4444", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1.5px", textShadow: "0 0 10px rgba(239, 68, 68, 0.4)" }}>
-                Quest Battle Defeat
+                {questDefeatInfo.isDefenderBattle ? "Resistance Battle Defeat" : "Quest Battle Defeat"}
               </h2>
               <p style={{ margin: "10px 0 0 0", color: "#cbd5e1", fontSize: "1rem", lineHeight: "1.5" }}>
-                Your forces were defeated by the quest guardians guarding <strong>{questDefeatInfo.questCardName}</strong>.
+                {questDefeatInfo.isDefenderBattle 
+                  ? <>Your forces were defeated by the defending resistance army at <strong>({questDefeatInfo.col}, {questDefeatInfo.row})</strong>.</>
+                  : <>Your forces were defeated by the quest guardians guarding <strong>{questDefeatInfo.questCardName}</strong>.</>
+                }
               </p>
             </div>
 
@@ -24139,7 +24190,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 <span>Prepare for Another Attempt</span>
               </div>
               <div style={{ fontSize: "0.85rem", color: "#e2e8f0", lineHeight: "1.6" }}>
-                The quest tile remains occupied by the guardians. You can rebuild your army, recruit more creatures, and challenge this quest again later.
+                {questDefeatInfo.isDefenderBattle
+                  ? "The land tile remains guarded by the resistance army. You can rebuild your army, recruit more creatures, and attempt to conquer this land again later."
+                  : "The quest tile remains occupied by the guardians. You can rebuild your army, recruit more creatures, and challenge this quest again later."
+                }
               </div>
             </div>
 
