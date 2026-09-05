@@ -989,26 +989,16 @@ export const resolveCardNameFromRef = (ref: string, cardPool: CardJSON[] = []): 
 export const getPlayerProducedColors = (player?: any, map?: any[][]): string[] => {
   const colors = new Set<string>();
 
-  if (player?.manaPool) {
-    if ((player.manaPool.W || 0) > 0) colors.add("white");
-    if ((player.manaPool.U || 0) > 0) colors.add("blue");
-    if ((player.manaPool.B || 0) > 0) colors.add("black");
-    if ((player.manaPool.R || 0) > 0) colors.add("red");
-    if ((player.manaPool.G || 0) > 0) colors.add("green");
-  }
-
-  if (map && player) {
-    const playerIdx = player.id ?? 0;
-    map.forEach(col => col.forEach((cell: any) => {
-      if (cell.ownerId === playerIdx && cell.tileId) {
-        const tLower = cell.tileId.toLowerCase();
-        if (tLower.includes("plains") || tLower.includes("white")) colors.add("white");
-        if (tLower.includes("island") || tLower.includes("blue")) colors.add("blue");
-        if (tLower.includes("swamp") || tLower.includes("black")) colors.add("black");
-        if (tLower.includes("mountain") || tLower.includes("red")) colors.add("red");
-        if (tLower.includes("forest") || tLower.includes("green")) colors.add("green");
+  if (player?.deckColors && Array.isArray(player.deckColors) && player.deckColors.length > 0) {
+    player.deckColors.forEach((c: string) => {
+      const cLower = c.toLowerCase();
+      if (["white", "blue", "black", "red", "green"].includes(cLower)) {
+        colors.add(cLower);
       }
-    }));
+    });
+    if (colors.size > 0) {
+      return Array.from(colors);
+    }
   }
 
   if (player?.deck) {
@@ -1019,6 +1009,41 @@ export const getPlayerProducedColors = (player?: any, map?: any[][]): string[] =
         colors.add(cLower);
       }
     }
+  }
+
+  if (map && player) {
+    const playerIdx = player.id ?? 0;
+    let towerCell: any = null;
+    map.forEach(col => col.forEach((cell: any) => {
+      if (cell.ownerId === playerIdx && cell.tileId && cell.tileId.toLowerCase().includes("tower")) {
+        towerCell = cell;
+      }
+    }));
+
+    if (towerCell) {
+      const cols = map.length;
+      const rows = cols > 0 ? map[0].length : 0;
+      const neighbors = getNeighbors(towerCell.col, towerCell.row, cols, rows);
+      neighbors.forEach(([nc, nr]) => {
+        const cell = map[nc][nr];
+        if (cell.tileId) {
+          const tLower = cell.tileId.toLowerCase();
+          if (tLower.includes("plains") || tLower.includes("white")) colors.add("white");
+          if (tLower.includes("island") || tLower.includes("blue")) colors.add("blue");
+          if (tLower.includes("swamp") || tLower.includes("black")) colors.add("black");
+          if (tLower.includes("mountain") || tLower.includes("red")) colors.add("red");
+          if (tLower.includes("forest") || tLower.includes("green")) colors.add("green");
+        }
+      });
+    }
+  }
+
+  if (colors.size === 0 && player?.manaPool) {
+    if ((player.manaPool.W || 0) > 0) colors.add("white");
+    if ((player.manaPool.U || 0) > 0) colors.add("blue");
+    if ((player.manaPool.B || 0) > 0) colors.add("black");
+    if ((player.manaPool.R || 0) > 0) colors.add("red");
+    if ((player.manaPool.G || 0) > 0) colors.add("green");
   }
 
   if (colors.size === 0) {

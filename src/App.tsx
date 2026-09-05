@@ -4261,10 +4261,11 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     p2.mana = Object.values(p2.manaPool).reduce((a, b) => a + b, 0);
 
     const p1StartingColors = getColorsFromManaPool(p1.manaPool);
+    const p2StartingColors = getColorsFromManaPool(p2.manaPool);
     setP1DeckColors(p1StartingColors);
     localStorage.setItem("p1DeckColors", JSON.stringify(p1StartingColors));
     p1.deckColors = p1StartingColors;
-    p2.deckColors = ["white", "blue", "black", "red", "green", "gold", "artifact"];
+    p2.deckColors = p2StartingColors;
 
     const p1InitialFocus = p1.drawPreference || "creatures";
     let p1DeckCards = availableCards.filter(card => {
@@ -6738,7 +6739,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           const xpMsg = pIdx === 0 ? `✨ Your Wizard earned ${questXpReward} XP (Total XP: ${updatedPlayers[0].xp || 0})` : "";
           const armyRewardMsg = armyRewardCards.length > 0 ? `⚔️ Level ${currentLevelIndex + 1} Reward: Deployed ${armyRewardCards.map(c => `"${c.name}"`).join(", ")} directly into your Army!` : null;
           const handRewardMsg = handRewardCards.length > 0 ? `🎁 Level ${currentLevelIndex + 1} Reward: Received ${handRewardCards.map(c => `"${c.name}"`).join(", ")} added to hand!` : null;
-          const monsterMsg = levelObj && hasMonsterUnlockReward(levelObj) ? `🐉 Monster Unlock Reward: Unlocked 4 Monster cards (Balrog, Nightmare, Forest Golem, Stone Golem) with Mana Cost ${getMonsterUnlockManaCost(levelObj)}!` : null;
+          const monsterMsg = levelObj && hasMonsterUnlockReward(levelObj) ? `🐉 Monster Unlock Reward: Unlocked matching Monster cards for your wizard colors with Mana Cost ${getMonsterUnlockManaCost(levelObj)}!` : null;
           const rewardRules = rewardCard && (rewardCard.customDescription || rewardCard.rulesText) ? `📜 Reward Card Ability: "${rewardCard.customDescription || rewardCard.rulesText}"` : null;
           const levelUnlockMsg = hasNextLevel && qData && qData.levels[currentLevelIndex + 1]
             ? `🔓 Unlocked Quest Level ${currentLevelIndex + 2}/${totalLevels}: Advanced "${questCard.name}" to Level ${currentLevelIndex + 2}!`

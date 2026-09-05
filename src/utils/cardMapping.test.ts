@@ -1539,5 +1539,27 @@ describe("cardMapping", () => {
       expect(canPlayerCastCard(stoneGolem, producedColors)).toBe(false);
     });
   });
+
+  describe("getPlayerProducedColors", () => {
+    it("respects player.deckColors over conquered map tiles", () => {
+      const player = {
+        id: 0,
+        deckColors: ["black", "red"],
+        manaPool: { W: 1, U: 0, B: 1, R: 1, G: 0, C: 0 }
+      };
+      const dummyMap = [[{ ownerId: 0, tileId: "plain L1" }]];
+      const produced = getPlayerProducedColors(player, dummyMap as any);
+      expect(produced).toEqual(["black", "red"]);
+    });
+
+    it("returns white and green for white/green wizard deckColors", () => {
+      const player = {
+        id: 0,
+        deckColors: ["white", "green"]
+      };
+      const produced = getPlayerProducedColors(player);
+      expect(produced).toEqual(["white", "green"]);
+    });
+  });
 });
 
