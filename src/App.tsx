@@ -12041,9 +12041,9 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                       fontFamily: "'Outfit', sans-serif",
                       cursor: "pointer",
                       transition: "all 0.2s ease",
-                      background: collapseQuestCardsDetails ? "rgba(56, 189, 248, 0.22)" : "rgba(255, 255, 255, 0.05)",
-                      color: collapseQuestCardsDetails ? "#38bdf8" : "var(--text-muted)",
-                      border: collapseQuestCardsDetails ? "1px solid rgba(56, 189, 248, 0.6)" : "1px solid rgba(255, 255, 255, 0.1)"
+                      background: collapseQuestCardsDetails ? "rgba(250, 204, 21, 0.22)" : "rgba(255, 255, 255, 0.05)",
+                      color: collapseQuestCardsDetails ? "#facc15" : "var(--text-muted)",
+                      border: collapseQuestCardsDetails ? "1px solid rgba(250, 204, 21, 0.6)" : "1px solid rgba(255, 255, 255, 0.1)"
                     }}
                     title="Toggle collapsing the text details on quest cards"
                   >
@@ -15653,7 +15653,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                       const xpInfo = getXpRewardInfo(levelObj, currentLvl);
                                       if (xpInfo.bonusXp > 0) {
                                         return (
-                                          <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "#38bdf8", background: "rgba(56, 189, 248, 0.15)", border: "1px solid rgba(56, 189, 248, 0.3)", padding: "4px 12px", borderRadius: "20px" }}>
+                                          <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "#facc15", background: "rgba(250, 204, 21, 0.15)", border: "1px solid rgba(250, 204, 21, 0.3)", padding: "4px 12px", borderRadius: "20px" }}>
                                             <i className="fa-solid fa-star" style={{ marginRight: "6px" }}></i>
                                             +{xpInfo.bonusXp} Bonus XP
                                           </span>
@@ -22813,9 +22813,9 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                       focusOnQuestOnMap(qName);
                                     }}
                                     style={{
-                                      background: "rgba(56, 189, 248, 0.18)",
-                                      border: "1px solid rgba(56, 189, 248, 0.45)",
-                                      color: "#38bdf8",
+                                      background: "rgba(250, 204, 21, 0.18)",
+                                      border: "1px solid rgba(250, 204, 21, 0.45)",
+                                      color: "#facc15",
                                       borderRadius: "6px",
                                       padding: "4px 10px",
                                       fontSize: "0.75rem",
@@ -22827,16 +22827,16 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                       transition: "all 0.2s"
                                     }}
                                     onMouseEnter={(e) => {
-                                      e.currentTarget.style.background = "rgba(56, 189, 248, 0.35)";
-                                      e.currentTarget.style.borderColor = "#38bdf8";
+                                      e.currentTarget.style.background = "rgba(250, 204, 21, 0.35)";
+                                      e.currentTarget.style.borderColor = "#facc15";
                                     }}
                                     onMouseLeave={(e) => {
-                                      e.currentTarget.style.background = "rgba(56, 189, 248, 0.18)";
-                                      e.currentTarget.style.borderColor = "rgba(56, 189, 248, 0.45)";
+                                      e.currentTarget.style.background = "rgba(250, 204, 21, 0.18)";
+                                      e.currentTarget.style.borderColor = "rgba(250, 204, 21, 0.45)";
                                     }}
                                     title={`Focus map on quest ${qName}`}
                                   >
-                                    <i className="fa-solid fa-location-dot" style={{ color: "#38bdf8" }}></i>
+                                    <i className="fa-solid fa-location-dot" style={{ color: "#facc15" }}></i>
                                     View Map
                                   </button>
                                   <button

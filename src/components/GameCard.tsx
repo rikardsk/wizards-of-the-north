@@ -339,7 +339,7 @@ export const GameCard: React.FC<GameCardProps> = ({
   return (
     <>
       <div
-        className={`game-card-wrapper ${colorClass} ${isSelected ? "selected" : ""} ${
+        className={`game-card-wrapper ${colorClass} ${isQuestCard ? "quest-card" : ""} ${isSelected ? "selected" : ""} ${
           disabled ? "disabled" : ""
         } ${card.completed ? "completed-quest" : ""} ${cannotAfford ? "cannot-afford" : ""} ${isLarge ? "large-card" : ""}`}
         onClick={handleClick}
@@ -568,7 +568,7 @@ export const GameCard: React.FC<GameCardProps> = ({
                 title={effectiveCollapsed ? "Expand Quest Details" : "Collapse Quest Details"}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                  <i className="fa-solid fa-scroll" style={{ color: "#38bdf8", fontSize: "0.62rem" }}></i>
+                  <i className="fa-solid fa-scroll" style={{ color: "#facc15", fontSize: "0.62rem" }}></i>
                   <span style={{ fontSize: "0.62rem", fontWeight: 800, color: "#facc15", textTransform: "uppercase" }}>
                     {card.cardSubType || (card.questLevel !== undefined ? `Level ${card.questLevel + 1}` : "Quest")}
                   </span>
@@ -834,9 +834,9 @@ export const GameCard: React.FC<GameCardProps> = ({
                 className="card-stats-bubble"
                 style={{
                   zIndex: 35,
-                  borderColor: "rgba(56, 189, 248, 0.8)",
-                  color: "#38bdf8",
-                  boxShadow: "0 0 10px rgba(56, 189, 248, 0.4)"
+                  borderColor: "rgba(250, 204, 21, 0.8)",
+                  color: "#facc15",
+                  boxShadow: "0 0 10px rgba(250, 204, 21, 0.4)"
                 }}
                 title="Tower HP"
               >
