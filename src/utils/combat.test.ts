@@ -840,6 +840,27 @@ describe("Subtype Buffs & Always-Active Abilities", () => {
       expect(nightmareSpell.illustration).toBe("/assets/creatures/Nightmare.jpg");
     });
 
+    it("should filter out activated ability spell cards once their uniqueCombatId is in usedCombatSpellIds", () => {
+      const creature: CardJSON = {
+        id: "c1",
+        name: "Nightmare",
+        type: "Creature",
+        color: "black",
+        activatedAbilities: [{ cost: ["B", "B"], text: "Gain +6/+0" }]
+      };
+      const abilitySpell = getOrCreateAbilitySpellCard(creature, creature.activatedAbilities![0]);
+      const uniqueId = `ability_c1_0_${abilitySpell.name}`;
+      const abilitySpellWithId = { ...abilitySpell, uniqueCombatId: uniqueId };
+
+      const usedCombatSpellIds = [uniqueId];
+      const availableSpells = [abilitySpellWithId].filter(spell => {
+        const spellInstId = (spell as any).uniqueCombatId || spell.id || spell.name;
+        return !usedCombatSpellIds.includes(spellInstId);
+      });
+
+      expect(availableSpells).toHaveLength(0);
+    });
+
     it("should correctly parse and apply stats from activeSpells", () => {
       const creature: MockFightCreature = {
         id: "balrog_unit",

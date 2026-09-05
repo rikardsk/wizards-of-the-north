@@ -2003,7 +2003,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         });
 
         const spellInstId = (spellCard as any).uniqueCombatId || spellCard.id || spellCard.name;
-        if (spellInstId && !isAbilitySpell) {
+        if (spellInstId) {
           setUsedCombatSpellIds(prev => [...prev, spellInstId]);
         }
 
@@ -2087,7 +2087,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     });
 
     const spellInstId = (spellCard as any).uniqueCombatId || spellCard.id || spellCard.name;
-    if (spellInstId && !isAbilitySpell) {
+    if (spellInstId) {
       setUsedCombatSpellIds(prev => [...prev, spellInstId]);
     }
 
@@ -21268,8 +21268,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               }
 
               combatBattleSpells = combatBattleSpells.filter(spell => {
-                const isAbility = (spell.id || "").startsWith("ability-spell-") || (spell.id || "").startsWith("ability_") || (spell.name || "").endsWith(" Ability");
-                if (isAbility) return true;
                 const spellInstId = (spell as any).uniqueCombatId || spell.id || spell.name;
                 return !usedCombatSpellIds.includes(spellInstId);
               });
