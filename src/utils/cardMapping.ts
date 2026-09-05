@@ -2804,6 +2804,12 @@ export const isBorderTileBetweenBiomes = (cell: MapCell, map: MapCell[][]): bool
   });
 };
 
+export const isPlainOrForestTile = (tileId: string): boolean => {
+  if (!tileId) return false;
+  const t = tileId.toLowerCase();
+  return t.includes("plain") || t.includes("forrest") || t.includes("forest") || t.includes("grass");
+};
+
 export const checkAndSpawnDefenderArmiesOnMap = (
   map: MapCell[][],
   cardPool: CardJSON[],
@@ -2820,6 +2826,7 @@ export const checkAndSpawnDefenderArmiesOnMap = (
     for (let r = 0; r < rows; r++) {
       const cell = newMap[c][r] as any;
       if (cell.ownerId === 0 || cell.occupant || cell.defenderEvaluated) continue;
+      if (!isPlainOrForestTile(cell.tileId)) continue;
 
       const odd = c % 2 === 1;
       const neighbors = [

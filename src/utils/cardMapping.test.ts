@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, checkAndSpawnDefenderArmiesOnMap } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, checkAndSpawnDefenderArmiesOnMap } from "./cardMapping";
 
 describe("cardMapping", () => {
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
@@ -1481,16 +1481,36 @@ describe("cardMapping", () => {
       expect(result!.occupant.isDefenderArmy).toBe(true);
     });
 
-    it("spawns defender armies at 100% on border tiles adjacent to player territory", () => {
+    it("spawns defender armies at 100% on border Plain/Forest tiles, but skips Swamp/Mountain tiles", () => {
+      expect(isPlainOrForestTile("Plain L1")).toBe(true);
+      expect(isPlainOrForestTile("Forrest L2")).toBe(true);
+      expect(isPlainOrForestTile("Swamp L1")).toBe(false);
+      expect(isPlainOrForestTile("Mountain L2")).toBe(false);
+
       const mockMap: any[][] = [
-        [{ col: 0, row: 0, ownerId: 0, tileId: "Swamp L1" }, { col: 0, row: 1, ownerId: null, tileId: "Plain L1" }],
-        [{ col: 1, row: 0, ownerId: null, tileId: "Forrest L1" }, { col: 1, row: 1, ownerId: null, tileId: "Grass" }]
+        [{ col: 0, row: 0, ownerId: 0, tileId: "Tower of Power" }, { col: 0, row: 1, ownerId: null, tileId: "Plain L1" }],
+        [{ col: 1, row: 0, ownerId: null, tileId: "Swamp L1" }, { col: 1, row: 1, ownerId: null, tileId: "Mountain L1" }]
       ];
       const pool: any[] = [
         { id: "c1", name: "Knight", type: "Creature", color: "white", power: "4", toughness: "4" }
       ];
-      const { map, spawnedCount } = checkAndSpawnDefenderArmiesOnMap(mockMap, pool, ["White", "Green"]);
-      expect(spawnedCount).toBeGreaterThanOrEqual(1);
+      const { map } = checkAndSpawnDefenderArmiesOnMap(mockMap, pool, ["White", "Green"]);
+      // Plain L1 (col 0, row 1) should spawn defender army
+      expect(map[0][1].occupant).not.toBeNull();
+      // Swamp L1 (col 1, row 0) should NOT spawn defender army
+      expect(map[1][0].occupant).toBeUndefined();
+    });
+
+    it("works identically when player starts on the right side of the map", () => {
+      const mockMapRight: any[][] = [
+        [{ col: 0, row: 0, ownerId: 1, tileId: "Tower of Power" }, { col: 0, row: 1, ownerId: null, tileId: "Plain L1" }],
+        [{ col: 1, row: 0, ownerId: null, tileId: "Plain L1" }, { col: 1, row: 1, ownerId: 0, tileId: "Wizards Tower L1" }]
+      ];
+      const pool: any[] = [
+        { id: "c1", name: "Knight", type: "Creature", color: "white", power: "4", toughness: "4" }
+      ];
+      const { map } = checkAndSpawnDefenderArmiesOnMap(mockMapRight, pool, ["White", "Green"]);
+      // Plain L1 adjacent to player at (col 1, row 1) is at (col 0, row 1)
       expect(map[0][1].occupant).not.toBeNull();
       expect((map[0][1].occupant as any).isDefenderArmy).toBe(true);
     });
