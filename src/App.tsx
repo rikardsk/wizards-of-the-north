@@ -3083,6 +3083,16 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       });
 
   }, []);
+
+  useEffect(() => {
+    if (!gameState || !gameState.map || !gameState.players || gameState.players.length < 2) return;
+    const p2ColorsForDefenders = getColorsFromManaPool(gameState.players[1]?.manaPool || { W: 1, U: 1, B: 1, R: 1, G: 1, C: 1 });
+    const cardsPool = masterDeckCards.length > 0 ? masterDeckCards : allDeckCards;
+    const result = checkAndSpawnDefenderArmiesOnMap(gameState.map, cardsPool, p2ColorsForDefenders);
+    if (result.spawnedCount > 0) {
+      setGameState(prev => prev ? { ...prev, map: result.map } : null);
+    }
+  }, [gameState?.map]);
  
 
   const getNeighbors = (c: number, r: number, cols: number, rows: number): [number, number][] => {

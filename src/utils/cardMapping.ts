@@ -2721,12 +2721,19 @@ export const checkTowerLevelUpEligibility = (
 export const getTileLandColors = (tileId: string, fallbackColors?: string[]): string[] => {
   if (!tileId) return fallbackColors || [];
   const t = tileId.toLowerCase();
-  if (t.includes("forrest")) return ["green"];
-  if (t.includes("plain") || t.includes("grass")) return ["white"];
-  if (t.includes("mountain") || t.includes("forge") || t.includes("scorched")) return ["red"];
-  if (t.includes("swamp") || t.includes("crypt") || t.includes("dead")) return ["black"];
-  if (t.includes("tower")) return ["blue"];
-  return fallbackColors && fallbackColors.length > 0 ? fallbackColors : ["white", "blue", "black", "red", "green"];
+  const colors: string[] = [];
+  if (t.includes("forrest")) colors.push("green");
+  if (t.includes("plain") || t.includes("grass")) colors.push("white");
+  if (t.includes("mountain") || t.includes("forge") || t.includes("scorched")) colors.push("red");
+  if (t.includes("swamp") || t.includes("crypt") || t.includes("dead")) colors.push("black");
+  if (t.includes("tower")) colors.push("blue");
+
+  if (fallbackColors && fallbackColors.length > 0) {
+    fallbackColors.forEach(c => {
+      if (!colors.includes(c)) colors.push(c);
+    });
+  }
+  return colors.length > 0 ? colors : ["white", "green", "black", "red", "blue"];
 };
 
 export const filterDefenderCreatures = (cardPool: CardJSON[], opponentColors: string[]): CardJSON[] => {
