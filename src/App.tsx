@@ -7,7 +7,7 @@ import type { GameState, MapCell, Player, CardJSON, MapDataJSON, ActivatedAbilit
 import { getManaDataUri, setColorlessManaFontSize } from "./assets/mana/manaIcons";
 import type { UploadHistoryItem } from "./utils/db";
 import { saveHistoryItem, getHistoryItems, deleteHistoryItem } from "./utils/db";
-import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem, getPlayerProducedColors, canPlayerProduceSpellMana, checkAndSpawnDefenderArmiesOnMap, generateDefenderArmyForTile } from "./utils/cardMapping";
+import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem, getPlayerProducedColors, canPlayerProduceSpellMana, canPlayerCastCard, checkAndSpawnDefenderArmiesOnMap, generateDefenderArmyForTile } from "./utils/cardMapping";
 import "./App.css";
 
 export interface QuestTileConfig {
@@ -6665,6 +6665,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             if (levelObj && hasMonsterUnlockReward(levelObj)) {
               const mCost = getMonsterUnlockManaCost(levelObj);
               const pool = getMergedCardPool();
+              const playerProd = getPlayerProducedColors(updatedPlayer, prev?.map);
               const monsterIds = [
                 "card_1784467369547",
                 "card_1784467664393",
@@ -6673,7 +6674,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               ];
               monsterIds.forEach(mId => {
                 const cardObj = resolveOpponentCard(mId, pool);
-                if (cardObj && !finalDeck.some(c => c.id === cardObj.id || c.name === cardObj.name)) {
+                if (cardObj && canPlayerCastCard(cardObj, playerProd) && !finalDeck.some(c => c.id === cardObj.id || c.name === cardObj.name)) {
                   finalDeck.push(JSON.parse(JSON.stringify(cardObj)));
                 }
               });
@@ -7819,6 +7820,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           if (currentLevelObj && hasMonsterUnlockReward(currentLevelObj)) {
             const mCost = getMonsterUnlockManaCost(currentLevelObj);
             const pool = getMergedCardPool();
+            const playerProd = getPlayerProducedColors(p, gameState?.map);
             const monsterIds = [
               "card_1784467369547",
               "card_1784467664393",
@@ -7827,7 +7829,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             ];
             monsterIds.forEach(mId => {
               const cardObj = resolveOpponentCard(mId, pool);
-              if (cardObj && !playerDeck.some(c => c.id === cardObj.id || c.name === cardObj.name)) {
+              if (cardObj && canPlayerCastCard(cardObj, playerProd) && !playerDeck.some(c => c.id === cardObj.id || c.name === cardObj.name)) {
                 playerDeck.push(JSON.parse(JSON.stringify(cardObj)));
               }
             });
@@ -8052,6 +8054,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         if (currentLevelObj && hasMonsterUnlockReward(currentLevelObj)) {
           const mCost = getMonsterUnlockManaCost(currentLevelObj);
           const pool = getMergedCardPool();
+          const playerProd = getPlayerProducedColors(p, gameState?.map);
           const monsterIds = [
             "card_1784467369547",
             "card_1784467664393",
@@ -8060,7 +8063,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           ];
           monsterIds.forEach(mId => {
             const cardObj = resolveOpponentCard(mId, pool);
-            if (cardObj && !playerDeck.some(c => c.id === cardObj.id || c.name === cardObj.name)) {
+            if (cardObj && canPlayerCastCard(cardObj, playerProd) && !playerDeck.some(c => c.id === cardObj.id || c.name === cardObj.name)) {
               playerDeck.push(JSON.parse(JSON.stringify(cardObj)));
             }
           });

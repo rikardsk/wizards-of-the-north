@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, checkAndSpawnDefenderArmiesOnMap } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, isFlyingCreature, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard } from "./cardMapping";
 
 describe("cardMapping", () => {
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
@@ -1510,9 +1510,33 @@ describe("cardMapping", () => {
         { id: "c1", name: "Knight", type: "Creature", color: "white", power: "4", toughness: "4" }
       ];
       const { map } = checkAndSpawnDefenderArmiesOnMap(mockMapRight, pool, ["White", "Green"]);
-      // Plain L1 at (col 1, row 0) borders Swamp L1 at (col 0, row 1) and player at (col 1, row 1)
       expect(map[1][0].occupant).not.toBeNull();
       expect((map[1][0].occupant as any).isDefenderArmy).toBe(true);
+    });
+
+    it("includes Flying creatures in defender armies if they are Creatures", () => {
+      const pool: any[] = [
+        { id: "c1", name: "Griffin", type: "Creature", color: "white", power: "4", toughness: "4", keywords: ["Flying"] },
+        { id: "c2", name: "Fireball", type: "Spell", color: "red" }
+      ];
+      const filtered = filterDefenderCreatures(pool, ["White"]);
+      expect(filtered.map(c => c.name)).toEqual(["Griffin"]);
+    });
+  });
+
+  describe("canPlayerCastCard", () => {
+    it("returns true for cards matching player produced colors and false for unproducible colors", () => {
+      const producedColors = ["black", "red"];
+
+      const nightmare = { name: "Nightmare", color: "black", manaCost: "BB" } as any;
+      const balrog = { name: "Balrog", color: "red", manaCost: "RR" } as any;
+      const forestGolem = { name: "Forest Golem", color: "green", manaCost: "G" } as any;
+      const stoneGolem = { name: "Stone Golem", color: "white", manaCost: "W" } as any;
+
+      expect(canPlayerCastCard(nightmare, producedColors)).toBe(true);
+      expect(canPlayerCastCard(balrog, producedColors)).toBe(true);
+      expect(canPlayerCastCard(forestGolem, producedColors)).toBe(false);
+      expect(canPlayerCastCard(stoneGolem, producedColors)).toBe(false);
     });
   });
 });

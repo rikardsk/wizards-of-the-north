@@ -1028,6 +1028,26 @@ export const getPlayerProducedColors = (player?: any, map?: any[][]): string[] =
   return Array.from(colors);
 };
 
+export const canPlayerCastCard = (card: CardJSON, playerProducedColors: string[]): boolean => {
+  if (!card) return false;
+  if (!playerProducedColors || playerProducedColors.length === 0) return true;
+  const prodLower = playerProducedColors.map(c => c.toLowerCase());
+
+  const cColor = (card.color || "").toLowerCase();
+  if (cColor && cColor !== "colorless" && !prodLower.includes(cColor)) {
+    return false;
+  }
+
+  const costStr = Array.isArray(card.manaCost) ? card.manaCost.join("") : (card.manaCost || "");
+  if (costStr.includes("W") && !prodLower.includes("white")) return false;
+  if (costStr.includes("U") && !prodLower.includes("blue")) return false;
+  if (costStr.includes("B") && !prodLower.includes("black")) return false;
+  if (costStr.includes("R") && !prodLower.includes("red")) return false;
+  if (costStr.includes("G") && !prodLower.includes("green")) return false;
+
+  return true;
+};
+
 export const canPlayerProduceSpellMana = (spell: CardJSON, producedColors?: string[]): boolean => {
   if (!spell) return false;
   if (!producedColors || producedColors.length === 0) return true;
@@ -1249,8 +1269,8 @@ export const resolveCardGrantForLevel = (
 
       let remainingPool = cardPool.filter(c => {
         if (isSpecialRewardExcludedCard(c)) return false;
-        if (producedColors && (c.type || "").toLowerCase().includes("spell")) {
-          return canPlayerProduceSpellMana(c, producedColors);
+        if (producedColors) {
+          return canPlayerCastCard(c, producedColors);
         }
         return true;
       });
@@ -1287,8 +1307,8 @@ export const resolveCardGrantForLevel = (
 
     let pool = cardPool.filter(c => {
       if (isSpecialRewardExcludedCard(c)) return false;
-      if (producedColors && (c.type || "").toLowerCase().includes("spell")) {
-        return canPlayerProduceSpellMana(c, producedColors);
+      if (producedColors) {
+        return canPlayerCastCard(c, producedColors);
       }
       return true;
     });
@@ -2736,13 +2756,21 @@ export const getTileLandColors = (tileId: string, fallbackColors?: string[]): st
   return colors.length > 0 ? colors : ["white", "green", "black", "red", "blue"];
 };
 
+export const isFlyingCreature = (c: CardJSON): boolean => {
+  if (!c) return false;
+  if (c.keywords && c.keywords.some(kw => (kw || "").toLowerCase() === "flying")) return true;
+  if (c.rulesText && c.rulesText.toLowerCase().includes("flying")) return true;
+  if (c.customDescription && c.customDescription.toLowerCase().includes("flying")) return true;
+  return false;
+};
+
 export const filterDefenderCreatures = (cardPool: CardJSON[], opponentColors: string[]): CardJSON[] => {
   if (!cardPool || cardPool.length === 0) return [];
   const normColors = (opponentColors || []).map(c => c.toLowerCase());
   const isEligible = (c: CardJSON, checkColors: boolean) => {
     if (isSpecialRewardExcludedCard(c)) return false;
-    const t = (c.type || "").toLowerCase();
-    if (!t.includes("creature") && (c.power === undefined || c.toughness === undefined)) return false;
+    const t = (c.type || (c as any).cardType || "").toLowerCase();
+    if (!t.includes("creature")) return false;
     const p = parseInt(c.power || "0", 10);
     if (isNaN(p) || p <= 0) return false;
     if (checkColors && normColors.length > 0 && !normColors.includes((c.color || "").toLowerCase())) return false;

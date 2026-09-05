@@ -426,6 +426,39 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     ctx.restore();
   };
 
+  const drawDefenderArmyBadge = (ctx: CanvasRenderingContext2D, px: number, py: number) => {
+    ctx.save();
+    ctx.shadowColor = "rgba(239, 35, 60, 0.85)";
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 2;
+
+    ctx.beginPath();
+    ctx.arc(px, py, 16, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(15, 5, 10, 0.9)";
+    ctx.fill();
+    ctx.strokeStyle = "#ff3366";
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    const grad = ctx.createRadialGradient(px, py, 0, px, py, 14);
+    grad.addColorStop(0, "rgba(239, 35, 60, 0.95)");
+    grad.addColorStop(1, "rgba(153, 27, 27, 0.85)");
+    
+    ctx.beginPath();
+    ctx.arc(px, py, 13, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "14px 'Outfit', sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("⚔️", px, py + 1);
+    ctx.restore();
+  };
+
   const drawQuestAndCombatBadge = (ctx: CanvasRenderingContext2D, px: number, py: number) => {
     ctx.save();
     ctx.shadowColor = "rgba(239, 35, 60, 0.85)";
@@ -634,6 +667,26 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           drawQuestBadge(ctx, x, y);
         }
       }
+    }
+
+    const isDefenderArmyAtCell = (cell.occupant as any)?.isDefenderArmy;
+    if (isDefenderArmyAtCell && !questAtCell) {
+      const isAccessible = hasAdjacentOwnership(c, r, 0);
+      if (isAccessible) {
+        ctx.save();
+        ctx.shadowColor = "#ff3366";
+        ctx.shadowBlur = 24;
+        ctx.beginPath();
+        ctx.arc(x, y - 36, 16, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 51, 102, 0.4)";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255, 51, 102, 0.9)";
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      drawDefenderArmyBadge(ctx, x, y - 36);
     }
 
     // Draw selected/hovered overlay
