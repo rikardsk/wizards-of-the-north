@@ -1345,9 +1345,20 @@ export const resolveCardGrantForLevel = (
       }
 
       if (foundCard && !foundCard.name.toLowerCase().startsWith("card_")) {
-        const copy = JSON.parse(JSON.stringify(foundCard));
-        copy.id = `quest_reward_${Date.now()}_${idx}_${Math.random()}`;
-        cardsToGrant.push(copy);
+        if (producedColors && producedColors.length > 0 && !canPlayerCastCard(foundCard, producedColors)) {
+          const validPool = cardPool.filter(c => !isSpecialRewardExcludedCard(c) && canPlayerCastCard(c, producedColors));
+          if (validPool.length > 0) {
+            foundCard = validPool[Math.floor(Math.random() * validPool.length)];
+          } else {
+            foundCard = null;
+          }
+        }
+
+        if (foundCard) {
+          const copy = JSON.parse(JSON.stringify(foundCard));
+          copy.id = `quest_reward_${Date.now()}_${idx}_${Math.random()}`;
+          cardsToGrant.push(copy);
+        }
       }
     });
 
