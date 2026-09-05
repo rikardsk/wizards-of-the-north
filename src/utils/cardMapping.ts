@@ -1,4 +1,4 @@
-import type { CardJSON, ActivatedAbility } from "../types/game";
+import type { CardJSON, ActivatedAbility, MapCell } from "../types/game";
 
 export const cardNameMap: Record<string, string> = {
   "Skirk Prospector Goblin": "Skirk Prospector Goblin.jpg",
@@ -2717,4 +2717,95 @@ export const checkTowerLevelUpEligibility = (
     reason
   };
 };
+
+export const filterDefenderCreatures = (cardPool: CardJSON[], opponentColors: string[]): CardJSON[] => {
+  if (!cardPool || cardPool.length === 0) return [];
+  const normColors = (opponentColors || []).map(c => c.toLowerCase());
+  const isEligible = (c: CardJSON, checkColors: boolean) => {
+    if (isSpecialRewardExcludedCard(c)) return false;
+    const t = (c.type || "").toLowerCase();
+    if (!t.includes("creature") && (c.power === undefined || c.toughness === undefined)) return false;
+    const p = parseInt(c.power || "0", 10);
+    if (isNaN(p) || p <= 0) return false;
+    if (checkColors && normColors.length > 0 && !normColors.includes((c.color || "").toLowerCase())) return false;
+    return true;
+  };
+
+  const matched = cardPool.filter(c => isEligible(c, true));
+  if (matched.length > 0) return matched;
+  return cardPool.filter(c => isEligible(c, false));
+};
+
+export const generateDefenderArmyForTile = (
+  cardPool: CardJSON[],
+  opponentColors: string[]
+): { occupant: CardJSON; questArmy: CardJSON[] } | null => {
+  const validCreatures = filterDefenderCreatures(cardPool, opponentColors);
+  if (validCreatures.length === 0) return null;
+
+  const targetPower = Math.floor(Math.random() * 11) + 10;
+  const armyList: CardJSON[] = [];
+  let currentPower = 0;
+
+  while (currentPower < targetPower) {
+    const rem = targetPower - currentPower;
+    const choices = validCreatures.filter(c => parseInt(c.power || "0", 10) <= rem);
+    const pool = choices.length > 0 ? choices : validCreatures;
+    const picked = pool[Math.floor(Math.random() * pool.length)];
+    const clone: CardJSON = JSON.parse(JSON.stringify(picked));
+    clone.id = `def_${clone.id || clone.name}_${Math.random().toString(36).substring(2, 7)}`;
+    armyList.push(clone);
+    currentPower += parseInt(clone.power || "0", 10);
+  }
+
+  let leader = armyList[0];
+  armyList.forEach(c => {
+    if (parseInt(c.power || "0", 10) > parseInt(leader.power || "0", 10)) leader = c;
+  });
+
+  const occupant: CardJSON = JSON.parse(JSON.stringify(leader));
+  occupant.questArmy = armyList;
+  occupant.isDefenderArmy = true;
+  return { occupant, questArmy: armyList };
+};
+
+export const checkAndSpawnDefenderArmiesOnMap = (
+  map: MapCell[][],
+  cardPool: CardJSON[],
+  opponentColors: string[]
+): { map: MapCell[][]; spawnedCount: number } => {
+  if (!map || map.length === 0) return { map, spawnedCount: 0 };
+  const cols = map.length;
+  const rows = map[0].length;
+  let spawnedCount = 0;
+
+  const newMap = map.map(colArr => colArr.map(cell => ({ ...cell })));
+
+  for (let c = 0; c < cols; c++) {
+    for (let r = 0; r < rows; r++) {
+      const cell = newMap[c][r];
+      if (cell.ownerId !== 1 || cell.occupant) continue;
+
+      const odd = c % 2 === 1;
+      const neighbors = [
+        [c, r - 1], [c, r + 1], [c - 1, r], [c + 1, r],
+        [c - 1, odd ? r + 1 : r - 1], [c + 1, odd ? r + 1 : r - 1]
+      ];
+      const isAdjacentToPlayer = neighbors.some(([nc, nr]) => 
+        nc >= 0 && nc < cols && nr >= 0 && nr < rows && newMap[nc][nr].ownerId === 0
+      );
+
+      if (isAdjacentToPlayer) {
+        const result = generateDefenderArmyForTile(cardPool, opponentColors);
+        if (result) {
+          cell.occupant = result.occupant;
+          spawnedCount++;
+        }
+      }
+    }
+  }
+
+  return { map: newMap, spawnedCount };
+};
+
 

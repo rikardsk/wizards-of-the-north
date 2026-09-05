@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, filterDefenderCreatures, generateDefenderArmyForTile, checkAndSpawnDefenderArmiesOnMap } from "./cardMapping";
 
 describe("cardMapping", () => {
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
@@ -1448,6 +1448,55 @@ describe("cardMapping", () => {
       const adjusted = adjustQuestOpponentForDifficulty(baseCreature, "hard");
       expect(adjusted.power).toBe("4");
       expect(adjusted.toughness).toBe("4");
+    });
+  });
+
+  describe("defender armies", () => {
+    const mockCardPool = [
+      { id: "c1", name: "Red Goblin", type: "Creature", color: "red", power: "3", toughness: "2" },
+      { id: "c2", name: "Red Ogre", type: "Creature", color: "red", power: "5", toughness: "4" },
+      { id: "c3", name: "Black Zombie", type: "Creature", color: "black", power: "2", toughness: "2" },
+      { id: "c4", name: "Blue Spirit", type: "Creature", color: "blue", power: "4", toughness: "4" }
+    ] as any[];
+
+    it("filters creature cards matching opponent colors", () => {
+      const redCreatures = filterDefenderCreatures(mockCardPool, ["red"]);
+      expect(redCreatures.every(c => c.color === "red")).toBe(true);
+      expect(redCreatures.length).toBe(2);
+    });
+
+    it("generates a defender army with combined power between 10 and 20", () => {
+      const armyResult = generateDefenderArmyForTile(mockCardPool, ["red", "black"]);
+      expect(armyResult).not.toBeNull();
+      if (armyResult) {
+        const totalPower = armyResult.questArmy.reduce((sum, c) => sum + parseInt(c.power || "0", 10), 0);
+        expect(totalPower).toBeGreaterThanOrEqual(10);
+        expect(totalPower).toBeLessThanOrEqual(20);
+        expect(armyResult.occupant.questArmy).toBeDefined();
+        expect(armyResult.occupant.isDefenderArmy).toBe(true);
+      }
+    });
+
+    it("spawns defender armies on uncaptured opponent lands adjacent to player lands", () => {
+      const map: any[][] = [
+        [
+          { col: 0, row: 0, tileId: "Plain L1", ownerId: 0, occupant: null },
+          { col: 0, row: 1, tileId: "Mountain L1", ownerId: 1, occupant: null }
+        ],
+        [
+          { col: 1, row: 0, tileId: "Forest L1", ownerId: 1, occupant: null },
+          { col: 1, row: 1, tileId: "Swamp L1", ownerId: null, occupant: null }
+        ]
+      ];
+
+      const result = checkAndSpawnDefenderArmiesOnMap(map, mockCardPool, ["red", "black"]);
+      expect(result.spawnedCount).toBe(2);
+      expect(result.map[0][1].occupant).not.toBeNull();
+      expect(result.map[0][1].occupant.isDefenderArmy).toBe(true);
+      expect(result.map[1][0].occupant).not.toBeNull();
+      expect(result.map[1][0].occupant.isDefenderArmy).toBe(true);
+      // Unclaimed tile (ownerId: null) should not spawn defender army
+      expect(result.map[1][1].occupant).toBeNull();
     });
   });
 });

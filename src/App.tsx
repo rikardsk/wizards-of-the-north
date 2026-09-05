@@ -7,7 +7,7 @@ import type { GameState, MapCell, Player, CardJSON, MapDataJSON, ActivatedAbilit
 import { getManaDataUri, setColorlessManaFontSize } from "./assets/mana/manaIcons";
 import type { UploadHistoryItem } from "./utils/db";
 import { saveHistoryItem, getHistoryItems, deleteHistoryItem } from "./utils/db";
-import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem, getPlayerProducedColors, canPlayerProduceSpellMana } from "./utils/cardMapping";
+import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem, getPlayerProducedColors, canPlayerProduceSpellMana, checkAndSpawnDefenderArmiesOnMap, generateDefenderArmyForTile } from "./utils/cardMapping";
 import "./App.css";
 
 export interface QuestTileConfig {
@@ -4371,8 +4371,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     ];
 
     setCollapsedQuestPanels({});
+    const p2ColorsForDefenders = getColorsFromManaPool(p2.manaPool);
+    const mapWithDefenders = checkAndSpawnDefenderArmiesOnMap(hydratedMap, availableCards, p2ColorsForDefenders).map;
     setGameState({
-      map: hydratedMap,
+      map: mapWithDefenders,
       cols: mapJson.cols,
       rows: mapJson.rows,
       players: [p1, p2],
@@ -6602,6 +6604,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 }
                 return cell;
               }));
+
+              const p2ColorsForDefenders = getColorsFromManaPool(prev.players[1]?.manaPool || { W: 1, U: 1, B: 1, R: 1, G: 1, C: 1 });
+              const cardsPool = masterDeckCards.length > 0 ? masterDeckCards : allDeckCards;
+              updatedMap = checkAndSpawnDefenderArmiesOnMap(updatedMap, cardsPool, p2ColorsForDefenders).map;
             }
 
             const currentXp = p.xp || 0;
@@ -6894,7 +6900,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     const isQuestOccupant = cell.occupant && (
       cell.occupant.name === "Necromancer" ||
       cell.occupant.customDescription?.includes("Quest") ||
-      cell.occupant.id?.includes("quest")
+      cell.occupant.id?.includes("quest") ||
+      !!(cell.occupant as any).questArmy
     );
 
     let qBattleObj: typeof activeQuestBattle = null;
@@ -6925,12 +6932,22 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         row
       }));
 
-      if (pQuestCard) {
-        const cardIdx = gameState.players[0].hand.indexOf(pQuestCard);
-        const currentLevelIndex = pQuestCard.questLevel ?? 0;
-        const initialHp = getQuestInitialHp(pQuestCard, currentLevelIndex);
+      const questCardToUse = (cell.occupant && (cell.occupant as any).isDefenderArmy) ? {
+        name: cell.occupant.name || "Defender Army",
+        manaCost: "0",
+        type: "Quest",
+        color: cell.occupant.color || "red",
+        illustration: cell.occupant.illustration || "",
+        rulesText: "Defeat defender army to claim land ownership",
+        completed: false
+      } : pQuestCard;
+
+      if (questCardToUse) {
+        const cardIdx = pQuestCard ? gameState.players[0].hand.indexOf(pQuestCard) : -1;
+        const currentLevelIndex = pQuestCard?.questLevel ?? 0;
+        const initialHp = pQuestCard ? getQuestInitialHp(pQuestCard, currentLevelIndex) : 0;
         qBattleObj = {
-          questCard: pQuestCard,
+          questCard: questCardToUse,
           cardIdx,
           playerIdx: 0,
           col,
@@ -6939,6 +6956,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           maxQuestHp: initialHp
         };
         setActiveQuestBattle(qBattleObj);
+      }
 
         if ((pQuestCard.name || "").toLowerCase().includes("tower of power")) {
           setGameState(g => {
@@ -8181,6 +8199,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       occupant: finalCard,
       ownerId: playerIdx,
     };
+
+    const p2ColorsForDefenders = getColorsFromManaPool(gameState.players[1]?.manaPool || { W: 1, U: 1, B: 1, R: 1, G: 1, C: 1 });
+    const cardsPool = masterDeckCards.length > 0 ? masterDeckCards : allDeckCards;
+    updatedMap = checkAndSpawnDefenderArmiesOnMap(updatedMap, cardsPool, p2ColorsForDefenders).map;
 
     let finalPlayers = updatedPlayers;
     if (card.name === "Wizard Apprentice") {
