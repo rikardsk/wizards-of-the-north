@@ -339,7 +339,7 @@ export const GameCard: React.FC<GameCardProps> = ({
   return (
     <>
       <div
-        className={`game-card-wrapper ${colorClass} ${isQuestCard ? "quest-card" : ""} ${isSelected ? "selected" : ""} ${
+        className={`game-card-wrapper ${colorClass} ${isSelected ? "selected" : ""} ${
           disabled ? "disabled" : ""
         } ${card.completed ? "completed-quest" : ""} ${cannotAfford ? "cannot-afford" : ""} ${isLarge ? "large-card" : ""}`}
         onClick={handleClick}
@@ -568,8 +568,8 @@ export const GameCard: React.FC<GameCardProps> = ({
                 title={effectiveCollapsed ? "Expand Quest Details" : "Collapse Quest Details"}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                  <i className="fa-solid fa-scroll" style={{ color: "#facc15", fontSize: "0.62rem" }}></i>
-                  <span style={{ fontSize: "0.62rem", fontWeight: 800, color: "#facc15", textTransform: "uppercase" }}>
+                  <i className="fa-solid fa-scroll" style={{ color: "#38bdf8", fontSize: "0.62rem" }}></i>
+                  <span style={{ fontSize: "0.62rem", fontWeight: 800, color: "#38bdf8", textTransform: "uppercase" }}>
                     {card.cardSubType || (card.questLevel !== undefined ? `Level ${card.questLevel + 1}` : "Quest")}
                   </span>
                 </div>
