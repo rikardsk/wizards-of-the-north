@@ -2807,7 +2807,7 @@ export const isBorderTileBetweenBiomes = (cell: MapCell, map: MapCell[][]): bool
 export const isPlainOrForestTile = (tileId: string): boolean => {
   if (!tileId) return false;
   const t = tileId.toLowerCase();
-  return t.includes("plain") || t.includes("forrest") || t.includes("forest") || t.includes("grass");
+  return t.includes("plain") || t.includes("forrest") || t.includes("forest");
 };
 
 export const checkAndSpawnDefenderArmiesOnMap = (

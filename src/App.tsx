@@ -7067,6 +7067,21 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
     const cell = gameState.map[col][row];
 
+    if (cell.occupant) {
+      const isQuestOccupant = cell.occupant.name === "Necromancer" ||
+                              cell.occupant.customDescription?.includes("Quest") ||
+                              cell.occupant.id?.includes("quest") ||
+                              (cell.occupant as any).isDefenderArmy;
+
+      const isAdjacent = hasAdjacentOwnership(col, row, gameState.activePlayerIndex);
+
+      if (isQuestOccupant && isAdjacent) {
+        setSelectedCardIdx(null);
+        startBattleAtCell(col, row);
+        return;
+      }
+    }
+
     if (selectedCardIdx !== null) {
       const card = activePlayer.hand[selectedCardIdx];
       if (card && isLandSpell(card)) {
@@ -7088,18 +7103,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     }
 
     if (cell.occupant) {
-      const isQuestOccupant = cell.occupant.name === "Necromancer" ||
-                              cell.occupant.customDescription?.includes("Quest") ||
-                              cell.occupant.id?.includes("quest") ||
-                              (cell.occupant as any).isDefenderArmy;
-
-      const isAdjacent = hasAdjacentOwnership(col, row, gameState.activePlayerIndex);
-
-      if (isQuestOccupant && isAdjacent) {
-        startBattleAtCell(col, row);
-        return;
-      }
-
       const selectedHandCard = selectedCardIdx !== null ? activePlayer.hand[selectedCardIdx] : null;
       const isStackingAttempt = selectedHandCard && 
                                 cell.ownerId === gameState.activePlayerIndex && 

@@ -1503,16 +1503,16 @@ describe("cardMapping", () => {
 
     it("works identically when player starts on the right side of the map", () => {
       const mockMapRight: any[][] = [
-        [{ col: 0, row: 0, ownerId: 1, tileId: "Tower of Power" }, { col: 0, row: 1, ownerId: null, tileId: "Plain L1" }],
+        [{ col: 0, row: 0, ownerId: null, tileId: "Plain L1" }, { col: 0, row: 1, ownerId: null, tileId: "Swamp L1" }],
         [{ col: 1, row: 0, ownerId: null, tileId: "Plain L1" }, { col: 1, row: 1, ownerId: 0, tileId: "Wizards Tower L1" }]
       ];
       const pool: any[] = [
         { id: "c1", name: "Knight", type: "Creature", color: "white", power: "4", toughness: "4" }
       ];
       const { map } = checkAndSpawnDefenderArmiesOnMap(mockMapRight, pool, ["White", "Green"]);
-      // Plain L1 adjacent to player at (col 1, row 1) is at (col 0, row 1)
-      expect(map[0][1].occupant).not.toBeNull();
-      expect((map[0][1].occupant as any).isDefenderArmy).toBe(true);
+      // Plain L1 at (col 1, row 0) borders Swamp L1 at (col 0, row 1) and player at (col 1, row 1)
+      expect(map[1][0].occupant).not.toBeNull();
+      expect((map[1][0].occupant as any).isDefenderArmy).toBe(true);
     });
   });
 });
