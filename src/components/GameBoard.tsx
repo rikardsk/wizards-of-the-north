@@ -547,8 +547,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const cell = map[c][r];
     const { x, y } = getCellCenter(c, r);
 
-    // Draw ownership ring
-    if (cell.ownerId !== null) {
+    const questAtCell = activeQuestLocations?.find(loc => loc.col === c && loc.row === r);
+    const isDefenderArmyAtCell = (cell.occupant as any)?.isDefenderArmy || (cell.occupant as any)?.questArmy;
+    const isQuestTile = !!questAtCell || !!isDefenderArmyAtCell || (cell.occupant?.type || "").toLowerCase().includes("quest") || (cell.occupant?.cardType || "").toLowerCase().includes("quest");
+
+    // Draw ownership ring (golden ring for quest locations)
+    if (isQuestTile) {
+      drawHexRing(ctx, x, y, "#facc15", 4.5);
+    } else if (cell.ownerId !== null) {
       const owner = players[cell.ownerId];
       if (owner) {
         drawHexRing(ctx, x, y, owner.color, 4);
@@ -597,10 +603,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ctx.drawImage(crImg, x - 36, y - 36, 72, 72);
         ctx.restore();
         
-        // Creature outline
+        // Creature outline (golden for quest tiles)
         ctx.beginPath();
         ctx.arc(x, y, 36, 0, Math.PI * 2);
-        ctx.strokeStyle = cell.ownerId !== null ? players[cell.ownerId].color : "#fff";
+        ctx.strokeStyle = isQuestTile ? "#facc15" : (cell.ownerId !== null ? players[cell.ownerId].color : "#fff");
         ctx.lineWidth = 3;
         ctx.stroke();
 
@@ -628,7 +634,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }
 
     // Draw active quest / completed quest / combat symbols if applicable
-    const questAtCell = activeQuestLocations?.find(loc => loc.col === c && loc.row === r);
     if (questAtCell) {
       if (questAtCell.completed) {
         drawTrophyBadge(ctx, x, y, !!cell.occupant);
@@ -669,7 +674,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       }
     }
 
-    const isDefenderArmyAtCell = (cell.occupant as any)?.isDefenderArmy;
     if (isDefenderArmyAtCell && !questAtCell) {
       const isAccessible = hasAdjacentOwnership(c, r, 0);
       if (isAccessible) {
