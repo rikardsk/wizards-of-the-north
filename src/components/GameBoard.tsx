@@ -1332,7 +1332,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             gap: "8px",
             transition: "all 0.2s ease",
             boxShadow: showButtonBar ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
-            width: "fit-content",
+            width: "175px",
+            boxSizing: "border-box",
           }}
           onMouseEnter={(e) => {
             if (!showButtonBar) {
@@ -1351,9 +1352,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
           }}
         >
-          <i className={`fa-solid ${showButtonBar ? "fa-xmark" : "fa-sliders"}`}></i>
-          <span>{showButtonBar ? "Hide Display Options" : "Display Options"}</span>
-          <i className={`fa-solid ${showButtonBar ? "fa-chevron-up" : "fa-chevron-down"}`} style={{ fontSize: "0.7rem", marginLeft: "4px" }}></i>
+          <i className="fa-solid fa-sliders"></i>
+          <span>Display Options</span>
+          <i className={`fa-solid ${showButtonBar ? "fa-chevron-up" : "fa-chevron-down"}`} style={{ fontSize: "0.7rem", marginLeft: "auto" }}></i>
         </button>
 
         {/* Collapsible Buttonbar Container */}
@@ -1369,7 +1370,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               borderRadius: "8px",
               border: "1px solid rgba(255, 255, 255, 0.12)",
               boxShadow: "0 6px 16px rgba(0, 0, 0, 0.4)",
-              width: "fit-content",
+              width: "175px",
+              boxSizing: "border-box",
             }}
           >
             {/* Scrollbar Toggle Button */}
