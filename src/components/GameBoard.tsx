@@ -56,7 +56,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const [clientMousePos, setClientMousePos] = useState({ x: 0, y: 0 });
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [showScrollbars, setShowScrollbars] = useState(false);
-  const [showTileOutlines, setShowTileOutlines] = useState(true);
+  const [showTileOutlines, setShowTileOutlines] = useState(false);
+  const [showBiomeBorders, setShowBiomeBorders] = useState(true);
   const [isDraggingHScroll, setIsDraggingHScroll] = useState(false);
   const [isDraggingVScroll, setIsDraggingVScroll] = useState(false);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
@@ -381,7 +382,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }
 
     ctx.restore();
-  }, [map, cols, rows, panX, panY, zoom, hoveredCell, selectedCell, selectedLandTileId, images, players, dimensions, highlightedCells, activeQuestLocations, showTileOutlines]);
+  }, [map, cols, rows, panX, panY, zoom, hoveredCell, selectedCell, selectedLandTileId, images, players, dimensions, highlightedCells, activeQuestLocations, showTileOutlines, showBiomeBorders]);
 
   const drawCellTerrain = (ctx: CanvasRenderingContext2D, c: number, r: number) => {
     const cell = map[c][r];
@@ -544,6 +545,43 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     ctx.restore();
   };
 
+  const isBiomeBorderTile = (c: number, r: number): boolean => {
+    const cell = map[c][r];
+    const odd = c % 2 === 1;
+    const neighbors = [
+      [c, r - 1], [c, r + 1],
+      [c - 1, r], [c + 1, r],
+      [c - 1, odd ? r + 1 : r - 1],
+      [c + 1, odd ? r + 1 : r - 1],
+    ];
+
+    for (const [nc, nr] of neighbors) {
+      if (nc < 0 || nc >= cols || nr < 0 || nr >= rows) {
+        return true;
+      }
+      const neighbor = map[nc][nr];
+      const nTileIdLower = (neighbor.tileId || "").toLowerCase();
+
+      if (neighbor.ownerId === null) {
+        return true;
+      }
+      if (nTileIdLower.includes("grass")) {
+        return true;
+      }
+      if (cell.ownerId !== null && neighbor.ownerId !== null && neighbor.ownerId !== cell.ownerId) {
+        return true;
+      }
+      const questLoc = activeQuestLocations?.find(loc => loc.col === nc && loc.row === nr);
+      const isPureQuest = (neighbor.occupant?.type || "").toLowerCase().includes("quest") || (neighbor.occupant?.cardType || "").toLowerCase().includes("quest");
+      const isUncompletedQuest = (questLoc && !questLoc.completed) || (isPureQuest && (neighbor.ownerId === null || neighbor.occupant));
+      if (isUncompletedQuest) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   const drawCellDecorations = (ctx: CanvasRenderingContext2D, c: number, r: number) => {
     const cell = map[c][r];
     const { x, y } = getCellCenter(c, r);
@@ -554,8 +592,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const isCompletedQuest = questAtCell?.completed || (isPureQuestTile && cell.ownerId !== null && !cell.occupant);
     const isResistanceTile = !!isDefenderArmyAtCell && !questAtCell;
 
+    const shouldDrawOutline = showTileOutlines || (showBiomeBorders && isBiomeBorderTile(c, r));
+
     // Draw ownership ring (red ring for completed quest tiles, golden ring for active quest locations, blue ring for resistance defender armies)
-    if (showTileOutlines) {
+    if (shouldDrawOutline) {
       if (isCompletedQuest) {
         drawHexRing(ctx, x, y, "#ef4444", 4.5);
       } else if (isPureQuestTile) {
@@ -1273,6 +1313,47 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         >
           <i className="fa-solid fa-border-all"></i>
           <span>{showTileOutlines ? "Hide Tile Outlines" : "Show Tile Outlines"}</span>
+        </button>
+
+        {/* Biome Borders Toggle Button */}
+        <button
+          onClick={() => setShowBiomeBorders((prev) => !prev)}
+          style={{
+            background: showBiomeBorders ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
+            border: `1px solid ${showBiomeBorders ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
+            color: showBiomeBorders ? "#06090e" : "#fff",
+            padding: "8px 12px",
+            borderRadius: "6px",
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: "0.8rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            transition: "all 0.2s ease",
+            boxShadow: showBiomeBorders ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
+            width: "fit-content",
+          }}
+          onMouseEnter={(e) => {
+            if (!showBiomeBorders) {
+              e.currentTarget.style.background = "var(--accent-color)";
+              e.currentTarget.style.color = "#06090e";
+              e.currentTarget.style.borderColor = "var(--accent-color)";
+              e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!showBiomeBorders) {
+              e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
+              e.currentTarget.style.color = "#fff";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+            }
+          }}
+        >
+          <i className="fa-solid fa-draw-polygon"></i>
+          <span>{showBiomeBorders ? "Hide Biome Borders" : "Show Biome Borders"}</span>
         </button>
       </div>
 
