@@ -1332,7 +1332,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             gap: "8px",
             transition: "all 0.2s ease",
             boxShadow: showButtonBar ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
-            width: "175px",
+            width: "160px",
             boxSizing: "border-box",
           }}
           onMouseEnter={(e) => {
@@ -1370,7 +1370,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               borderRadius: "8px",
               border: "1px solid rgba(255, 255, 255, 0.12)",
               boxShadow: "0 6px 16px rgba(0, 0, 0, 0.4)",
-              width: "175px",
+              width: "160px",
               boxSizing: "border-box",
             }}
           >
@@ -1412,7 +1412,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               }}
             >
               <i className="fa-solid fa-scroll"></i>
-              <span>{showScrollbars ? "Hide Scrollbars" : "Show Scrollbars"}</span>
+              <span>Scrollbars</span>
             </button>
 
             {/* Tile Outlines Toggle Button */}
@@ -1459,7 +1459,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               }}
             >
               <i className="fa-solid fa-border-all"></i>
-              <span>{showTileOutlines ? "Hide Tile Outlines" : "Show Tile Outlines"}</span>
+              <span>Tile Outlines</span>
             </button>
 
             {/* Biome Borders Toggle Button */}
@@ -1506,7 +1506,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               }}
             >
               <i className="fa-solid fa-draw-polygon"></i>
-              <span>{showBiomeBorders ? "Hide Biome Borders" : "Show Biome Borders"}</span>
+              <span>Biome Borders</span>
             </button>
 
             {/* Highlight Owned Tiles Toggle Button */}
@@ -1547,7 +1547,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               }}
             >
               <i className="fa-solid fa-lightbulb"></i>
-              <span>{highlightOwnedTiles ? "Hide Owned Highlights" : "Highlight Owned Tiles"}</span>
+              <span>Owned Highlights</span>
             </button>
 
             {/* Ownership Flags Toggle Button */}
@@ -1588,7 +1588,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               }}
             >
               <i className="fa-solid fa-flag"></i>
-              <span>{showOwnershipFlags ? "Hide Ownership Flags" : "Show Ownership Flags"}</span>
+              <span>Ownership Flags</span>
             </button>
           </div>
         )}
