@@ -58,6 +58,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const [showScrollbars, setShowScrollbars] = useState(false);
   const [showTileOutlines, setShowTileOutlines] = useState(false);
   const [showBiomeBorders, setShowBiomeBorders] = useState(true);
+  const [highlightOwnedTiles, setHighlightOwnedTiles] = useState(false);
   const [isDraggingHScroll, setIsDraggingHScroll] = useState(false);
   const [isDraggingVScroll, setIsDraggingVScroll] = useState(false);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
@@ -382,7 +383,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }
 
     ctx.restore();
-  }, [map, cols, rows, panX, panY, zoom, hoveredCell, selectedCell, selectedLandTileId, images, players, dimensions, highlightedCells, activeQuestLocations, showTileOutlines, showBiomeBorders]);
+  }, [map, cols, rows, panX, panY, zoom, hoveredCell, selectedCell, selectedLandTileId, images, players, dimensions, highlightedCells, activeQuestLocations, showTileOutlines, showBiomeBorders, highlightOwnedTiles]);
 
   const drawCellTerrain = (ctx: CanvasRenderingContext2D, c: number, r: number) => {
     const cell = map[c][r];
@@ -848,6 +849,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
       drawHexRing(ctx, x, y, ringColor, 5.0);
       ctx.fillStyle = fillColor;
+      fillHex(ctx, x, y);
+      if (isHovered) {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
+        fillHex(ctx, x, y);
+      }
+    } else if (highlightOwnedTiles && cell.ownerId === 0) {
+      drawHexRing(ctx, x, y, "#ef4444", 3.5);
+      ctx.fillStyle = "rgba(239, 68, 68, 0.25)";
       fillHex(ctx, x, y);
       if (isHovered) {
         ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
@@ -1399,6 +1408,47 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         >
           <i className="fa-solid fa-draw-polygon"></i>
           <span>{showBiomeBorders ? "Hide Biome Borders" : "Show Biome Borders"}</span>
+        </button>
+
+        {/* Highlight Owned Tiles Toggle Button */}
+        <button
+          onClick={() => setHighlightOwnedTiles((prev) => !prev)}
+          style={{
+            background: highlightOwnedTiles ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
+            border: `1px solid ${highlightOwnedTiles ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
+            color: highlightOwnedTiles ? "#06090e" : "#fff",
+            padding: "8px 12px",
+            borderRadius: "6px",
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: "0.8rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            transition: "all 0.2s ease",
+            boxShadow: highlightOwnedTiles ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
+            width: "fit-content",
+          }}
+          onMouseEnter={(e) => {
+            if (!highlightOwnedTiles) {
+              e.currentTarget.style.background = "var(--accent-color)";
+              e.currentTarget.style.color = "#06090e";
+              e.currentTarget.style.borderColor = "var(--accent-color)";
+              e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!highlightOwnedTiles) {
+              e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
+              e.currentTarget.style.color = "#fff";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+            }
+          }}
+        >
+          <i className="fa-solid fa-lightbulb"></i>
+          <span>{highlightOwnedTiles ? "Hide Owned Highlights" : "Highlight Owned Tiles"}</span>
         </button>
       </div>
 
