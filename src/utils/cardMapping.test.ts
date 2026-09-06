@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, isFlyingCreature, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, isFlyingCreature, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard, getCardCmc, getCardColorKey, generateLevelDefenderForTile } from "./cardMapping";
 
 describe("cardMapping", () => {
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
@@ -1559,6 +1559,54 @@ describe("cardMapping", () => {
       };
       const produced = getPlayerProducedColors(player);
       expect(produced).toEqual(["white", "green"]);
+    });
+  });
+
+  describe("Level 3 and Level 4 land defender spawning", () => {
+    it("spawns a defender creature with matching mana count (CMC=3) and color (Green) for Level 3 Forest land", () => {
+      const pool: any[] = [
+        { id: "c1", name: "Green Lv2", type: "Creature", color: "green", manaCost: "2", power: "2", toughness: "2" },
+        { id: "c2", name: "Green Lv3 A", type: "Creature", color: "green", manaCost: "3", power: "3", toughness: "3" },
+        { id: "c3", name: "Green Lv3 B", type: "Creature", color: "green", manaCost: "3", power: "4", toughness: "2" },
+        { id: "c4", name: "Red Lv3", type: "Creature", color: "red", manaCost: "3", power: "3", toughness: "3" }
+      ];
+
+      const defender = generateLevelDefenderForTile(pool, "Forrest L3", 3);
+      expect(defender).not.toBeNull();
+      expect(["Green Lv3 A", "Green Lv3 B"]).toContain(defender!.occupant.name);
+      expect(getCardCmc(defender!.occupant)).toBe(3);
+      expect(getCardColorKey(defender!.occupant)).toBe("green");
+      expect(defender!.occupant.isDefenderArmy).toBe(true);
+    });
+
+    it("spawns a defender creature with matching mana count (CMC=4) and color (Black) for Level 4 Swamp land", () => {
+      const pool: any[] = [
+        { id: "c1", name: "Black Lv4", type: "Creature", color: "black", manaCost: "4", power: "4", toughness: "4" },
+        { id: "c2", name: "White Lv4", type: "Creature", color: "white", manaCost: "4", power: "4", toughness: "4" }
+      ];
+
+      const defender = generateLevelDefenderForTile(pool, "Swamp L4", 4);
+      expect(defender).not.toBeNull();
+      expect(defender!.occupant.name).toBe("Black Lv4");
+      expect(getCardCmc(defender!.occupant)).toBe(4);
+      expect(getCardColorKey(defender!.occupant)).toBe("black");
+    });
+
+    it("automatically defends unowned L3 and L4 lands on map check", () => {
+      const mockMap: any[][] = [
+        [{ col: 0, row: 0, ownerId: 0, tileId: "Wizards Tower L1" }, { col: 0, row: 1, ownerId: null, tileId: "Forrest L3" }],
+        [{ col: 1, row: 0, ownerId: null, tileId: "Mountain L4" }, { col: 1, row: 1, ownerId: null, tileId: "Plain L1" }]
+      ];
+      const pool: any[] = [
+        { id: "c1", name: "Tree Ent", type: "Creature", color: "green", manaCost: "3", power: "3", toughness: "3" },
+        { id: "c2", name: "Fire Dragon", type: "Creature", color: "red", manaCost: "4", power: "5", toughness: "5" }
+      ];
+
+      const { map } = checkAndSpawnDefenderArmiesOnMap(mockMap, pool, ["Red", "Green"]);
+      expect(map[0][1].occupant).not.toBeNull();
+      expect(map[0][1].occupant.name).toBe("Tree Ent");
+      expect(map[1][0].occupant).not.toBeNull();
+      expect(map[1][0].occupant.name).toBe("Fire Dragon");
     });
   });
 });

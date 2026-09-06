@@ -2874,46 +2874,125 @@ export const isPlainOrForestTile = (tileId: string): boolean => {
   return t.includes("plain") || t.includes("forrest") || t.includes("forest");
 };
 
+export const getCardCmc = (card: CardJSON): number => {
+  if (!card) return 0;
+  if (typeof card.cmc === "number" && !isNaN(card.cmc)) return card.cmc;
+  const costStr = card.manaCost || "";
+  const digitMatch = costStr.match(/^\d+/);
+  const generic = digitMatch ? parseInt(digitMatch[0], 10) : 0;
+  const symbols = costStr.replace(/^\d+/, "");
+  return generic + symbols.length;
+};
+
+export const getCardColorKey = (card: CardJSON): string => {
+  if (!card) return "colorless";
+  const c = (card.color || "").toLowerCase();
+  if (c === "white" || c === "w") return "white";
+  if (c === "black" || c === "b") return "black";
+  if (c === "red" || c === "r") return "red";
+  if (c === "green" || c === "g") return "green";
+  if (c === "blue" || c === "u") return "blue";
+
+  const cost = (card.manaCost || "").toUpperCase();
+  if (cost.includes("W")) return "white";
+  if (cost.includes("B")) return "black";
+  if (cost.includes("R")) return "red";
+  if (cost.includes("G")) return "green";
+  if (cost.includes("U")) return "blue";
+
+  return "colorless";
+};
+
+export const generateLevelDefenderForTile = (
+  cardPool: CardJSON[],
+  tileId: string,
+  level: number
+): { occupant: CardJSON; questArmy: CardJSON[] } | null => {
+  if (!cardPool || cardPool.length === 0) return null;
+  const colors = getTileLandColors(tileId);
+  const targetColor = colors[0] || "white";
+
+  const eligible = cardPool.filter((c) => {
+    if (!c) return false;
+    const t = (c.type || (c as any).cardType || "").toLowerCase();
+    if (!t.includes("creature")) return false;
+    if (isSpecialRewardExcludedCard(c)) return false;
+    return true;
+  });
+  if (eligible.length === 0) return null;
+
+  const exact = eligible.filter((c) => getCardCmc(c) === level && getCardColorKey(c) === targetColor);
+  const cmcMatches = eligible.filter((c) => getCardCmc(c) === level);
+  const colorMatches = eligible.filter((c) => getCardColorKey(c) === targetColor);
+
+  const pool = exact.length > 0 ? exact : (cmcMatches.length > 0 ? cmcMatches : (colorMatches.length > 0 ? colorMatches : eligible));
+  const chosen = pool[Math.floor(Math.random() * pool.length)];
+
+  const clone: CardJSON = JSON.parse(JSON.stringify(chosen));
+  clone.id = `def_L${level}_${clone.id || clone.name}_${Math.random().toString(36).substring(2, 7)}`;
+  clone.isDefenderArmy = true;
+  clone.questArmy = [JSON.parse(JSON.stringify(chosen))];
+  return { occupant: clone, questArmy: clone.questArmy };
+};
+
+const hasPlayerNeighbor = (c: number, r: number, map: MapCell[][]): boolean => {
+  const cols = map.length;
+  const rows = map[0].length;
+  const odd = c % 2 === 1;
+  const neighbors = [
+    [c, r - 1], [c, r + 1], [c - 1, r], [c + 1, r],
+    [c - 1, odd ? r + 1 : r - 1], [c + 1, odd ? r + 1 : r - 1],
+  ];
+  return neighbors.some(([nc, nr]) => nc >= 0 && nc < cols && nr >= 0 && nr < rows && map[nc][nr].ownerId === 0);
+};
+
+const processCellDefenderSpawning = (
+  cell: any,
+  c: number,
+  r: number,
+  newMap: MapCell[][],
+  cardPool: CardJSON[],
+  opponentColors: string[]
+): boolean => {
+  if (cell.ownerId === 0 || cell.occupant) return false;
+
+  const match = (cell.tileId || "").match(/(.+)\s+L(\d+)/i);
+  const level = match ? parseInt(match[2], 10) : 1;
+
+  if (level === 3 || level === 4) {
+    if (cell.defenderEvaluated) return false;
+    const res = generateLevelDefenderForTile(cardPool, cell.tileId, level);
+    if (!res) return false;
+    cell.occupant = res.occupant;
+    cell.defenderEvaluated = true;
+    return true;
+  }
+
+  if (cell.defenderEvaluated || !isPlainOrForestTile(cell.tileId)) return false;
+  if (!hasPlayerNeighbor(c, r, newMap)) return false;
+
+  cell.defenderEvaluated = true;
+  if (!isBorderTileBetweenBiomes(cell, newMap) && Math.random() >= 0.5) return false;
+
+  const res = generateDefenderArmyForTile(cardPool, getTileLandColors(cell.tileId, opponentColors));
+  if (!res) return false;
+  cell.occupant = res.occupant;
+  return true;
+};
+
 export const checkAndSpawnDefenderArmiesOnMap = (
   map: MapCell[][],
   cardPool: CardJSON[],
   opponentColors: string[]
 ): { map: MapCell[][]; spawnedCount: number } => {
   if (!map || map.length === 0) return { map, spawnedCount: 0 };
-  const cols = map.length;
-  const rows = map[0].length;
   let spawnedCount = 0;
+  const newMap = map.map((colArr) => colArr.map((cell) => ({ ...cell })));
 
-  const newMap = map.map(colArr => colArr.map(cell => ({ ...cell })));
-
-  for (let c = 0; c < cols; c++) {
-    for (let r = 0; r < rows; r++) {
-      const cell = newMap[c][r] as any;
-      if (cell.ownerId === 0 || cell.occupant || cell.defenderEvaluated) continue;
-      if (!isPlainOrForestTile(cell.tileId)) continue;
-
-      const odd = c % 2 === 1;
-      const neighbors = [
-        [c, r - 1], [c, r + 1], [c - 1, r], [c + 1, r],
-        [c - 1, odd ? r + 1 : r - 1], [c + 1, odd ? r + 1 : r - 1]
-      ];
-      const isAdjacentToPlayer = neighbors.some(([nc, nr]) => 
-        nc >= 0 && nc < cols && nr >= 0 && nr < rows && newMap[nc][nr].ownerId === 0
-      );
-
-      if (!isAdjacentToPlayer) continue;
-
-      cell.defenderEvaluated = true;
-      const isBorder = isBorderTileBetweenBiomes(cell, newMap);
-      const shouldSpawn = isBorder || Math.random() < 0.5;
-
-      if (shouldSpawn) {
-        const tileColors = getTileLandColors(cell.tileId, opponentColors);
-        const result = generateDefenderArmyForTile(cardPool, tileColors);
-        if (result) {
-          cell.occupant = result.occupant;
-          spawnedCount++;
-        }
+  for (let c = 0; c < newMap.length; c++) {
+    for (let r = 0; r < newMap[0].length; r++) {
+      if (processCellDefenderSpawning(newMap[c][r], c, r, newMap, cardPool, opponentColors)) {
+        spawnedCount++;
       }
     }
   }
