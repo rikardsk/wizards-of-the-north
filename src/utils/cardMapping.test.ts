@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, isFlyingCreature, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard, getCardCmc, getCardColorKey, generateLevelDefenderForTile } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, isFlyingCreature, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard, getCardCmc, getCardColorKey, generateLevelDefenderForTile, isQuestTileCell } from "./cardMapping";
 
 describe("cardMapping", () => {
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
@@ -1607,6 +1607,36 @@ describe("cardMapping", () => {
       expect(map[0][1].occupant.name).toBe("Tree Ent");
       expect(map[1][0].occupant).not.toBeNull();
       expect(map[1][0].occupant.name).toBe("Fire Dragon");
+    });
+
+    it("identifies quest tile cells accurately via isQuestTileCell", () => {
+      expect(isQuestTileCell({ tileId: "Tower of terror Quest L3" })).toBe(true);
+      expect(isQuestTileCell({ tileId: "Crypt of the undead L4" })).toBe(true);
+      expect(isQuestTileCell({ isQuestTile: true })).toBe(true);
+      expect(isQuestTileCell({ questName: "Dragons Lair" })).toBe(true);
+      expect(isQuestTileCell({ occupant: { type: "Quest" } })).toBe(true);
+      expect(isQuestTileCell({ tileId: "Forrest L3" })).toBe(false);
+      expect(isQuestTileCell(null)).toBe(false);
+    });
+
+    it("strictly excludes quest tiles from L3 and L4 defender spawning", () => {
+      const mockMap: any[][] = [
+        [{ col: 0, row: 0, ownerId: 0, tileId: "Wizards Tower L1" }, { col: 0, row: 1, ownerId: null, tileId: "Tower of terror Quest L3" }],
+        [{ col: 1, row: 0, ownerId: null, tileId: "Crypt of the undead L4" }, { col: 1, row: 1, ownerId: null, tileId: "Forrest L3" }]
+      ];
+      const pool: any[] = [
+        { id: "c1", name: "Tree Ent", type: "Creature", color: "green", manaCost: "3", power: "3", toughness: "3" },
+        { id: "c2", name: "Fire Dragon", type: "Creature", color: "red", manaCost: "4", power: "5", toughness: "5" }
+      ];
+
+      const { map } = checkAndSpawnDefenderArmiesOnMap(mockMap, pool, ["Red", "Green"]);
+      // Quest tile 1 (Tower of terror Quest L3) should NOT spawn L3 defender
+      expect(map[0][1].occupant).toBeUndefined();
+      // Quest tile 2 (Crypt of the undead L4) should NOT spawn L4 defender
+      expect(map[1][0].occupant).toBeUndefined();
+      // Normal Forrest L3 tile SHOULD spawn L3 defender
+      expect(map[1][1].occupant).not.toBeNull();
+      expect(map[1][1].occupant.name).toBe("Tree Ent");
     });
   });
 });

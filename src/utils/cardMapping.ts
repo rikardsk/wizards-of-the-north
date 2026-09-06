@@ -2946,6 +2946,22 @@ const hasPlayerNeighbor = (c: number, r: number, map: MapCell[][]): boolean => {
   return neighbors.some(([nc, nr]) => nc >= 0 && nc < cols && nr >= 0 && nr < rows && map[nc][nr].ownerId === 0);
 };
 
+export const isQuestTileCell = (cell: any): boolean => {
+  if (!cell) return false;
+  const tileId = (cell.tileId || "").toLowerCase();
+  if (tileId.includes("quest") || tileId.includes("tower of terror") || tileId.includes("crypt of the undead")) return true;
+  
+  if (cell.occupant) {
+    const t = (cell.occupant.type || cell.occupant.cardType || "").toLowerCase();
+    const n = (cell.occupant.name || "").toLowerCase();
+    if (t.includes("quest") || n.includes("quest")) return true;
+    if (cell.occupant.questData || cell.occupant.questLevel !== undefined) return true;
+  }
+  
+  if (cell.isQuestTile || cell.questName || cell.questData) return true;
+  return false;
+};
+
 const processCellDefenderSpawning = (
   cell: any,
   c: number,
@@ -2954,7 +2970,7 @@ const processCellDefenderSpawning = (
   cardPool: CardJSON[],
   opponentColors: string[]
 ): boolean => {
-  if (cell.ownerId === 0 || cell.occupant) return false;
+  if (cell.ownerId === 0 || cell.occupant || isQuestTileCell(cell)) return false;
 
   const match = (cell.tileId || "").match(/(.+)\s+L(\d+)/i);
   const level = match ? parseInt(match[2], 10) : 1;
