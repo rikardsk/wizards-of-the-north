@@ -392,17 +392,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     if (img) {
       ctx.drawImage(img, x - HEX_WIDTH / 2, y - HEX_HEIGHT / 2, HEX_WIDTH, HEX_HEIGHT);
     }
-
-    if (showTileOutlines) {
-      ctx.save();
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      pathHexagon(ctx, x, y);
-      ctx.closePath();
-      ctx.stroke();
-      ctx.restore();
-    }
   };
 
   const drawQuestBadge = (ctx: CanvasRenderingContext2D, px: number, py: number) => {
@@ -566,16 +555,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const isResistanceTile = !!isDefenderArmyAtCell && !questAtCell;
 
     // Draw ownership ring (red ring for completed quest tiles, golden ring for active quest locations, blue ring for resistance defender armies)
-    if (isCompletedQuest) {
-      drawHexRing(ctx, x, y, "#ef4444", 4.5);
-    } else if (isPureQuestTile) {
-      drawHexRing(ctx, x, y, "#facc15", 4.5);
-    } else if (isResistanceTile) {
-      drawHexRing(ctx, x, y, "#3b82f6", 4.5);
-    } else if (cell.ownerId !== null) {
-      const owner = players[cell.ownerId];
-      if (owner) {
-        drawHexRing(ctx, x, y, owner.color, 4);
+    if (showTileOutlines) {
+      if (isCompletedQuest) {
+        drawHexRing(ctx, x, y, "#ef4444", 4.5);
+      } else if (isPureQuestTile) {
+        drawHexRing(ctx, x, y, "#facc15", 4.5);
+      } else if (isResistanceTile) {
+        drawHexRing(ctx, x, y, "#3b82f6", 4.5);
+      } else if (cell.ownerId !== null) {
+        const owner = players[cell.ownerId];
+        if (owner) {
+          drawHexRing(ctx, x, y, owner.color, 4);
+        }
       }
     }
 
