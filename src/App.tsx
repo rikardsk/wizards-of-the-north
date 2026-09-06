@@ -81,21 +81,20 @@ const getDefaultQuestTileId = (questName: string): string => {
 export const DEFAULT_QUEST_TILE_POSITIONS: Record<string, { tileId: string; x: number; y: number }> = {
   "Tower of Terror Quest": { tileId: "Tower of terror", x: 5, y: 4 },
   "Dragons Nest Quest": { tileId: "Dragons Nest", x: 5, y: 0 },
-  "Crypt of the undead Quest": { tileId: "Crypt of the undead", x: 5, y: 8 },
-  "Ancient Temple Ruins Quest": { tileId: "Ancient Temple Ruins", x: 2, y: 2 },
-  "City of the Dead Quest": { tileId: "City of the dead", x: 8, y: 2 },
-  "Goblin Camp Quest": { tileId: "Goblin Camp", x: 2, y: 6 },
-  "Gladiator School Quest": { tileId: "Gladiator School", x: 8, y: 6 },
-  "Battle Arena Quest": { tileId: "Battle Arena", x: 3, y: 4 },
-  "Dragons Lair Quest": { tileId: "Dragons Lair", x: 7, y: 4 },
-  "Tower of Power Quest": { tileId: "Tower of Power", x: 5, y: 2 }
+  "Ancient Temple Ruins Quest": { tileId: "Ancient Temple Ruins", x: 5, y: 2 },
+  "City of the Dead Quest": { tileId: "City of the dead", x: 5, y: 8 },
+  "Goblin Camp Quest": { tileId: "Goblin Camp", x: 9, y: 1 },
+  "Crypt of the undead Quest": { tileId: "Crypt of the undead", x: 9, y: 7 },
+  "Gladiator School Quest": { tileId: "Gladiator School", x: 3, y: 7 },
+  "Battle Arena Quest": { tileId: "Battle Arena", x: 5, y: 5 },
+  "Dragons Lair Quest": { tileId: "Dragons Lair", x: 6, y: 4 },
+  "Tower of Power Quest": { tileId: "Tower of Power", x: 2, y: 1 }
 };
 
 const FALLBACK_COORDS = [
-  { x: 5, y: 4 }, { x: 5, y: 0 }, { x: 5, y: 8 }, { x: 2, y: 2 },
-  { x: 8, y: 2 }, { x: 2, y: 6 }, { x: 8, y: 6 }, { x: 3, y: 4 },
-  { x: 7, y: 4 }, { x: 5, y: 2 }, { x: 1, y: 2 }, { x: 9, y: 2 },
-  { x: 1, y: 6 }, { x: 9, y: 6 }
+  { x: 5, y: 4 }, { x: 5, y: 0 }, { x: 5, y: 2 }, { x: 5, y: 8 },
+  { x: 9, y: 1 }, { x: 9, y: 7 }, { x: 3, y: 7 }, { x: 5, y: 5 },
+  { x: 6, y: 4 }, { x: 2, y: 1 }, { x: 1, y: 2 }, { x: 9, y: 2 }
 ];
 
 export const getDefaultQuestTileConfig = (questName: string, index: number = 0): QuestTileConfig => {

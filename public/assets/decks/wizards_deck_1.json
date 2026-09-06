@@ -4893,7 +4893,7 @@
       ],
       "tileName": "Ancient Temple Ruins.png",
       "mapCoords": {
-        "x": 2,
+        "x": 5,
         "y": 2
       },
       "placeTileAtStart": true,
@@ -5031,8 +5031,8 @@
       ],
       "tileName": "City of the dead.png",
       "mapCoords": {
-        "x": 8,
-        "y": 2
+        "x": 5,
+        "y": 8
       },
       "placeTileAtStart": true,
       "enabled": true
@@ -5177,8 +5177,8 @@
       ],
       "tileName": "Goblin Camp.png",
       "mapCoords": {
-        "x": 2,
-        "y": 6
+        "x": 9,
+        "y": 1
       },
       "placeTileAtStart": true,
       "enabled": true
@@ -5313,8 +5313,8 @@
       ],
       "tileName": "Crypt of the undead.png",
       "mapCoords": {
-        "x": 5,
-        "y": 8
+        "x": 9,
+        "y": 7
       },
       "placeTileAtStart": true,
       "enabled": true
@@ -5461,8 +5461,8 @@
       ],
       "tileName": "Gladiator School.png",
       "mapCoords": {
-        "x": 8,
-        "y": 6
+        "x": 3,
+        "y": 7
       },
       "placeTileAtStart": true,
       "enabled": true
@@ -5610,8 +5610,8 @@
       ],
       "tileName": "Battle Arena.png",
       "mapCoords": {
-        "x": 3,
-        "y": 4
+        "x": 5,
+        "y": 5
       },
       "placeTileAtStart": true,
       "enabled": true
@@ -5749,7 +5749,7 @@
       ],
       "tileName": "Dragons Lair.png",
       "mapCoords": {
-        "x": 7,
+        "x": 6,
         "y": 4
       },
       "placeTileAtStart": true,
@@ -5898,8 +5898,8 @@
       ],
       "tileName": "Tower of Power.png",
       "mapCoords": {
-        "x": 5,
-        "y": 2
+        "x": 2,
+        "y": 1
       },
       "placeTileAtStart": true,
       "enabled": true
