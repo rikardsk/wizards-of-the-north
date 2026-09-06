@@ -501,7 +501,14 @@
       "power": "1",
       "toughness": "5",
       "keywords": [],
-      "activatedAbilities": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C3"
+          ],
+          "text": "Add a mana of any color."
+        }
+      ],
       "abilityManaSize": 14,
       "illustration": "Wizard L1.jpg"
     },
@@ -515,7 +522,7 @@
       "cardSubType": "Level 2",
       "target": "",
       "hasPt": true,
-      "rulesText": "Draws 2 cards each turn.",
+      "rulesText": "",
       "customDescription": "A skilled wizard of the tower.",
       "customDescriptionItalic": true,
       "upkeepCost": [],
@@ -524,7 +531,14 @@
       "power": "2",
       "toughness": "10",
       "keywords": [],
-      "activatedAbilities": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C2"
+          ],
+          "text": "Add a mana of any color."
+        }
+      ],
       "abilityManaSize": 14,
       "illustration": "Wizard L2.jpg"
     },
@@ -538,7 +552,7 @@
       "cardSubType": "Level 3",
       "target": "",
       "hasPt": true,
-      "rulesText": "Draws 3 cards each turn.",
+      "rulesText": "",
       "customDescription": "A wizard of advanced studies and elemental control.",
       "customDescriptionItalic": true,
       "upkeepCost": [],
@@ -547,7 +561,14 @@
       "power": "3",
       "toughness": "15",
       "keywords": [],
-      "activatedAbilities": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C3"
+          ],
+          "text": "Add 2 mana of any color."
+        }
+      ],
       "abilityManaSize": 14,
       "illustration": "Wizard L3.jpg"
     },
@@ -561,7 +582,7 @@
       "cardSubType": "Level 4",
       "target": "",
       "hasPt": true,
-      "rulesText": "Draws 4 cards each turn.",
+      "rulesText": "",
       "customDescription": "Archmage of the North, master of the ultimate magic.",
       "customDescriptionItalic": true,
       "upkeepCost": [],
@@ -570,7 +591,14 @@
       "power": "4",
       "toughness": "20",
       "keywords": [],
-      "activatedAbilities": [],
+      "activatedAbilities": [
+        {
+          "cost": [
+            "C1"
+          ],
+          "text": "Add a mana of any color."
+        }
+      ],
       "abilityManaSize": 14,
       "illustration": "Wizard L4.jpg"
     },
@@ -585,7 +613,7 @@
       "target": "",
       "hasPt": true,
       "rulesText": "",
-      "customDescription": "",
+      "customDescription": "Produces {U} per turn.\n",
       "customDescriptionItalic": false,
       "upkeepCost": [],
       "spells": [],
@@ -615,7 +643,7 @@
       "target": "",
       "hasPt": true,
       "rulesText": "",
-      "customDescription": "",
+      "customDescription": "Produces  {U} {U} per turn.",
       "customDescriptionItalic": false,
       "upkeepCost": [],
       "spells": [],
@@ -645,7 +673,7 @@
       "target": "",
       "hasPt": true,
       "rulesText": "",
-      "customDescription": "",
+      "customDescription": "Produces  {U} {U}{U} per turn.",
       "customDescriptionItalic": false,
       "upkeepCost": [],
       "spells": [],
@@ -675,7 +703,7 @@
       "target": "",
       "hasPt": true,
       "rulesText": "",
-      "customDescription": "",
+      "customDescription": "Produces  {U} {U}{U} {U} per turn.",
       "customDescriptionItalic": false,
       "upkeepCost": [],
       "spells": [],
@@ -1268,7 +1296,7 @@
       "target": "",
       "hasPt": false,
       "rulesText": "",
-      "customDescription": "Draw 1 card.",
+      "customDescription": "Add a mana of any color.",
       "customDescriptionItalic": false,
       "upkeepCost": [],
       "spells": [],
@@ -1293,7 +1321,7 @@
       "target": "",
       "hasPt": false,
       "rulesText": "",
-      "customDescription": "Draw 2 cards.",
+      "customDescription": "Add a mana of any color.",
       "customDescriptionItalic": false,
       "upkeepCost": [],
       "spells": [],
@@ -1318,7 +1346,7 @@
       "target": "",
       "hasPt": false,
       "rulesText": "",
-      "customDescription": "Draw 3 cards.",
+      "customDescription": "Add 2 mana of any color.",
       "customDescriptionItalic": false,
       "upkeepCost": [],
       "spells": [],
@@ -1343,7 +1371,7 @@
       "target": "",
       "hasPt": false,
       "rulesText": "",
-      "customDescription": "Draw 4 cards.",
+      "customDescription": "Add a mana of any color.",
       "customDescriptionItalic": false,
       "upkeepCost": [],
       "spells": [],
@@ -4234,6 +4262,221 @@
       "activatedAbilities": [],
       "abilityManaSize": 14,
       "illustration": "Counterspell Black.jpg"
+    },
+    {
+      "id": "card_1788728061611",
+      "cardName": "Templar",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W",
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Templar.jpg"
+    },
+    {
+      "id": "card_1788728118591",
+      "cardName": "Priest",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Priest.jpg"
+    },
+    {
+      "id": "card_1788728149848",
+      "cardName": "Bodyguard",
+      "frameStyle": "white",
+      "borderColor": "black",
+      "manaCost": [
+        "W",
+        "W"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Bodyguard.jpg"
+    },
+    {
+      "id": "card_1788728197252",
+      "cardName": "Elven King",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G",
+        "G",
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Elven",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [
+        {
+          "cost": [],
+          "text": "Gives +1/+1 to all Elven."
+        }
+      ],
+      "abilityManaSize": 14,
+      "illustration": "Elven King.jpg"
+    },
+    {
+      "id": "card_1788728248831",
+      "cardName": "Elven Mystic",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "Elven",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Elven Mystic.jpg"
+    },
+    {
+      "id": "card_1788728279312",
+      "cardName": "Forest Sprites",
+      "frameStyle": "green",
+      "borderColor": "black",
+      "manaCost": [
+        "G"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "1",
+      "toughness": "1",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Forest Sprites.jpg"
+    },
+    {
+      "id": "card_1788728350654",
+      "cardName": "Black Knight",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B",
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [
+        "First Strike"
+      ],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Black Knight.jpg"
+    },
+    {
+      "id": "card_1788728411320",
+      "cardName": "Hypnotic Spectre",
+      "frameStyle": "black",
+      "borderColor": "black",
+      "manaCost": [
+        "B",
+        "B",
+        "B"
+      ],
+      "cardType": "Creature",
+      "cardSubType": "",
+      "target": "",
+      "hasPt": true,
+      "rulesText": "",
+      "customDescription": "",
+      "customDescriptionItalic": true,
+      "upkeepCost": [],
+      "spells": [],
+      "companions": [],
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "activatedAbilities": [],
+      "abilityManaSize": 14,
+      "illustration": "Hypnotic Spectre.jpg"
     }
   ],
   "deckSpells": [],
@@ -4387,10 +4630,7 @@
           },
           "collapsed": true
         }
-      ],
-      "startInHand": true,
-      "startingLocation": "hand",
-      "placeTileAtStart": true
+      ]
     },
     {
       "id": "default_dragons_nest_quest",
@@ -4524,10 +4764,7 @@
           },
           "collapsed": true
         }
-      ],
-      "startInHand": true,
-      "startingLocation": "hand",
-      "placeTileAtStart": true
+      ]
     },
     {
       "id": "default_ancient_temple_ruins_quest",
@@ -4649,15 +4886,7 @@
             "opponents": true
           }
         }
-      ],
-      "startInHand": true,
-      "startingLocation": "hand",
-      "placeTileAtStart": true,
-      "tileName": "Ancient Temple Ruins.png",
-      "mapCoords": {
-        "x": 5,
-        "y": 2
-      }
+      ]
     },
     {
       "id": "default_city_of_the_dead_quest",
@@ -4788,15 +5017,7 @@
           },
           "collapsed": true
         }
-      ],
-      "startInHand": true,
-      "startingLocation": "hand",
-      "placeTileAtStart": true,
-      "tileName": "City of the dead.png",
-      "mapCoords": {
-        "x": 5,
-        "y": 8
-      }
+      ]
     },
     {
       "id": "default_goblin_camp_quest",
@@ -4935,15 +5156,7 @@
             "rewardCards": true
           }
         }
-      ],
-      "startInHand": true,
-      "startingLocation": "hand",
-      "placeTileAtStart": true,
-      "tileName": "Goblin Camp.png",
-      "mapCoords": {
-        "x": 9,
-        "y": 1
-      }
+      ]
     },
     {
       "id": "default_crypt_of_the_undead_quest",
@@ -5072,15 +5285,7 @@
             "manaReward": true
           }
         }
-      ],
-      "startInHand": true,
-      "startingLocation": "hand",
-      "placeTileAtStart": true,
-      "tileName": "Crypt of the undead.png",
-      "mapCoords": {
-        "x": 9,
-        "y": 7
-      }
+      ]
     },
     {
       "id": "default_gladiator_school_quest",
@@ -5221,15 +5426,7 @@
             "attributeReward": true
           }
         }
-      ],
-      "startInHand": true,
-      "startingLocation": "hand",
-      "placeTileAtStart": true,
-      "tileName": "Gladiator School.png",
-      "mapCoords": {
-        "x": 3,
-        "y": 7
-      }
+      ]
     },
     {
       "id": "default_battle_arena_quest",
@@ -5371,15 +5568,7 @@
             "rewardCards": true
           }
         }
-      ],
-      "startInHand": true,
-      "startingLocation": "hand",
-      "placeTileAtStart": true,
-      "tileName": "Battle Arena.png",
-      "mapCoords": {
-        "x": 5,
-        "y": 5
-      }
+      ]
     },
     {
       "id": "default_dragons_lair_quest",
@@ -5511,15 +5700,7 @@
           },
           "collapsed": true
         }
-      ],
-      "startInHand": true,
-      "startingLocation": "hand",
-      "placeTileAtStart": true,
-      "tileName": "Dragons Lair.png",
-      "mapCoords": {
-        "x": 6,
-        "y": 4
-      }
+      ]
     },
     {
       "id": "default_tower_of_power_quest",
@@ -5661,89 +5842,7 @@
           },
           "collapsed": true
         }
-      ],
-      "startInHand": true,
-      "startingLocation": "hand",
-      "placeTileAtStart": true,
-      "tileName": "Tower of Power.png",
-      "mapCoords": {
-        "x": 2,
-        "y": 1
-      }
+      ]
     }
-  ],
-  "questsStartingInHand": [
-    "Tower of Terror Quest",
-    "Dragons Nest Quest",
-    "Ancient Temple Ruins Quest",
-    "City of the Dead Quest",
-    "Goblin Camp Quest",
-    "Crypt of the undead Quest",
-    "Gladiator School Quest",
-    "Battle Arena Quest",
-    "Dragons Lair Quest",
-    "Tower of Power Quest"
-  ],
-  "questTileConfigs": {
-    "Tower of Terror Quest": {
-      "enabled": true,
-      "tileId": "Tower of terror",
-      "x": 5,
-      "y": 4
-    },
-    "Dragons Nest Quest": {
-      "enabled": true,
-      "tileId": "Dragons Nest",
-      "x": 5,
-      "y": 0
-    },
-    "Ancient Temple Ruins Quest": {
-      "enabled": true,
-      "tileId": "Ancient Temple Ruins",
-      "x": 5,
-      "y": 2
-    },
-    "City of the Dead Quest": {
-      "enabled": true,
-      "tileId": "City of the dead",
-      "x": 5,
-      "y": 8
-    },
-    "Goblin Camp Quest": {
-      "enabled": true,
-      "tileId": "Goblin Camp",
-      "x": 9,
-      "y": 1
-    },
-    "Crypt of the undead Quest": {
-      "enabled": true,
-      "tileId": "Crypt of the undead",
-      "x": 9,
-      "y": 7
-    },
-    "Gladiator School Quest": {
-      "enabled": true,
-      "tileId": "Gladiator School",
-      "x": 3,
-      "y": 7
-    },
-    "Battle Arena Quest": {
-      "enabled": true,
-      "tileId": "Battle Arena",
-      "x": 5,
-      "y": 5
-    },
-    "Dragons Lair Quest": {
-      "enabled": true,
-      "tileId": "Dragons Lair",
-      "x": 6,
-      "y": 4
-    },
-    "Tower of Power Quest": {
-      "enabled": true,
-      "tileId": "Tower of Power",
-      "x": 2,
-      "y": 1
-    }
-  }
+  ]
 }
