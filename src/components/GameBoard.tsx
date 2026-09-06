@@ -549,14 +549,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     const questAtCell = activeQuestLocations?.find(loc => loc.col === c && loc.row === r);
     const isDefenderArmyAtCell = (cell.occupant as any)?.isDefenderArmy || (cell.occupant as any)?.questArmy;
-    const isQuestTile = !!questAtCell || !!isDefenderArmyAtCell || (cell.occupant?.type || "").toLowerCase().includes("quest") || (cell.occupant?.cardType || "").toLowerCase().includes("quest");
-    const isCompletedQuest = questAtCell?.completed || (isQuestTile && cell.ownerId !== null && !cell.occupant);
+    const isPureQuestTile = !!questAtCell || (cell.occupant?.type || "").toLowerCase().includes("quest") || (cell.occupant?.cardType || "").toLowerCase().includes("quest");
+    const isCompletedQuest = questAtCell?.completed || (isPureQuestTile && cell.ownerId !== null && !cell.occupant);
+    const isResistanceTile = !!isDefenderArmyAtCell && !questAtCell;
 
-    // Draw ownership ring (red ring for completed quest tiles, golden ring for active quest locations)
+    // Draw ownership ring (red ring for completed quest tiles, golden ring for active quest locations, blue ring for resistance defender armies)
     if (isCompletedQuest) {
       drawHexRing(ctx, x, y, "#ef4444", 4.5);
-    } else if (isQuestTile) {
+    } else if (isPureQuestTile) {
       drawHexRing(ctx, x, y, "#facc15", 4.5);
+    } else if (isResistanceTile) {
+      drawHexRing(ctx, x, y, "#38bdf8", 4.5);
     } else if (cell.ownerId !== null) {
       const owner = players[cell.ownerId];
       if (owner) {
@@ -606,10 +609,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ctx.drawImage(crImg, x - 36, y - 36, 72, 72);
         ctx.restore();
         
-        // Creature outline (red for completed quest, golden for active quest)
+        // Creature outline (red for completed quest, golden for active quest, blue for resistance)
         ctx.beginPath();
         ctx.arc(x, y, 36, 0, Math.PI * 2);
-        ctx.strokeStyle = isCompletedQuest ? "#ef4444" : (isQuestTile ? "#facc15" : (cell.ownerId !== null ? players[cell.ownerId].color : "#fff"));
+        ctx.strokeStyle = isCompletedQuest ? "#ef4444" : (isPureQuestTile ? "#facc15" : (isResistanceTile ? "#38bdf8" : (cell.ownerId !== null ? players[cell.ownerId].color : "#fff")));
         ctx.lineWidth = 3;
         ctx.stroke();
 
