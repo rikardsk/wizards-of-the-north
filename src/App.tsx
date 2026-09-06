@@ -463,9 +463,9 @@ const isTowerOrAbilityCard = (card: CardJSON): boolean => {
   const nameLower = card.name.toLowerCase();
   const typeLower = card.type.toLowerCase();
   const subTypeLower = (card.cardSubType || "").toLowerCase();
+  const isTower = typeLower.includes("tower") || (nameLower.includes("tower") && !nameLower.includes("towerguard") && !typeLower.includes("creature"));
   return (
-    typeLower.includes("tower") ||
-    nameLower.includes("tower") ||
+    isTower ||
     nameLower.endsWith("ability") ||
     nameLower.includes("ability") ||
     typeLower.includes("ability") ||
@@ -1616,9 +1616,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       });
     } else if (current.type === "mana") {
       const amount = current.amount || 1;
-      const colors: Array<{ code: "W" | "U" | "B" | "R" | "G"; name: string }> = [
+      const colors: Array<{ code: "W" | "B" | "R" | "G"; name: string }> = [
         { code: "W", name: "White" },
-        { code: "U", name: "Blue" },
         { code: "B", name: "Black" },
         { code: "R", name: "Red" },
         { code: "G", name: "Green" },
@@ -1628,7 +1627,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         name: `+${amount} ${col.name} Mana`,
         manaCost: `{${col.code}}`,
         type: "Mana Reward",
-        color: col.code === "W" ? "white" : col.code === "U" ? "blue" : col.code === "B" ? "black" : col.code === "R" ? "red" : col.code === "G" ? "green" : "gold",
+        color: col.code === "W" ? "white" : col.code === "B" ? "black" : col.code === "R" ? "red" : col.code === "G" ? "green" : "gold",
         illustration: "",
         rulesText: `Increases your ${col.name} mana pool permanently by +${amount}.`
       }));
@@ -1958,10 +1957,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       return;
     }
 
-    const isSummonDemon = spellName === "summon demon";
+    const isNoTargetSpell = spellName === "summon demon" || spellName === "fog";
 
     let targetCreature: MockFightCreature | null = null;
-    if (!isSummonDemon) {
+    if (!isNoTargetSpell) {
       const targetList = mockFightCreatures?.[isPlayerTarget ? "player" : "enemy"] || [];
       targetCreature = targetList.find(c => c.id === targetId) || null;
       if (!targetCreature) return;
@@ -5698,10 +5697,11 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       const canAffordCounter = !!counterCard;
 
       if (canAffordCounter && counterCard && counterCardIdx >= 0) {
+        const isNoTarget = spellName === "summon demon" || spellName === "fog";
         const userWantsToCounter = await new Promise<boolean>((resolve) => {
           setCounterspellPrompt({
             spellName: affordableSpell.name,
-            targetName: targetCreature.card.name,
+            targetName: isNoTarget ? "" : (targetCreature?.card?.name || ""),
             counterspellCard: counterCard,
             onResolve: (castCounter: boolean) => {
               setCounterspellPrompt(null);
@@ -5815,6 +5815,27 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         continue;
       }
 
+      if (spellName === "fog") {
+        currentPlayer = currentPlayer.map(c => ({ ...c, isAttacking: false, blockingId: null }));
+        currentEnemy = currentEnemy.map(c => ({ ...c, isAttacking: false, blockingId: null }));
+        const nextState = { player: currentPlayer, enemy: currentEnemy };
+        updateFn(nextState);
+        setBannerFn("💨 Enemy Bot casts Fog! Pacified all attackers and ended combat phase.");
+        addArenaLog("💨 Enemy Bot cast Fog! Pacified all attackers and ended combat phase.");
+
+        currentManaPool = paySpellManaCost({ name: "Bot", manaPool: currentManaPool } as any, affordableSpell.manaCost).manaPool || currentManaPool;
+        setGameState(prev => {
+          if (!prev || !prev.players[1]) return prev;
+          const botPlayer = paySpellManaCost(prev.players[1], affordableSpell.manaCost);
+          const updatedPlayers = prev.players.map((p, idx) => idx === 1 ? botPlayer : p);
+          return { ...prev, players: updatedPlayers };
+        });
+
+        spellsCastCount++;
+        await sleep(800);
+        continue;
+      }
+
       let addedDamage = getSpellDamageAmount(spellName, rulesTextLower);
 
       const isTargetPlayer = currentPlayer.some(c => c.id === targetCreature.id);
@@ -5828,8 +5849,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           blockingId: null
         };
         currentEnemy = [...currentEnemy, clonedUnit];
-      } else if (spellName === "fog") {
-        currentPlayer = currentPlayer.map(c => ({ ...c, isAttacking: false, blockingId: null }));
       } else if (spellName === "heal") {
         currentEnemy = currentEnemy.map(c => {
           if (c.id !== targetCreature.id) return c;
@@ -6689,7 +6708,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               const amt = manaInfo.amount;
               nextManaPool = {
                 W: (nextManaPool.W || 0) + amt,
-                U: (nextManaPool.U || 0) + amt,
                 B: (nextManaPool.B || 0) + amt,
                 R: (nextManaPool.R || 0) + amt,
                 G: (nextManaPool.G || 0) + amt,
@@ -7773,7 +7791,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             const amt = manaInfo.amount;
             nextPool = {
               W: (nextPool.W || 0) + amt,
-              U: (nextPool.U || 0) + amt,
               B: (nextPool.B || 0) + amt,
               R: (nextPool.R || 0) + amt,
               G: (nextPool.G || 0) + amt,
@@ -8152,7 +8169,6 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           const amt = manaInfo.amount;
           nextPool = {
             W: (nextPool.W || 0) + amt,
-            U: (nextPool.U || 0) + amt,
             B: (nextPool.B || 0) + amt,
             R: (nextPool.R || 0) + amt,
             G: (nextPool.G || 0) + amt,
@@ -21431,7 +21447,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         combatBattleSpells.map((spell, idx) => {
                           const canAfford = canPlayerAffordManaCost(gameState?.players[0]?.manaPool, spell.manaCost);
                           const isCardDisabled = !canAfford;
-                          const isNoTargetSpell = spell.name.toLowerCase().includes("summon demon");
+                          const isNoTargetSpell = spell.name.toLowerCase().includes("summon demon") || spell.name.toLowerCase().includes("fog");
 
                           return (
                             <div
@@ -25143,7 +25159,11 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             </h2>
             
             <div style={{ color: "rgba(255,255,255,0.85)", fontSize: "0.92rem", marginBottom: "16px", lineHeight: "1.4" }}>
-              Opponent is attempting to cast <strong style={{ color: "#ff4d6d" }}>{counterspellPrompt.spellName}</strong> on <strong style={{ color: "#00f0ff" }}>{counterspellPrompt.targetName}</strong>!
+              {counterspellPrompt.targetName ? (
+                <>Opponent is attempting to cast <strong style={{ color: "#ff4d6d" }}>{counterspellPrompt.spellName}</strong> on <strong style={{ color: "#00f0ff" }}>{counterspellPrompt.targetName}</strong>!</>
+              ) : (
+                <>Opponent is attempting to cast <strong style={{ color: "#ff4d6d" }}>{counterspellPrompt.spellName}</strong>!</>
+              )}
             </div>
             
             <div style={{ background: "rgba(0,0,0,0.4)", padding: "12px 16px", borderRadius: "10px", border: "1px solid rgba(0, 240, 255, 0.2)", marginBottom: "20px", textAlign: "left", display: "flex", alignItems: "center", gap: "14px" }}>

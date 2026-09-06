@@ -819,7 +819,7 @@ export const GameCard: React.FC<GameCardProps> = ({
         </div>
 
         {(() => {
-          const isTowerCard = cardTypeLower.includes("tower") || cardNameLower.includes("tower") || card.type === "Tower";
+          const isTowerCard = !cardTypeLower.includes("creature") && !isCreature && (cardTypeLower.includes("tower") || (cardNameLower.includes("tower") && !cardNameLower.includes("towerguard")) || card.type === "Tower");
 
           if (isTowerCard) {
             const getTowerHpValue = () => {
