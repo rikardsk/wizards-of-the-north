@@ -855,7 +855,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         fillHex(ctx, x, y);
       }
     } else if (highlightOwnedTiles && cell.ownerId === 0) {
-      drawHexRing(ctx, x, y, "#ef4444", 3.5);
       ctx.fillStyle = "rgba(239, 68, 68, 0.25)";
       fillHex(ctx, x, y);
       if (isHovered) {
