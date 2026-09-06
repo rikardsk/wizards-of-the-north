@@ -78,6 +78,48 @@ const getDefaultQuestTileId = (questName: string): string => {
   return found || "Plain L1";
 };
 
+export const DEFAULT_QUEST_TILE_POSITIONS: Record<string, { tileId: string; x: number; y: number }> = {
+  "Tower of Terror Quest": { tileId: "Tower of terror", x: 5, y: 4 },
+  "Dragons Nest Quest": { tileId: "Dragons Nest", x: 5, y: 0 },
+  "Crypt of the undead Quest": { tileId: "Crypt of the undead", x: 5, y: 8 },
+  "Ancient Temple Ruins Quest": { tileId: "Ancient Temple Ruins", x: 2, y: 2 },
+  "City of the Dead Quest": { tileId: "City of the dead", x: 8, y: 2 },
+  "Goblin Camp Quest": { tileId: "Goblin Camp", x: 2, y: 6 },
+  "Gladiator School Quest": { tileId: "Gladiator School", x: 8, y: 6 },
+  "Battle Arena Quest": { tileId: "Battle Arena", x: 3, y: 4 },
+  "Dragons Lair Quest": { tileId: "Dragons Lair", x: 7, y: 4 },
+  "Tower of Power Quest": { tileId: "Tower of Power", x: 5, y: 2 }
+};
+
+const FALLBACK_COORDS = [
+  { x: 5, y: 4 }, { x: 5, y: 0 }, { x: 5, y: 8 }, { x: 2, y: 2 },
+  { x: 8, y: 2 }, { x: 2, y: 6 }, { x: 8, y: 6 }, { x: 3, y: 4 },
+  { x: 7, y: 4 }, { x: 5, y: 2 }, { x: 1, y: 2 }, { x: 9, y: 2 },
+  { x: 1, y: 6 }, { x: 9, y: 6 }
+];
+
+export const getDefaultQuestTileConfig = (questName: string, index: number = 0): QuestTileConfig => {
+  const matched = DEFAULT_QUEST_TILE_POSITIONS[questName];
+  if (matched) {
+    return { enabled: true, tileId: matched.tileId, x: matched.x, y: matched.y };
+  }
+  const cleanName = (questName || "").trim().toLowerCase();
+  const foundKey = Object.keys(DEFAULT_QUEST_TILE_POSITIONS).find(
+    k => k.toLowerCase() === cleanName || k.toLowerCase().replace(/\s+quest$/i, "") === cleanName.replace(/\s+quest$/i, "")
+  );
+  if (foundKey) {
+    const pos = DEFAULT_QUEST_TILE_POSITIONS[foundKey];
+    return { enabled: true, tileId: pos.tileId, x: pos.x, y: pos.y };
+  }
+  const fallbackPos = FALLBACK_COORDS[index % FALLBACK_COORDS.length];
+  return {
+    enabled: true,
+    tileId: getDefaultQuestTileId(questName),
+    x: fallbackPos.x,
+    y: fallbackPos.y
+  };
+};
+
 const getDefaultPortalTileId = (portalName: string): string => {
   if (!portalName) return "Planar Portal";
   const nameLower = portalName.toLowerCase();
@@ -4177,31 +4219,45 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     );
 
     const activeQuests = cards.filter(c => c.type.toLowerCase().includes("quest") && !disabledCardNames.includes(c.name));
-    activeQuests.forEach(quest => {
-      const config = questTileConfigs[quest.name];
-      let targetX = -1;
-      let targetY = -1;
+    const usedQuestCoords = new Set<string>();
 
-      if (config && config.enabled && config.x >= 0 && config.x < mapJson.cols && config.y >= 0 && config.y < mapJson.rows) {
-        hydratedMap[config.x][config.y].tileId = config.tileId;
-        targetX = config.x;
-        targetY = config.y;
-      } else {
-        const foundCell = hydratedMap.flat().find(cell => cell.tileId.toLowerCase().includes("tower of terror") || cell.tileId.toLowerCase().includes("tower"));
-        if (foundCell) {
-          targetX = foundCell.col;
-          targetY = foundCell.row;
+    activeQuests.forEach((quest, idx) => {
+      const config = questTileConfigs[quest.name] || getDefaultQuestTileConfig(quest.name, idx);
+      if (config.enabled === false) return;
+
+      let targetX = config.x;
+      let targetY = config.y;
+      let targetTileId = config.tileId || getDefaultQuestTileId(quest.name);
+
+      const coordKey = `${targetX},${targetY}`;
+      if (usedQuestCoords.has(coordKey) || targetX < 0 || targetX >= mapJson.cols || targetY < 0 || targetY >= mapJson.rows) {
+        const fallback = getDefaultQuestTileConfig(quest.name, idx);
+        targetX = fallback.x;
+        targetY = fallback.y;
+        targetTileId = fallback.tileId;
+
+        if (usedQuestCoords.has(`${targetX},${targetY}`)) {
+          const avail = FALLBACK_COORDS.find(p => !usedQuestCoords.has(`${p.x},${p.y}`));
+          if (avail) {
+            targetX = avail.x;
+            targetY = avail.y;
+          }
         }
       }
+      usedQuestCoords.add(`${targetX},${targetY}`);
 
-      const qData = quest.questData || (quest.name === "Tower of Terror Quest" ? defaultTowerOfTerrorQuestData : undefined);
-      const levelIndex = quest.questLevel ?? 0;
-      const levelObj = qData?.levels?.[levelIndex];
-      if (levelObj && targetX >= 0 && targetY >= 0) {
-        const occupant = getQuestLevelOccupant(levelObj, cards, solo ? soloDifficulty : undefined);
-        if (occupant) {
-          hydratedMap[targetX][targetY].occupant = occupant;
-          hydratedMap[targetX][targetY].ownerId = 1;
+      if (targetX >= 0 && targetX < mapJson.cols && targetY >= 0 && targetY < mapJson.rows) {
+        hydratedMap[targetX][targetY].tileId = targetTileId;
+
+        const qData = quest.questData || (quest.name === "Tower of Terror Quest" ? defaultTowerOfTerrorQuestData : undefined);
+        const levelIndex = quest.questLevel ?? 0;
+        const levelObj = qData?.levels?.[levelIndex];
+        if (levelObj) {
+          const occupant = getQuestLevelOccupant(levelObj, cards, solo ? soloDifficulty : undefined);
+          if (occupant) {
+            hydratedMap[targetX][targetY].occupant = occupant;
+            hydratedMap[targetX][targetY].ownerId = 1;
+          }
         }
       }
     });
@@ -4474,7 +4530,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       setQuestTileConfigs(json.questTileConfigs);
     } else if (Array.isArray(json.quests)) {
       const updated: Record<string, QuestTileConfig> = {};
-      json.quests.forEach((q: any) => {
+      json.quests.forEach((q: any, idx: number) => {
         if (q.tileName && q.mapCoords && typeof q.mapCoords.x === "number" && typeof q.mapCoords.y === "number") {
           const tileId = q.tileName.replace(/\.png$/i, "").replace(/\.jpg$/i, "");
           updated[q.name] = {
@@ -4483,6 +4539,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             x: q.mapCoords.x,
             y: q.mapCoords.y,
           };
+        } else if (q.name) {
+          updated[q.name] = getDefaultQuestTileConfig(q.name, idx);
         }
       });
       if (Object.keys(updated).length > 0) {

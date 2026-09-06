@@ -4630,7 +4630,9 @@
           },
           "collapsed": true
         }
-      ]
+      ],
+      "placeTileAtStart": true,
+      "enabled": true
     },
     {
       "id": "default_dragons_nest_quest",
@@ -4764,7 +4766,9 @@
           },
           "collapsed": true
         }
-      ]
+      ],
+      "placeTileAtStart": true,
+      "enabled": true
     },
     {
       "id": "default_ancient_temple_ruins_quest",
@@ -4886,7 +4890,14 @@
             "opponents": true
           }
         }
-      ]
+      ],
+      "tileName": "Ancient Temple Ruins.png",
+      "mapCoords": {
+        "x": 2,
+        "y": 2
+      },
+      "placeTileAtStart": true,
+      "enabled": true
     },
     {
       "id": "default_city_of_the_dead_quest",
@@ -5017,7 +5028,14 @@
           },
           "collapsed": true
         }
-      ]
+      ],
+      "tileName": "City of the dead.png",
+      "mapCoords": {
+        "x": 8,
+        "y": 2
+      },
+      "placeTileAtStart": true,
+      "enabled": true
     },
     {
       "id": "default_goblin_camp_quest",
@@ -5156,7 +5174,14 @@
             "rewardCards": true
           }
         }
-      ]
+      ],
+      "tileName": "Goblin Camp.png",
+      "mapCoords": {
+        "x": 2,
+        "y": 6
+      },
+      "placeTileAtStart": true,
+      "enabled": true
     },
     {
       "id": "default_crypt_of_the_undead_quest",
@@ -5285,7 +5310,14 @@
             "manaReward": true
           }
         }
-      ]
+      ],
+      "tileName": "Crypt of the undead.png",
+      "mapCoords": {
+        "x": 5,
+        "y": 8
+      },
+      "placeTileAtStart": true,
+      "enabled": true
     },
     {
       "id": "default_gladiator_school_quest",
@@ -5426,7 +5458,14 @@
             "attributeReward": true
           }
         }
-      ]
+      ],
+      "tileName": "Gladiator School.png",
+      "mapCoords": {
+        "x": 8,
+        "y": 6
+      },
+      "placeTileAtStart": true,
+      "enabled": true
     },
     {
       "id": "default_battle_arena_quest",
@@ -5568,7 +5607,14 @@
             "rewardCards": true
           }
         }
-      ]
+      ],
+      "tileName": "Battle Arena.png",
+      "mapCoords": {
+        "x": 3,
+        "y": 4
+      },
+      "placeTileAtStart": true,
+      "enabled": true
     },
     {
       "id": "default_dragons_lair_quest",
@@ -5700,7 +5746,14 @@
           },
           "collapsed": true
         }
-      ]
+      ],
+      "tileName": "Dragons Lair.png",
+      "mapCoords": {
+        "x": 7,
+        "y": 4
+      },
+      "placeTileAtStart": true,
+      "enabled": true
     },
     {
       "id": "default_tower_of_power_quest",
@@ -5842,7 +5895,14 @@
           },
           "collapsed": true
         }
-      ]
+      ],
+      "tileName": "Tower of Power.png",
+      "mapCoords": {
+        "x": 5,
+        "y": 2
+      },
+      "placeTileAtStart": true,
+      "enabled": true
     }
   ]
 }
