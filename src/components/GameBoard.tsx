@@ -559,7 +559,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     } else if (isPureQuestTile) {
       drawHexRing(ctx, x, y, "#facc15", 4.5);
     } else if (isResistanceTile) {
-      drawHexRing(ctx, x, y, "#38bdf8", 4.5);
+      drawHexRing(ctx, x, y, "#3b82f6", 4.5);
     } else if (cell.ownerId !== null) {
       const owner = players[cell.ownerId];
       if (owner) {
@@ -612,7 +612,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         // Creature outline (red for completed quest, golden for active quest, blue for resistance)
         ctx.beginPath();
         ctx.arc(x, y, 36, 0, Math.PI * 2);
-        ctx.strokeStyle = isCompletedQuest ? "#ef4444" : (isPureQuestTile ? "#facc15" : (isResistanceTile ? "#38bdf8" : (cell.ownerId !== null ? players[cell.ownerId].color : "#fff")));
+        ctx.strokeStyle = isCompletedQuest ? "#ef4444" : (isPureQuestTile ? "#facc15" : (isResistanceTile ? "#3b82f6" : (cell.ownerId !== null ? players[cell.ownerId].color : "#fff")));
         ctx.lineWidth = 3;
         ctx.stroke();
 
