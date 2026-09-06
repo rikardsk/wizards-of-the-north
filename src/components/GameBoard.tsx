@@ -546,6 +546,39 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     ctx.restore();
   };
 
+  const drawOwnershipFlagBadge = (ctx: CanvasRenderingContext2D, px: number, py: number, ownerColor: string) => {
+    ctx.save();
+    ctx.shadowColor = ownerColor;
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 2;
+
+    ctx.beginPath();
+    ctx.arc(px, py, 14, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(10, 15, 26, 0.85)";
+    ctx.fill();
+    ctx.strokeStyle = ownerColor;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    const grad = ctx.createRadialGradient(px, py, 0, px, py, 12);
+    grad.addColorStop(0, ownerColor);
+    grad.addColorStop(1, "rgba(10, 15, 26, 0.9)");
+
+    ctx.beginPath();
+    ctx.arc(px, py, 11, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "12px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("🚩", px, py + 0.5);
+    ctx.restore();
+  };
+
   const getSideNeighbor = (c: number, r: number, sideIndex: number): [number, number] => {
     const odd = c % 2 === 1;
     switch (sideIndex) {
@@ -774,6 +807,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       }
 
       drawDefenderArmyBadge(ctx, x, y - 36);
+    }
+
+    // Draw ownership flag badge for unoccupied owned tiles
+    if (cell.ownerId !== null && !cell.occupant && !questAtCell && !isDefenderArmyAtCell && players[cell.ownerId]) {
+      drawOwnershipFlagBadge(ctx, x, y, players[cell.ownerId].color);
     }
 
     // Draw selected/hovered overlay
