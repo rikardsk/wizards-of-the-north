@@ -545,41 +545,74 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     ctx.restore();
   };
 
-  const isBiomeBorderTile = (c: number, r: number): boolean => {
-    const cell = map[c][r];
+  const getSideNeighbor = (c: number, r: number, sideIndex: number): [number, number] => {
     const odd = c % 2 === 1;
-    const neighbors = [
-      [c, r - 1], [c, r + 1],
-      [c - 1, r], [c + 1, r],
-      [c - 1, odd ? r + 1 : r - 1],
-      [c + 1, odd ? r + 1 : r - 1],
-    ];
+    switch (sideIndex) {
+      case 0: return [c + 1, odd ? r + 1 : r];
+      case 1: return [c, r + 1];
+      case 2: return [c - 1, odd ? r + 1 : r];
+      case 3: return [c - 1, odd ? r : r - 1];
+      case 4: return [c, r - 1];
+      case 5: return [c + 1, odd ? r : r - 1];
+      default: return [c, r];
+    }
+  };
 
-    for (const [nc, nr] of neighbors) {
-      if (nc < 0 || nc >= cols || nr < 0 || nr >= rows) {
-        continue;
-      }
-      const neighbor = map[nc][nr];
-      const nTileIdLower = (neighbor.tileId || "").toLowerCase();
+  const isSideBorder = (c: number, r: number, sideIndex: number): boolean => {
+    const cell = map[c][r];
+    const [nc, nr] = getSideNeighbor(c, r, sideIndex);
+    if (nc < 0 || nc >= cols || nr < 0 || nr >= rows) return true;
 
-      if (neighbor.ownerId === null) {
-        return true;
-      }
-      if (nTileIdLower.includes("grass")) {
-        return true;
-      }
-      if (cell.ownerId !== null && neighbor.ownerId !== null && neighbor.ownerId !== cell.ownerId) {
-        return true;
-      }
-      const questLoc = activeQuestLocations?.find(loc => loc.col === nc && loc.row === nr);
-      const isPureQuest = (neighbor.occupant?.type || "").toLowerCase().includes("quest") || (neighbor.occupant?.cardType || "").toLowerCase().includes("quest");
-      const isUncompletedQuest = (questLoc && !questLoc.completed) || (isPureQuest && (neighbor.ownerId === null || neighbor.occupant));
-      if (isUncompletedQuest) {
-        return true;
+    const neighbor = map[nc][nr];
+    if (neighbor.ownerId === null) return true;
+    if ((neighbor.tileId || "").toLowerCase().includes("grass")) return true;
+    if (cell.ownerId !== null && neighbor.ownerId !== null && neighbor.ownerId !== cell.ownerId) return true;
+
+    const questLoc = activeQuestLocations?.find((loc) => loc.col === nc && loc.row === nr);
+    const isPureQuest = (neighbor.occupant?.type || "").toLowerCase().includes("quest") || (neighbor.occupant?.cardType || "").toLowerCase().includes("quest");
+    const isUncompletedQuest = (questLoc && !questLoc.completed) || (isPureQuest && (neighbor.ownerId === null || neighbor.occupant));
+    return !!isUncompletedQuest;
+  };
+
+  const drawHexSide = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    sideIndex: number,
+    color: string,
+    width: number
+  ) => {
+    const size = HEX_WIDTH / 2;
+    const a1 = (Math.PI / 3) * sideIndex;
+    const a2 = (Math.PI / 3) * ((sideIndex + 1) % 6);
+    const x1 = x + size * Math.cos(a1);
+    const y1 = y + size * Math.sin(a1);
+    const x2 = x + size * Math.cos(a2);
+    const y2 = y + size * Math.sin(a2);
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  };
+
+  const drawBiomeBordersForCell = (
+    ctx: CanvasRenderingContext2D,
+    c: number,
+    r: number,
+    x: number,
+    y: number,
+    color: string,
+    width: number
+  ) => {
+    for (let side = 0; side < 6; side++) {
+      if (isSideBorder(c, r, side)) {
+        drawHexSide(ctx, x, y, side, color, width);
       }
     }
-
-    return false;
   };
 
   const drawCellDecorations = (ctx: CanvasRenderingContext2D, c: number, r: number) => {
@@ -592,21 +625,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const isCompletedQuest = questAtCell?.completed || (isPureQuestTile && cell.ownerId !== null && !cell.occupant);
     const isResistanceTile = !!isDefenderArmyAtCell && !questAtCell;
 
-    const shouldDrawOutline = showTileOutlines || (showBiomeBorders && isBiomeBorderTile(c, r));
+    const getColorForCellOutline = (): string | null => {
+      if (isCompletedQuest) return "#ef4444";
+      if (isPureQuestTile) return "#facc15";
+      if (isResistanceTile) return "#3b82f6";
+      if (cell.ownerId !== null && players[cell.ownerId]) return players[cell.ownerId].color;
+      return null;
+    };
 
-    // Draw ownership ring (red ring for completed quest tiles, golden ring for active quest locations, blue ring for resistance defender armies)
-    if (shouldDrawOutline) {
-      if (isCompletedQuest) {
-        drawHexRing(ctx, x, y, "#ef4444", 4.5);
-      } else if (isPureQuestTile) {
-        drawHexRing(ctx, x, y, "#facc15", 4.5);
-      } else if (isResistanceTile) {
-        drawHexRing(ctx, x, y, "#3b82f6", 4.5);
-      } else if (cell.ownerId !== null) {
-        const owner = players[cell.ownerId];
-        if (owner) {
-          drawHexRing(ctx, x, y, owner.color, 4);
-        }
+    const outlineColor = getColorForCellOutline();
+    if (outlineColor) {
+      const width = isCompletedQuest || isPureQuestTile ? 4.5 : 4;
+      if (showTileOutlines) {
+        drawHexRing(ctx, x, y, outlineColor, width);
+      } else if (showBiomeBorders) {
+        drawBiomeBordersForCell(ctx, c, r, x, y, outlineColor, width);
       }
     }
 
