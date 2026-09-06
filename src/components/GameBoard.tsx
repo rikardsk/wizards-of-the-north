@@ -557,7 +557,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     for (const [nc, nr] of neighbors) {
       if (nc < 0 || nc >= cols || nr < 0 || nr >= rows) {
-        return true;
+        continue;
       }
       const neighbor = map[nc][nr];
       const nTileIdLower = (neighbor.tileId || "").toLowerCase();
@@ -1276,7 +1276,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
         {/* Tile Outlines Toggle Button */}
         <button
-          onClick={() => setShowTileOutlines((prev) => !prev)}
+          onClick={() => {
+            setShowTileOutlines((prev) => {
+              const next = !prev;
+              if (next) setShowBiomeBorders(false);
+              return next;
+            });
+          }}
           style={{
             background: showTileOutlines ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
             border: `1px solid ${showTileOutlines ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
@@ -1317,7 +1323,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
         {/* Biome Borders Toggle Button */}
         <button
-          onClick={() => setShowBiomeBorders((prev) => !prev)}
+          onClick={() => {
+            setShowBiomeBorders((prev) => {
+              const next = !prev;
+              if (next) setShowTileOutlines(false);
+              return next;
+            });
+          }}
           style={{
             background: showBiomeBorders ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
             border: `1px solid ${showBiomeBorders ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
