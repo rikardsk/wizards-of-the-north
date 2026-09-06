@@ -5,6 +5,7 @@
 
 ## Later maybe
 - Toggle button for tile outlines
+- Tougher creatures draw more seldom?
 - Colorless mana?
 - Upkeep?
 - Raiding parties?
@@ -29,3 +30,5 @@
 
 
 ## Done
+
+

@@ -56,6 +56,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const [clientMousePos, setClientMousePos] = useState({ x: 0, y: 0 });
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [showScrollbars, setShowScrollbars] = useState(false);
+  const [showTileOutlines, setShowTileOutlines] = useState(true);
   const [isDraggingHScroll, setIsDraggingHScroll] = useState(false);
   const [isDraggingVScroll, setIsDraggingVScroll] = useState(false);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
@@ -380,7 +381,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }
 
     ctx.restore();
-  }, [map, cols, rows, panX, panY, zoom, hoveredCell, selectedCell, selectedLandTileId, images, players, dimensions, highlightedCells, activeQuestLocations]);
+  }, [map, cols, rows, panX, panY, zoom, hoveredCell, selectedCell, selectedLandTileId, images, players, dimensions, highlightedCells, activeQuestLocations, showTileOutlines]);
 
   const drawCellTerrain = (ctx: CanvasRenderingContext2D, c: number, r: number) => {
     const cell = map[c][r];
@@ -390,6 +391,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const img = images[cell.tileId];
     if (img) {
       ctx.drawImage(img, x - HEX_WIDTH / 2, y - HEX_HEIGHT / 2, HEX_WIDTH, HEX_HEIGHT);
+    }
+
+    if (showTileOutlines) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      pathHexagon(ctx, x, y);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
     }
   };
 
@@ -1229,6 +1241,47 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         >
           <i className="fa-solid fa-scroll"></i>
           <span>{showScrollbars ? "Hide Scrollbars" : "Show Scrollbars"}</span>
+        </button>
+
+        {/* Tile Outlines Toggle Button */}
+        <button
+          onClick={() => setShowTileOutlines((prev) => !prev)}
+          style={{
+            background: showTileOutlines ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
+            border: `1px solid ${showTileOutlines ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
+            color: showTileOutlines ? "#06090e" : "#fff",
+            padding: "8px 12px",
+            borderRadius: "6px",
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: "0.8rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            transition: "all 0.2s ease",
+            boxShadow: showTileOutlines ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
+            width: "fit-content",
+          }}
+          onMouseEnter={(e) => {
+            if (!showTileOutlines) {
+              e.currentTarget.style.background = "var(--accent-color)";
+              e.currentTarget.style.color = "#06090e";
+              e.currentTarget.style.borderColor = "var(--accent-color)";
+              e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!showTileOutlines) {
+              e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
+              e.currentTarget.style.color = "#fff";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+            }
+          }}
+        >
+          <i className="fa-solid fa-border-all"></i>
+          <span>{showTileOutlines ? "Hide Tile Outlines" : "Show Tile Outlines"}</span>
         </button>
       </div>
 
