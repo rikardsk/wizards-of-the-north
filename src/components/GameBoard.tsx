@@ -59,6 +59,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const [showTileOutlines, setShowTileOutlines] = useState(false);
   const [showBiomeBorders, setShowBiomeBorders] = useState(true);
   const [highlightOwnedTiles, setHighlightOwnedTiles] = useState(false);
+  const [showOwnershipFlags, setShowOwnershipFlags] = useState(true);
   const [isDraggingHScroll, setIsDraggingHScroll] = useState(false);
   const [isDraggingVScroll, setIsDraggingVScroll] = useState(false);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
@@ -383,7 +384,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }
 
     ctx.restore();
-  }, [map, cols, rows, panX, panY, zoom, hoveredCell, selectedCell, selectedLandTileId, images, players, dimensions, highlightedCells, activeQuestLocations, showTileOutlines, showBiomeBorders, highlightOwnedTiles]);
+  }, [map, cols, rows, panX, panY, zoom, hoveredCell, selectedCell, selectedLandTileId, images, players, dimensions, highlightedCells, activeQuestLocations, showTileOutlines, showBiomeBorders, highlightOwnedTiles, showOwnershipFlags]);
 
   const drawCellTerrain = (ctx: CanvasRenderingContext2D, c: number, r: number) => {
     const cell = map[c][r];
@@ -810,7 +811,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }
 
     // Draw ownership flag badge for unoccupied owned tiles
-    if (cell.ownerId !== null && !cell.occupant && !questAtCell && !isDefenderArmyAtCell && players[cell.ownerId]) {
+    if (showOwnershipFlags && cell.ownerId !== null && !cell.occupant && !questAtCell && !isDefenderArmyAtCell && players[cell.ownerId]) {
       drawOwnershipFlagBadge(ctx, x, y, players[cell.ownerId].color);
     }
 
@@ -1486,6 +1487,47 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         >
           <i className="fa-solid fa-lightbulb"></i>
           <span>{highlightOwnedTiles ? "Hide Owned Highlights" : "Highlight Owned Tiles"}</span>
+        </button>
+
+        {/* Ownership Flags Toggle Button */}
+        <button
+          onClick={() => setShowOwnershipFlags((prev) => !prev)}
+          style={{
+            background: showOwnershipFlags ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
+            border: `1px solid ${showOwnershipFlags ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
+            color: showOwnershipFlags ? "#06090e" : "#fff",
+            padding: "8px 12px",
+            borderRadius: "6px",
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: "0.8rem",
+            fontWeight: 600,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            transition: "all 0.2s ease",
+            boxShadow: showOwnershipFlags ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
+            width: "fit-content",
+          }}
+          onMouseEnter={(e) => {
+            if (!showOwnershipFlags) {
+              e.currentTarget.style.background = "var(--accent-color)";
+              e.currentTarget.style.color = "#06090e";
+              e.currentTarget.style.borderColor = "var(--accent-color)";
+              e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!showOwnershipFlags) {
+              e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
+              e.currentTarget.style.color = "#fff";
+              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+            }
+          }}
+        >
+          <i className="fa-solid fa-flag"></i>
+          <span>{showOwnershipFlags ? "Hide Ownership Flags" : "Show Ownership Flags"}</span>
         </button>
       </div>
 
