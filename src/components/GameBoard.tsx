@@ -1547,7 +1547,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               }}
             >
               <i className="fa-solid fa-lightbulb"></i>
-              <span>Owned Highlights</span>
+              <span>Highlights</span>
             </button>
 
             {/* Ownership Flags Toggle Button */}
