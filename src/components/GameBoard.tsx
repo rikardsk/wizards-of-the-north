@@ -60,6 +60,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const [showBiomeBorders, setShowBiomeBorders] = useState(true);
   const [highlightOwnedTiles, setHighlightOwnedTiles] = useState(false);
   const [showOwnershipFlags, setShowOwnershipFlags] = useState(true);
+  const [showButtonBar, setShowButtonBar] = useState(false);
   const [isDraggingHScroll, setIsDraggingHScroll] = useState(false);
   const [isDraggingVScroll, setIsDraggingVScroll] = useState(false);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
@@ -1313,13 +1314,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           </button>
         </div>
 
-        {/* Scrollbar Toggle Button */}
+        {/* Buttonbar Toggle Trigger Button */}
         <button
-          onClick={() => setShowScrollbars((prev) => !prev)}
+          onClick={() => setShowButtonBar((prev) => !prev)}
           style={{
-            background: showScrollbars ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
-            border: `1px solid ${showScrollbars ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
-            color: showScrollbars ? "#06090e" : "#fff",
+            background: showButtonBar ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
+            border: `1px solid ${showButtonBar ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
+            color: showButtonBar ? "#06090e" : "#fff",
             padding: "8px 12px",
             borderRadius: "6px",
             fontFamily: "'Outfit', sans-serif",
@@ -1328,13 +1329,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            gap: "6px",
+            gap: "8px",
             transition: "all 0.2s ease",
-            boxShadow: showScrollbars ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
+            boxShadow: showButtonBar ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
             width: "fit-content",
           }}
           onMouseEnter={(e) => {
-            if (!showScrollbars) {
+            if (!showButtonBar) {
               e.currentTarget.style.background = "var(--accent-color)";
               e.currentTarget.style.color = "#06090e";
               e.currentTarget.style.borderColor = "var(--accent-color)";
@@ -1342,7 +1343,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
           }}
           onMouseLeave={(e) => {
-            if (!showScrollbars) {
+            if (!showButtonBar) {
               e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
               e.currentTarget.style.color = "#fff";
               e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
@@ -1350,185 +1351,245 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
           }}
         >
-          <i className="fa-solid fa-scroll"></i>
-          <span>{showScrollbars ? "Hide Scrollbars" : "Show Scrollbars"}</span>
+          <i className={`fa-solid ${showButtonBar ? "fa-xmark" : "fa-sliders"}`}></i>
+          <span>{showButtonBar ? "Hide Display Options" : "Display Options"}</span>
+          <i className={`fa-solid ${showButtonBar ? "fa-chevron-up" : "fa-chevron-down"}`} style={{ fontSize: "0.7rem", marginLeft: "4px" }}></i>
         </button>
 
-        {/* Tile Outlines Toggle Button */}
-        <button
-          onClick={() => {
-            setShowTileOutlines((prev) => {
-              const next = !prev;
-              if (next) setShowBiomeBorders(false);
-              return next;
-            });
-          }}
-          style={{
-            background: showTileOutlines ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
-            border: `1px solid ${showTileOutlines ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
-            color: showTileOutlines ? "#06090e" : "#fff",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            fontFamily: "'Outfit', sans-serif",
-            fontSize: "0.8rem",
-            fontWeight: 600,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            transition: "all 0.2s ease",
-            boxShadow: showTileOutlines ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
-            width: "fit-content",
-          }}
-          onMouseEnter={(e) => {
-            if (!showTileOutlines) {
-              e.currentTarget.style.background = "var(--accent-color)";
-              e.currentTarget.style.color = "#06090e";
-              e.currentTarget.style.borderColor = "var(--accent-color)";
-              e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!showTileOutlines) {
-              e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
-              e.currentTarget.style.color = "#fff";
-              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
-            }
-          }}
-        >
-          <i className="fa-solid fa-border-all"></i>
-          <span>{showTileOutlines ? "Hide Tile Outlines" : "Show Tile Outlines"}</span>
-        </button>
+        {/* Collapsible Buttonbar Container */}
+        {showButtonBar && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px",
+              background: "rgba(10, 15, 26, 0.9)",
+              backdropFilter: "blur(8px)",
+              padding: "8px",
+              borderRadius: "8px",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              boxShadow: "0 6px 16px rgba(0, 0, 0, 0.4)",
+              width: "fit-content",
+            }}
+          >
+            {/* Scrollbar Toggle Button */}
+            <button
+              onClick={() => setShowScrollbars((prev) => !prev)}
+              style={{
+                background: showScrollbars ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
+                border: `1px solid ${showScrollbars ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
+                color: showScrollbars ? "#06090e" : "#fff",
+                padding: "8px 12px",
+                borderRadius: "6px",
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                transition: "all 0.2s ease",
+                boxShadow: showScrollbars ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
+                width: "100%",
+              }}
+              onMouseEnter={(e) => {
+                if (!showScrollbars) {
+                  e.currentTarget.style.background = "var(--accent-color)";
+                  e.currentTarget.style.color = "#06090e";
+                  e.currentTarget.style.borderColor = "var(--accent-color)";
+                  e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!showScrollbars) {
+                  e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
+                  e.currentTarget.style.color = "#fff";
+                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+                  e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+                }
+              }}
+            >
+              <i className="fa-solid fa-scroll"></i>
+              <span>{showScrollbars ? "Hide Scrollbars" : "Show Scrollbars"}</span>
+            </button>
 
-        {/* Biome Borders Toggle Button */}
-        <button
-          onClick={() => {
-            setShowBiomeBorders((prev) => {
-              const next = !prev;
-              if (next) setShowTileOutlines(false);
-              return next;
-            });
-          }}
-          style={{
-            background: showBiomeBorders ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
-            border: `1px solid ${showBiomeBorders ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
-            color: showBiomeBorders ? "#06090e" : "#fff",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            fontFamily: "'Outfit', sans-serif",
-            fontSize: "0.8rem",
-            fontWeight: 600,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            transition: "all 0.2s ease",
-            boxShadow: showBiomeBorders ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
-            width: "fit-content",
-          }}
-          onMouseEnter={(e) => {
-            if (!showBiomeBorders) {
-              e.currentTarget.style.background = "var(--accent-color)";
-              e.currentTarget.style.color = "#06090e";
-              e.currentTarget.style.borderColor = "var(--accent-color)";
-              e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!showBiomeBorders) {
-              e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
-              e.currentTarget.style.color = "#fff";
-              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
-            }
-          }}
-        >
-          <i className="fa-solid fa-draw-polygon"></i>
-          <span>{showBiomeBorders ? "Hide Biome Borders" : "Show Biome Borders"}</span>
-        </button>
+            {/* Tile Outlines Toggle Button */}
+            <button
+              onClick={() => {
+                setShowTileOutlines((prev) => {
+                  const next = !prev;
+                  if (next) setShowBiomeBorders(false);
+                  return next;
+                });
+              }}
+              style={{
+                background: showTileOutlines ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
+                border: `1px solid ${showTileOutlines ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
+                color: showTileOutlines ? "#06090e" : "#fff",
+                padding: "8px 12px",
+                borderRadius: "6px",
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                transition: "all 0.2s ease",
+                boxShadow: showTileOutlines ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
+                width: "100%",
+              }}
+              onMouseEnter={(e) => {
+                if (!showTileOutlines) {
+                  e.currentTarget.style.background = "var(--accent-color)";
+                  e.currentTarget.style.color = "#06090e";
+                  e.currentTarget.style.borderColor = "var(--accent-color)";
+                  e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!showTileOutlines) {
+                  e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
+                  e.currentTarget.style.color = "#fff";
+                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+                  e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+                }
+              }}
+            >
+              <i className="fa-solid fa-border-all"></i>
+              <span>{showTileOutlines ? "Hide Tile Outlines" : "Show Tile Outlines"}</span>
+            </button>
 
-        {/* Highlight Owned Tiles Toggle Button */}
-        <button
-          onClick={() => setHighlightOwnedTiles((prev) => !prev)}
-          style={{
-            background: highlightOwnedTiles ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
-            border: `1px solid ${highlightOwnedTiles ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
-            color: highlightOwnedTiles ? "#06090e" : "#fff",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            fontFamily: "'Outfit', sans-serif",
-            fontSize: "0.8rem",
-            fontWeight: 600,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            transition: "all 0.2s ease",
-            boxShadow: highlightOwnedTiles ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
-            width: "fit-content",
-          }}
-          onMouseEnter={(e) => {
-            if (!highlightOwnedTiles) {
-              e.currentTarget.style.background = "var(--accent-color)";
-              e.currentTarget.style.color = "#06090e";
-              e.currentTarget.style.borderColor = "var(--accent-color)";
-              e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!highlightOwnedTiles) {
-              e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
-              e.currentTarget.style.color = "#fff";
-              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
-            }
-          }}
-        >
-          <i className="fa-solid fa-lightbulb"></i>
-          <span>{highlightOwnedTiles ? "Hide Owned Highlights" : "Highlight Owned Tiles"}</span>
-        </button>
+            {/* Biome Borders Toggle Button */}
+            <button
+              onClick={() => {
+                setShowBiomeBorders((prev) => {
+                  const next = !prev;
+                  if (next) setShowTileOutlines(false);
+                  return next;
+                });
+              }}
+              style={{
+                background: showBiomeBorders ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
+                border: `1px solid ${showBiomeBorders ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
+                color: showBiomeBorders ? "#06090e" : "#fff",
+                padding: "8px 12px",
+                borderRadius: "6px",
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                transition: "all 0.2s ease",
+                boxShadow: showBiomeBorders ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
+                width: "100%",
+              }}
+              onMouseEnter={(e) => {
+                if (!showBiomeBorders) {
+                  e.currentTarget.style.background = "var(--accent-color)";
+                  e.currentTarget.style.color = "#06090e";
+                  e.currentTarget.style.borderColor = "var(--accent-color)";
+                  e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!showBiomeBorders) {
+                  e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
+                  e.currentTarget.style.color = "#fff";
+                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+                  e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+                }
+              }}
+            >
+              <i className="fa-solid fa-draw-polygon"></i>
+              <span>{showBiomeBorders ? "Hide Biome Borders" : "Show Biome Borders"}</span>
+            </button>
 
-        {/* Ownership Flags Toggle Button */}
-        <button
-          onClick={() => setShowOwnershipFlags((prev) => !prev)}
-          style={{
-            background: showOwnershipFlags ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
-            border: `1px solid ${showOwnershipFlags ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
-            color: showOwnershipFlags ? "#06090e" : "#fff",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            fontFamily: "'Outfit', sans-serif",
-            fontSize: "0.8rem",
-            fontWeight: 600,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            transition: "all 0.2s ease",
-            boxShadow: showOwnershipFlags ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
-            width: "fit-content",
-          }}
-          onMouseEnter={(e) => {
-            if (!showOwnershipFlags) {
-              e.currentTarget.style.background = "var(--accent-color)";
-              e.currentTarget.style.color = "#06090e";
-              e.currentTarget.style.borderColor = "var(--accent-color)";
-              e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!showOwnershipFlags) {
-              e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
-              e.currentTarget.style.color = "#fff";
-              e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-              e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
-            }
-          }}
-        >
-          <i className="fa-solid fa-flag"></i>
-          <span>{showOwnershipFlags ? "Hide Ownership Flags" : "Show Ownership Flags"}</span>
-        </button>
+            {/* Highlight Owned Tiles Toggle Button */}
+            <button
+              onClick={() => setHighlightOwnedTiles((prev) => !prev)}
+              style={{
+                background: highlightOwnedTiles ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
+                border: `1px solid ${highlightOwnedTiles ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
+                color: highlightOwnedTiles ? "#06090e" : "#fff",
+                padding: "8px 12px",
+                borderRadius: "6px",
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                transition: "all 0.2s ease",
+                boxShadow: highlightOwnedTiles ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
+                width: "100%",
+              }}
+              onMouseEnter={(e) => {
+                if (!highlightOwnedTiles) {
+                  e.currentTarget.style.background = "var(--accent-color)";
+                  e.currentTarget.style.color = "#06090e";
+                  e.currentTarget.style.borderColor = "var(--accent-color)";
+                  e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!highlightOwnedTiles) {
+                  e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
+                  e.currentTarget.style.color = "#fff";
+                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+                  e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+                }
+              }}
+            >
+              <i className="fa-solid fa-lightbulb"></i>
+              <span>{highlightOwnedTiles ? "Hide Owned Highlights" : "Highlight Owned Tiles"}</span>
+            </button>
+
+            {/* Ownership Flags Toggle Button */}
+            <button
+              onClick={() => setShowOwnershipFlags((prev) => !prev)}
+              style={{
+                background: showOwnershipFlags ? "var(--accent-color)" : "rgba(10, 15, 26, 0.85)",
+                border: `1px solid ${showOwnershipFlags ? "var(--accent-color)" : "rgba(255, 255, 255, 0.15)"}`,
+                color: showOwnershipFlags ? "#06090e" : "#fff",
+                padding: "8px 12px",
+                borderRadius: "6px",
+                fontFamily: "'Outfit', sans-serif",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                transition: "all 0.2s ease",
+                boxShadow: showOwnershipFlags ? "0 0 10px var(--accent-glow)" : "0 4px 10px rgba(0, 0, 0, 0.3)",
+                width: "100%",
+              }}
+              onMouseEnter={(e) => {
+                if (!showOwnershipFlags) {
+                  e.currentTarget.style.background = "var(--accent-color)";
+                  e.currentTarget.style.color = "#06090e";
+                  e.currentTarget.style.borderColor = "var(--accent-color)";
+                  e.currentTarget.style.boxShadow = "0 0 10px var(--accent-glow)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!showOwnershipFlags) {
+                  e.currentTarget.style.background = "rgba(10, 15, 26, 0.85)";
+                  e.currentTarget.style.color = "#fff";
+                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+                  e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.3)";
+                }
+              }}
+            >
+              <i className="fa-solid fa-flag"></i>
+              <span>{showOwnershipFlags ? "Hide Ownership Flags" : "Show Ownership Flags"}</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {showScrollbars && (
