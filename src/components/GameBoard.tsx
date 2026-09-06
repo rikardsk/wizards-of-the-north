@@ -550,9 +550,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const questAtCell = activeQuestLocations?.find(loc => loc.col === c && loc.row === r);
     const isDefenderArmyAtCell = (cell.occupant as any)?.isDefenderArmy || (cell.occupant as any)?.questArmy;
     const isQuestTile = !!questAtCell || !!isDefenderArmyAtCell || (cell.occupant?.type || "").toLowerCase().includes("quest") || (cell.occupant?.cardType || "").toLowerCase().includes("quest");
+    const isCompletedQuest = questAtCell?.completed || (isQuestTile && cell.ownerId !== null && !cell.occupant);
 
-    // Draw ownership ring (golden ring for quest locations)
-    if (isQuestTile) {
+    // Draw ownership ring (red ring for completed quest tiles, golden ring for active quest locations)
+    if (isCompletedQuest) {
+      drawHexRing(ctx, x, y, "#ef4444", 4.5);
+    } else if (isQuestTile) {
       drawHexRing(ctx, x, y, "#facc15", 4.5);
     } else if (cell.ownerId !== null) {
       const owner = players[cell.ownerId];
@@ -603,10 +606,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         ctx.drawImage(crImg, x - 36, y - 36, 72, 72);
         ctx.restore();
         
-        // Creature outline (golden for quest tiles)
+        // Creature outline (red for completed quest, golden for active quest)
         ctx.beginPath();
         ctx.arc(x, y, 36, 0, Math.PI * 2);
-        ctx.strokeStyle = isQuestTile ? "#facc15" : (cell.ownerId !== null ? players[cell.ownerId].color : "#fff");
+        ctx.strokeStyle = isCompletedQuest ? "#ef4444" : (isQuestTile ? "#facc15" : (cell.ownerId !== null ? players[cell.ownerId].color : "#fff"));
         ctx.lineWidth = 3;
         ctx.stroke();
 
