@@ -159,6 +159,29 @@ export const hasFirstStrike = (card: CardJSON, activeSpells?: (string | CardJSON
 };
 
 /**
+ * Selects which blocker a First Striker targets when blocked by multiple creatures:
+ * Picks the blocker with highest power that is killed by the creature.
+ * If no blocker can be killed, picks the blocker with highest power.
+ */
+export const selectFirstStrikeTargetBlocker = (
+  attackerPower: number,
+  blockers: MockFightCreature[]
+): MockFightCreature => {
+  const killable = blockers.filter(b => {
+    const bToughness = parseInt(b.card.toughness || "1", 10);
+    return (bToughness - b.damage) <= attackerPower;
+  });
+
+  const pool = killable.length > 0 ? killable : blockers;
+
+  return pool.reduce((best, current) => {
+    const bestP = parseInt(best.card.power || "0", 10);
+    const currP = parseInt(current.card.power || "0", 10);
+    return currP > bestP ? current : best;
+  }, pool[0]);
+};
+
+/**
  * Checks if a card has the stacking ability either via its keywords or rules text.
  */
 export const hasStacking = (card: CardJSON): boolean => {
@@ -458,38 +481,73 @@ export const resolveCombat = (
           logs.push(`💥 Player's ${attacker.card.name} (${power}/${toughness}, Trample) trampled over blockers! Deals ${remainingPower} excess damage to ${targetName}.`);
         }
       } else {
-        blockers.forEach(blocker => {
-          const bPower = parseInt(blocker.card.power || "0", 10);
-          const bToughness = parseInt(blocker.card.toughness || "1", 10);
+        const attFirst = hasFirstStrike(attacker.card, attacker.activeSpells);
+        const isAttMedusa = (attacker.card.name || "").toLowerCase().includes("medusa");
 
-          const attFirst = hasFirstStrike(attacker.card, attacker.activeSpells);
-          const blockFirst = hasFirstStrike(blocker.card, blocker.activeSpells);
-          const isAttMedusa = (attacker.card.name || "").toLowerCase().includes("medusa");
-          const isBlkMedusa = (blocker.card.name || "").toLowerCase().includes("medusa");
+        if (attFirst) {
+          const targetBlocker = selectFirstStrikeTargetBlocker(power, blockers);
+          const targetBPower = parseInt(targetBlocker.card.power || "0", 10);
+          const targetBToughness = parseInt(targetBlocker.card.toughness || "1", 10);
+          const isTargetMedusa = (targetBlocker.card.name || "").toLowerCase().includes("medusa");
 
-          if (attFirst && !blockFirst) {
-            blocker.damage += power;
-            if (blocker.damage < bToughness || isAttMedusa) {
-              attacker.damage += bPower;
-            }
-          } else if (blockFirst && !attFirst) {
-            attacker.damage += bPower;
-            if (attacker.damage < toughness || isBlkMedusa) {
-              blocker.damage += power;
-            }
-          } else {
-            attacker.damage += bPower;
-            blocker.damage += power;
-          }
+          targetBlocker.damage += power;
+          const targetKilled = targetBlocker.damage >= targetBToughness;
 
           logs.push(
-            `⚔️ Player's ${attacker.card.name} (${power}/${toughness}) fights blocker ${blocker.card.name} (${bPower}/${bToughness})! ` +
-            `${attacker.card.name} takes ${bPower} damage (Total: ${attacker.damage}/${toughness}). ` +
-            `${blocker.card.name} takes ${power} damage (Total: ${blocker.damage}/${bToughness}).`
+            `⚡ Player's ${attacker.card.name} (${power}/${toughness}, First Strike) strikes blocker ${targetBlocker.card.name} (${targetBPower}/${targetBToughness})! ` +
+            `${targetBlocker.card.name} takes ${power} damage (Total: ${targetBlocker.damage}/${targetBToughness}).`
           );
 
-          applyMedusaGazeIfNeeded(attacker, blocker, msg => logs.push(msg));
-        });
+          if (targetKilled && !isAttMedusa && !isTargetMedusa) {
+            logs.push(`💀 ${targetBlocker.card.name} is slain by First Strike before dealing return damage!`);
+          }
+
+          applyMedusaGazeIfNeeded(attacker, targetBlocker, msg => logs.push(msg));
+
+          blockers.forEach(blocker => {
+            const bPower = parseInt(blocker.card.power || "0", 10);
+            const bToughness = parseInt(blocker.card.toughness || "1", 10);
+            const isBlkMedusa = (blocker.card.name || "").toLowerCase().includes("medusa");
+
+            if (blocker.id === targetBlocker.id) {
+              if (!targetKilled || isAttMedusa || isBlkMedusa) {
+                attacker.damage += bPower;
+              }
+            } else {
+              attacker.damage += bPower;
+              logs.push(
+                `⚔️ Blocker ${blocker.card.name} (${bPower}/${bToughness}) deals ${bPower} combat damage to ${attacker.card.name} (Total: ${attacker.damage}/${toughness}).`
+              );
+              applyMedusaGazeIfNeeded(attacker, blocker, msg => logs.push(msg));
+            }
+          });
+        } else {
+          blockers.forEach(blocker => {
+            const bPower = parseInt(blocker.card.power || "0", 10);
+            const bToughness = parseInt(blocker.card.toughness || "1", 10);
+
+            const blockFirst = hasFirstStrike(blocker.card, blocker.activeSpells);
+            const isBlkMedusa = (blocker.card.name || "").toLowerCase().includes("medusa");
+
+            if (blockFirst) {
+              attacker.damage += bPower;
+              if (attacker.damage < toughness || isBlkMedusa) {
+                blocker.damage += power;
+              }
+            } else {
+              attacker.damage += bPower;
+              blocker.damage += power;
+            }
+
+            logs.push(
+              `⚔️ Player's ${attacker.card.name} (${power}/${toughness}) fights blocker ${blocker.card.name} (${bPower}/${bToughness})! ` +
+              `${attacker.card.name} takes ${bPower} damage (Total: ${attacker.damage}/${toughness}). ` +
+              `${blocker.card.name} takes ${power} damage (Total: ${blocker.damage}/${bToughness}).`
+            );
+
+            applyMedusaGazeIfNeeded(attacker, blocker, msg => logs.push(msg));
+          });
+        }
       }
     }
   });
@@ -558,38 +616,73 @@ export const resolveCombat = (
           logs.push(`💥 Sauron's ${attacker.card.name} (${power}/${toughness}, Trample) trampled over blockers! Deals ${remainingPower} excess damage to Your Tower.`);
         }
       } else {
-        blockers.forEach(blocker => {
-          const bPower = parseInt(blocker.card.power || "0", 10);
-          const bToughness = parseInt(blocker.card.toughness || "1", 10);
+        const attFirst = hasFirstStrike(attacker.card, attacker.activeSpells);
+        const isAttMedusa = (attacker.card.name || "").toLowerCase().includes("medusa");
 
-          const attFirst = hasFirstStrike(attacker.card, attacker.activeSpells);
-          const blockFirst = hasFirstStrike(blocker.card, blocker.activeSpells);
-          const isAttMedusa = (attacker.card.name || "").toLowerCase().includes("medusa");
-          const isBlkMedusa = (blocker.card.name || "").toLowerCase().includes("medusa");
+        if (attFirst) {
+          const targetBlocker = selectFirstStrikeTargetBlocker(power, blockers);
+          const targetBPower = parseInt(targetBlocker.card.power || "0", 10);
+          const targetBToughness = parseInt(targetBlocker.card.toughness || "1", 10);
+          const isTargetMedusa = (targetBlocker.card.name || "").toLowerCase().includes("medusa");
 
-          if (attFirst && !blockFirst) {
-            blocker.damage += power;
-            if (blocker.damage < bToughness || isAttMedusa) {
-              attacker.damage += bPower;
-            }
-          } else if (blockFirst && !attFirst) {
-            attacker.damage += bPower;
-            if (attacker.damage < toughness || isBlkMedusa) {
-              blocker.damage += power;
-            }
-          } else {
-            attacker.damage += bPower;
-            blocker.damage += power;
-          }
+          targetBlocker.damage += power;
+          const targetKilled = targetBlocker.damage >= targetBToughness;
 
           logs.push(
-            `⚔️ Sauron's ${attacker.card.name} (${power}/${toughness}) fights blocker ${blocker.card.name} (${bPower}/${bToughness})! ` +
-            `${attacker.card.name} takes ${bPower} damage (Total: ${attacker.damage}/${toughness}). ` +
-            `${blocker.card.name} takes ${power} damage (Total: ${blocker.damage}/${bToughness}).`
+            `⚡ Sauron's ${attacker.card.name} (${power}/${toughness}, First Strike) strikes blocker ${targetBlocker.card.name} (${targetBPower}/${targetBToughness})! ` +
+            `${targetBlocker.card.name} takes ${power} damage (Total: ${targetBlocker.damage}/${targetBToughness}).`
           );
 
-          applyMedusaGazeIfNeeded(attacker, blocker, msg => logs.push(msg));
-        });
+          if (targetKilled && !isAttMedusa && !isTargetMedusa) {
+            logs.push(`💀 ${targetBlocker.card.name} is slain by First Strike before dealing return damage!`);
+          }
+
+          applyMedusaGazeIfNeeded(attacker, targetBlocker, msg => logs.push(msg));
+
+          blockers.forEach(blocker => {
+            const bPower = parseInt(blocker.card.power || "0", 10);
+            const bToughness = parseInt(blocker.card.toughness || "1", 10);
+            const isBlkMedusa = (blocker.card.name || "").toLowerCase().includes("medusa");
+
+            if (blocker.id === targetBlocker.id) {
+              if (!targetKilled || isAttMedusa || isBlkMedusa) {
+                attacker.damage += bPower;
+              }
+            } else {
+              attacker.damage += bPower;
+              logs.push(
+                `⚔️ Blocker ${blocker.card.name} (${bPower}/${bToughness}) deals ${bPower} combat damage to ${attacker.card.name} (Total: ${attacker.damage}/${toughness}).`
+              );
+              applyMedusaGazeIfNeeded(attacker, blocker, msg => logs.push(msg));
+            }
+          });
+        } else {
+          blockers.forEach(blocker => {
+            const bPower = parseInt(blocker.card.power || "0", 10);
+            const bToughness = parseInt(blocker.card.toughness || "1", 10);
+
+            const blockFirst = hasFirstStrike(blocker.card, blocker.activeSpells);
+            const isBlkMedusa = (blocker.card.name || "").toLowerCase().includes("medusa");
+
+            if (blockFirst) {
+              attacker.damage += bPower;
+              if (attacker.damage < toughness || isBlkMedusa) {
+                blocker.damage += power;
+              }
+            } else {
+              attacker.damage += bPower;
+              blocker.damage += power;
+            }
+
+            logs.push(
+              `⚔️ Sauron's ${attacker.card.name} (${power}/${toughness}) fights blocker ${blocker.card.name} (${bPower}/${bToughness})! ` +
+              `${attacker.card.name} takes ${bPower} damage (Total: ${attacker.damage}/${toughness}). ` +
+              `${blocker.card.name} takes ${power} damage (Total: ${blocker.damage}/${bToughness}).`
+            );
+
+            applyMedusaGazeIfNeeded(attacker, blocker, msg => logs.push(msg));
+          });
+        }
       }
     }
   });

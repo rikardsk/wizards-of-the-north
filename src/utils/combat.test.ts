@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isFlying, hasTrample, hasStacking, canBlock, resolveCombat, matchSubtype, getCombatStatsAndBuffs, getOrCreateAbilitySpellCard, applyMedusaGazeIfNeeded, processHydraLethalDamage, groupArenaLogsByTurn, isSpellArenaLog, isWizardUnit, getSpellDamageAmount, evaluateBotSpellTargets } from "./combat";
+import { isFlying, hasTrample, hasStacking, canBlock, resolveCombat, matchSubtype, getCombatStatsAndBuffs, getOrCreateAbilitySpellCard, applyMedusaGazeIfNeeded, processHydraLethalDamage, groupArenaLogsByTurn, isSpellArenaLog, isWizardUnit, getSpellDamageAmount, evaluateBotSpellTargets, selectFirstStrikeTargetBlocker } from "./combat";
 import type { CardJSON, MockFightCreature } from "../types/game";
 
 describe("Combat Rules - Flying & Blocking", () => {
@@ -1374,6 +1374,66 @@ describe("Subtype Buffs & Always-Active Abilities", () => {
       
       expect(evaluateBotSpellTargets(counterspell, [playerGoblin], [enemyAttacker])).toBeNull();
       expect(evaluateBotSpellTargets(counterspellRed, [playerGoblin], [enemyAttacker])).toBeNull();
+    });
+  });
+
+  describe("First Strike Multi-Blocker Combat", () => {
+    it("selects the highest power killable blocker for First Strike attack", () => {
+      const blockerA: MockFightCreature = { id: "b1", card: { name: "Blocker A", power: "2", toughness: "2" } as any, damage: 0, isAttacking: false, blockingId: "att" };
+      const blockerB: MockFightCreature = { id: "b2", card: { name: "Blocker B", power: "4", toughness: "1" } as any, damage: 0, isAttacking: false, blockingId: "att" };
+      const blockerC: MockFightCreature = { id: "b3", card: { name: "Blocker C", power: "5", toughness: "5" } as any, damage: 0, isAttacking: false, blockingId: "att" };
+
+      // 3 power First Striker can kill Blocker A (2 HP) and Blocker B (1 HP).
+      // Blocker B has higher power (4) than Blocker A (2), so Blocker B is selected.
+      const target = selectFirstStrikeTargetBlocker(3, [blockerA, blockerB, blockerC]);
+      expect(target.id).toBe("b2");
+    });
+
+    it("resolves First Striker dealing damage to 1 blocker and taking return damage from rest of blockers", () => {
+      const attacker: MockFightCreature = {
+        id: "att_fs",
+        card: { name: "Knight", power: "3", toughness: "3", type: "Creature", keywords: ["First Strike"] } as any,
+        damage: 0,
+        isAttacking: true,
+        blockingId: null
+      };
+
+      const blockerA: MockFightCreature = {
+        id: "b_small",
+        card: { name: "Goblin", power: "2", toughness: "2", type: "Creature" } as any,
+        damage: 0,
+        isAttacking: false,
+        blockingId: "att_fs"
+      };
+
+      const blockerB: MockFightCreature = {
+        id: "b_big_glass",
+        card: { name: "Berserker", power: "4", toughness: "1", type: "Creature" } as any,
+        damage: 0,
+        isAttacking: false,
+        blockingId: "att_fs"
+      };
+
+      const blockerC: MockFightCreature = {
+        id: "b_giant",
+        card: { name: "Giant", power: "5", toughness: "5", type: "Creature" } as any,
+        damage: 0,
+        isAttacking: false,
+        blockingId: "att_fs"
+      };
+
+      // Attacker targets Berserker (highest power killable: 4 power, 1 toughness).
+      // Berserker takes 3 damage and dies before dealing 4 return damage.
+      // Goblin (2 power) and Giant (5 power) survive First Strike step and deal 2 + 5 = 7 damage to Knight.
+      // Knight (3 toughness) takes 7 damage and dies.
+      const result = resolveCombat([attacker], [blockerA, blockerB, blockerC]);
+
+      // Berserker dies, Goblin and Giant survive
+      expect(result.enemyCreatures.map(c => c.id)).toEqual(["b_small", "b_giant"]);
+      // Attacker dies from remaining blockers' damage
+      expect(result.playerCreatures).toHaveLength(0);
+      // Log confirms First Strike slay of Berserker
+      expect(result.logs.some(l => l.includes("Berserker") && l.includes("slain by First Strike"))).toBe(true);
     });
   });
 });
