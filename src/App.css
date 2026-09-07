@@ -773,6 +773,12 @@ body {
   color: #ffffff;
 }
 
+.deck-card-badge.locked {
+  background: rgba(234, 179, 8, 0.95);
+  color: #0f172a;
+  border: 1px solid rgba(250, 204, 21, 0.8);
+}
+
 /* Make badge move in sync with card hover transform */
 .deck-modal-card-wrapper:hover .deck-card-badge {
   transform: translateY(-8px) scale(1.02);

@@ -3016,6 +3016,58 @@ export const checkAndSpawnDefenderArmiesOnMap = (
   return { map: newMap, spawnedCount };
 };
 
+export interface LandLevelLockResult {
+  isLocked: boolean;
+  requiredLevel?: number;
+  reason?: string;
+}
+
+export const isCreatureCardLockedByLandLevel = (
+  card: CardJSON,
+  map?: any[][],
+  playerIndex: number = 0
+): LandLevelLockResult => {
+  if (!card) return { isLocked: false };
+  const typeLower = (card.type || "").toLowerCase();
+  if (!typeLower.includes("creature")) return { isLocked: false };
+
+  const cmc = getCardCmc(card);
+  if (cmc !== 3 && cmc !== 4) return { isLocked: false };
+
+  const reqLevel = cmc;
+  if (!map || map.length === 0) {
+    return {
+      isLocked: true,
+      requiredLevel: reqLevel,
+      reason: `Locked: Requires owning at least 1 Level ${reqLevel} land.`
+    };
+  }
+
+  const isExcluded = (id: string) => {
+    const lower = (id || "").toLowerCase();
+    return lower.includes("tower") || lower.includes("quest");
+  };
+
+  const getTileLevel = (tileId: string): number => {
+    const match = (tileId || "").match(/(.+)\s+L(\d+)/i);
+    return match ? parseInt(match[2], 10) : 1;
+  };
+
+  const ownsLand = map.flat().some((cell: any) => 
+    cell && cell.ownerId === playerIndex && cell.tileId && !isExcluded(cell.tileId) && getTileLevel(cell.tileId) === reqLevel
+  );
+
+  if (!ownsLand) {
+    return {
+      isLocked: true,
+      requiredLevel: reqLevel,
+      reason: `Locked: Requires owning at least 1 Level ${reqLevel} land.`
+    };
+  }
+
+  return { isLocked: false };
+};
+
 
 
 

@@ -7,7 +7,7 @@ import type { GameState, MapCell, Player, CardJSON, MapDataJSON, ActivatedAbilit
 import { getManaDataUri, setColorlessManaFontSize } from "./assets/mana/manaIcons";
 import type { UploadHistoryItem } from "./utils/db";
 import { saveHistoryItem, getHistoryItems, deleteHistoryItem } from "./utils/db";
-import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem, getPlayerProducedColors, canPlayerProduceSpellMana, canPlayerCastCard, checkAndSpawnDefenderArmiesOnMap, generateDefenderArmyForTile, isPlainOrForestTile } from "./utils/cardMapping";
+import { mapCardJson, cardNameMap, preloadAllGameImages, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, defaultTowerOfTerrorQuestData, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getManaRewardInfo, getQuestInitialHp, resolveKeywordGrantForLevel, hasKeywordReward, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, getCardRewardMode, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getCompanionRawList, getSpellRawList, getKeywordRawList, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, resolveIllustrationPath, getAssetUrl, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, type StructuredRewardItem, getPlayerProducedColors, canPlayerProduceSpellMana, canPlayerCastCard, checkAndSpawnDefenderArmiesOnMap, generateDefenderArmyForTile, isPlainOrForestTile, isCreatureCardLockedByLandLevel } from "./utils/cardMapping";
 import "./App.css";
 
 export interface QuestTileConfig {
@@ -3284,6 +3284,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     const pool = allDeckCards.length > 0 ? allDeckCards : masterDeckCards;
     const baseCards = pool.filter(c => {
       if (!colors.includes(c.color.toLowerCase()) || disabledCardNames.includes(c.name) || isSpecialCard(c)) return false;
+      if (isCreatureCardLockedByLandLevel(c, gameState?.map, player.id).isLocked) return false;
       const isCreature = c.type.toLowerCase().includes("creature");
       return focus === "creatures" ? isCreature : (focus === "spells" ? !isCreature : true);
     });
@@ -14515,8 +14516,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 const totalCount = uniqueNames.size;
                 const activeCount = Array.from(uniqueNames).filter(name => {
                   const cardObj = creatureCards.find(c => resolveWizardCard(c).name === name);
+                  const resolved = cardObj ? resolveWizardCard(cardObj) : null;
                   const hasNoCost = cardObj ? (!cardObj.manaCost || cardObj.manaCost.trim() === "") : false;
-                  return !disabledCardNames.includes(name) && !hasNoCost;
+                  const isLocked = resolved ? isCreatureCardLockedByLandLevel(resolved, gameState?.map, 0).isLocked : false;
+                  return !disabledCardNames.includes(name) && !hasNoCost && !isLocked;
                 }).length;
 
                 return <h2 style={{ margin: 0 }}>Player Library Creatures ({activeCount} / {totalCount} Unique Creatures)</h2>;
@@ -14725,6 +14728,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                     const resolved = resolveWizardCard(card);
                     const isInHand = gameState.players[0].hand.some(c => resolveWizardCard(c).name === resolved.name);
                     const isNotInPlay = disabledCardNames.includes(resolved.name);
+                    const lockCheck = isCreatureCardLockedByLandLevel(resolved, gameState?.map, 0);
+                    const isLandLocked = lockCheck.isLocked;
                     const isQuest = (resolved.type || "").toLowerCase().includes("quest") || (resolved.name || "").toLowerCase().includes("quest");
                     const hasNoManaCost = (!resolved.manaCost || resolved.manaCost.trim() === "") && !isQuest;
                     return (
@@ -14733,12 +14738,16 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         className={`deck-modal-card-wrapper ${isInHand ? "in-hand" : ""}`}
                         style={{ 
                           position: "relative",
-                          opacity: isNotInPlay ? 0.6 : (hasNoManaCost ? 0.5 : 1),
-                          filter: (hasNoManaCost || isNotInPlay) ? "grayscale(50%)" : "none",
+                          opacity: isLandLocked ? 0.55 : (isNotInPlay ? 0.6 : (hasNoManaCost ? 0.5 : 1)),
+                          filter: (isLandLocked || hasNoManaCost || isNotInPlay) ? "grayscale(55%)" : "none",
                           transition: "all 0.2s ease"
                         }}
                       >
-                        {hasNoManaCost ? (
+                        {isLandLocked ? (
+                          <div className="deck-card-badge locked" title={lockCheck.reason}>
+                            <i className="fa-solid fa-lock" style={{ marginRight: "4px" }}></i> Req. L{lockCheck.requiredLevel} Land
+                          </div>
+                        ) : hasNoManaCost ? (
                           <div className="deck-card-badge quest-only">
                             <i className="fa-solid fa-scroll" style={{ marginRight: "4px" }}></i> Quest Only
                           </div>

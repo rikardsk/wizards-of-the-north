@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, isFlyingCreature, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard, getCardCmc, getCardColorKey, generateLevelDefenderForTile, isQuestTileCell } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, isFlyingCreature, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard, getCardCmc, getCardColorKey, generateLevelDefenderForTile, isQuestTileCell, isCreatureCardLockedByLandLevel } from "./cardMapping";
 
 describe("cardMapping", () => {
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
@@ -1668,6 +1668,59 @@ describe("cardMapping", () => {
       expect(towerMana).toBe(1);
     });
   });
+
+  describe("isCreatureCardLockedByLandLevel", () => {
+    const cmc1Creature = { type: "Creature", manaCost: "1" } as any;
+    const cmc2Creature = { type: "Creature", manaCost: "2" } as any;
+    const cmc3Creature = { type: "Creature", manaCost: "3" } as any;
+    const cmc4Creature = { type: "Creature", manaCost: "4" } as any;
+    const spellCard = { type: "Spell", manaCost: "3" } as any;
+
+    it("returns false for non-creatures and creatures with CMC other than 3 or 4", () => {
+      expect(isCreatureCardLockedByLandLevel(spellCard, []).isLocked).toBe(false);
+      expect(isCreatureCardLockedByLandLevel(cmc1Creature, []).isLocked).toBe(false);
+      expect(isCreatureCardLockedByLandLevel(cmc2Creature, []).isLocked).toBe(false);
+    });
+
+    it("locks CMC 3 and CMC 4 creatures when player owns 0 corresponding level lands", () => {
+      const mockMap: any[][] = [
+        [{ ownerId: 0, tileId: "Wizards Tower L1" }, { ownerId: 0, tileId: "Plain L1" }],
+        [{ ownerId: 0, tileId: "Forrest L2" }, { ownerId: 1, tileId: "Swamp L3" }]
+      ];
+      // Player 0 owns L1 and L2 lands only. Player 1 owns Swamp L3.
+      expect(isCreatureCardLockedByLandLevel(cmc3Creature, mockMap, 0).isLocked).toBe(true);
+      expect(isCreatureCardLockedByLandLevel(cmc3Creature, mockMap, 0).requiredLevel).toBe(3);
+      expect(isCreatureCardLockedByLandLevel(cmc4Creature, mockMap, 0).isLocked).toBe(true);
+      expect(isCreatureCardLockedByLandLevel(cmc4Creature, mockMap, 0).requiredLevel).toBe(4);
+    });
+
+    it("unlocks CMC 3 creatures when player owns at least one Level 3 land", () => {
+      const mockMap: any[][] = [
+        [{ ownerId: 0, tileId: "Wizards Tower L1" }, { ownerId: 0, tileId: "Plain L3" }],
+        [{ ownerId: 0, tileId: "Forrest L2" }, { ownerId: null, tileId: "Swamp L4" }]
+      ];
+      expect(isCreatureCardLockedByLandLevel(cmc3Creature, mockMap, 0).isLocked).toBe(false);
+      expect(isCreatureCardLockedByLandLevel(cmc4Creature, mockMap, 0).isLocked).toBe(true);
+    });
+
+    it("unlocks CMC 4 creatures when player owns at least one Level 4 land", () => {
+      const mockMap: any[][] = [
+        [{ ownerId: 0, tileId: "Wizards Tower L1" }, { ownerId: 0, tileId: "Mountain L4" }],
+        [{ ownerId: 0, tileId: "Forrest L2" }, { ownerId: null, tileId: "Swamp L3" }]
+      ];
+      expect(isCreatureCardLockedByLandLevel(cmc3Creature, mockMap, 0).isLocked).toBe(true);
+      expect(isCreatureCardLockedByLandLevel(cmc4Creature, mockMap, 0).isLocked).toBe(false);
+    });
+
+    it("ignores Wizard Towers and Quest tiles when determining land level ownership", () => {
+      const mockMap: any[][] = [
+        [{ ownerId: 0, tileId: "Wizards Tower L3" }, { ownerId: 0, tileId: "Tower of terror Quest L4" }]
+      ];
+      expect(isCreatureCardLockedByLandLevel(cmc3Creature, mockMap, 0).isLocked).toBe(true);
+      expect(isCreatureCardLockedByLandLevel(cmc4Creature, mockMap, 0).isLocked).toBe(true);
+    });
+  });
 });
+
 
 
