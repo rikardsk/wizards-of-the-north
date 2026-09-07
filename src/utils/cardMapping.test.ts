@@ -1,7 +1,20 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard, getCardCmc, getCardColorKey, generateLevelDefenderForTile, isQuestTileCell, isCreatureCardLockedByLandLevel } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard, getCardCmc, getCardColorKey, generateLevelDefenderForTile, isQuestTileCell, isCreatureCardLockedByLandLevel, isSpecialRewardExcludedCard } from "./cardMapping";
 
 describe("cardMapping", () => {
+  it("preserves notInUse property in mapCardJson", () => {
+    const cardActive = mapCardJson({ name: "Active Creature", notInUse: false });
+    const cardInactive = mapCardJson({ name: "Disabled Creature", notInUse: true });
+    expect(cardActive.notInUse).toBe(false);
+    expect(cardInactive.notInUse).toBe(true);
+  });
+
+  it("excludes notInUse cards in isSpecialRewardExcludedCard", () => {
+    const activeCard = { name: "Active Creature", type: "Creature", notInUse: false } as any;
+    const inactiveCard = { name: "Inactive Creature", type: "Creature", notInUse: true } as any;
+    expect(isSpecialRewardExcludedCard(activeCard)).toBe(false);
+    expect(isSpecialRewardExcludedCard(inactiveCard)).toBe(true);
+  });
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
     expect(resolveCardNameFromRef("card_1787057762927")).toBe("Guard Dog");
   });

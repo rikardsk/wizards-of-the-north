@@ -489,6 +489,11 @@ export const GameCard: React.FC<GameCardProps> = ({
               />
             );
           })()}
+          {card.notInUse && (
+            <div className="card-not-in-use-badge" title="This card is marked as Not In Use and will not be drawn">
+              <i className="fa-solid fa-ban"></i> Not in use
+            </div>
+          )}
           {card.completed && (
             <div className="card-completed-badge">
               <i className="fa-solid fa-circle-check"></i> Completed

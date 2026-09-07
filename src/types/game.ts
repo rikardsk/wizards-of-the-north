@@ -39,6 +39,7 @@ export interface CardJSON {
   questHp?: number;
   sourceMedusaId?: string;
   subType?: string;
+  notInUse?: boolean;
   [key: string]: any;
 }
 

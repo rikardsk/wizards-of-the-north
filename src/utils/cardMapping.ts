@@ -238,6 +238,7 @@ export const isPortalCard = (card: { name?: string; cardName?: string; type?: st
 
 export const isSpecialRewardExcludedCard = (card: CardJSON | null | undefined): boolean => {
   if (!card) return true;
+  if (card.notInUse) return true;
   const nameLower = (card.name || (card as any).cardName || "").toLowerCase();
   if (nameLower.startsWith("card_")) return true;
   if (nameLower.endsWith("ability")) return true;
@@ -2599,6 +2600,7 @@ export const mapCardJson = (c: any, questDataMap?: Record<string, QuestDataJSON>
     keywords: c.keywords || c.keywordAbilities || [],
     activatedAbilities: isActualWizard ? [] : (c.activatedAbilities || []),
     target: c.target || undefined,
+    notInUse: Boolean(c.notInUse),
     questLevel,
     totalQuestLevels,
     questData,

@@ -862,6 +862,37 @@
   border-width: 2px;
 }
 
+/* Card Not In Use Badge Overlay */
+.card-not-in-use-badge {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+  border: 1px solid rgba(254, 202, 202, 0.4);
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5), 0 0 8px rgba(239, 68, 68, 0.5);
+  z-index: 10;
+  pointer-events: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.game-card-wrapper.large-card .card-not-in-use-badge {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  top: 10px;
+}
+
 /* Card Completed Badge Overlay */
 .card-completed-badge {
   position: absolute;
