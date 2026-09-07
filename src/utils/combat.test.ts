@@ -847,7 +847,7 @@ describe("Subtype Buffs & Always-Active Abilities", () => {
         type: "Creature",
         color: "black",
         activatedAbilities: [{ cost: ["B", "B"], text: "Gain +6/+0" }]
-      };
+      } as any;
       const abilitySpell = getOrCreateAbilitySpellCard(creature, creature.activatedAbilities![0]);
       const uniqueId = `ability_c1_0_${abilitySpell.name}`;
       const abilitySpellWithId = { ...abilitySpell, uniqueCombatId: uniqueId };

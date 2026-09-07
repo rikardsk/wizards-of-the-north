@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { GameBoard } from "./components/GameBoard";
 import { GameCard } from "./components/GameCard";
 import { canBlock, resolveCombat, hasStacking, getCombatStatsAndBuffs, applySubtypeBuffs, hasTrample, hasFirstStrike, isFlying, getOrCreateAbilitySpellCard, isManaSymbol, applyMedusaGazeIfNeeded, processHydraLethalDamage, groupArenaLogsByTurn, isSpellArenaLog, isWizardUnit, getSpellDamageAmount, evaluateBotSpellTargets } from "./utils/combat";
-import type { GameState, MapCell, Player, CardJSON, MapDataJSON, ActivatedAbility, ManaHistoryEvent, MockFightCreature } from "./types/game";
+import type { GameState, MapCell, Player, CardJSON, MapDataJSON, ActivatedAbility, ManaHistoryEvent, MockFightCreature, QuestLevelJSON, QuestDataJSON } from "./types/game";
 import { getManaDataUri, setColorlessManaFontSize } from "./assets/mana/manaIcons";
 import type { UploadHistoryItem } from "./utils/db";
 import { saveHistoryItem, getHistoryItems, deleteHistoryItem } from "./utils/db";
@@ -395,12 +395,12 @@ const getCellCardJson = (cell: MapCell, map: MapCell[][], players: Player[]): Ca
     if (isPlayer) {
       const chosenMana = p.wizardManaChoice || "W";
       let colorName = "White";
-      let cardColor: CardJSON["color"] = "yellow";
+      let cardColor: any = "gold";
       if (chosenMana === "G") { colorName = "Green"; cardColor = "green"; }
       else if (chosenMana === "R") { colorName = "Red"; cardColor = "red"; }
       else if (chosenMana === "B") { colorName = "Black"; cardColor = "black"; }
       else if (chosenMana === "U") { colorName = "Blue"; cardColor = "blue"; }
-      else if (chosenMana === "C") { colorName = "Colorless"; cardColor = "colorless"; }
+      else if (chosenMana === "C") { colorName = "Colorless"; cardColor = "artifact"; }
 
       const rawName = `Wizards Tower L${towerLevel}`;
       const isMatchingTower = (c: CardJSON) => {
@@ -1353,9 +1353,9 @@ export default function App() {
     return () => window.removeEventListener("openWizardBuffsModal", handleOpenModal);
   }, []);
 
-  const [choiceQueue, setChoiceQueue] = useState<Array<{ type: "spell" | "companion"; levelObj: any }>>([]);
+  const [choiceQueue, setChoiceQueue] = useState<Array<{ type: "spell" | "companion" | "keyword" | "mana" | "card"; levelObj: any; amount?: number; questName?: string; levelIndex?: number }>>([]);
   const [activeChoiceReward, setActiveChoiceReward] = useState<{
-    type: "spell" | "companion";
+    type: "spell" | "companion" | "keyword" | "mana" | "card";
     title: string;
     options: CardJSON[];
     onSelect: (chosenCard: CardJSON) => void;
@@ -2136,6 +2136,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       setUsedCombatSpellIds(prev => [...prev, spellInstId]);
     }
 
+    const isSummonDemon = (spellCard.name || "").toLowerCase().includes("summon demon");
     if (isSummonDemon) {
       const pool = getMergedCardPool();
       const demonPool = pool.filter(c => {
@@ -3037,7 +3038,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 const json = await res.json();
                 const cards = json.cards || json;
                 if (Array.isArray(cards)) {
-                  loadedDeck = cards.map(mapCardJson);
+                  loadedDeck = cards.map((c: any) => mapCardJson(c));
                   setCustomDeckCards(loadedDeck);
                   setCustomDeckFileName(preset.name);
                   applyQuestConfigs(json);
@@ -3673,12 +3674,12 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   const getTowerCardForLevel = (level: number, playerDeck?: CardJSON[], wizardManaChoice?: "W" | "U" | "B" | "R" | "G" | "C"): CardJSON => {
     const chosenMana = wizardManaChoice || gameState?.players?.[0]?.wizardManaChoice || "W";
     let colorName = "White";
-    let cardColor: CardJSON["color"] = "yellow";
+    let cardColor: any = "gold";
     if (chosenMana === "G") { colorName = "Green"; cardColor = "green"; }
     else if (chosenMana === "R") { colorName = "Red"; cardColor = "red"; }
     else if (chosenMana === "B") { colorName = "Black"; cardColor = "black"; }
     else if (chosenMana === "U") { colorName = "Blue"; cardColor = "blue"; }
-    else if (chosenMana === "C") { colorName = "Colorless"; cardColor = "colorless"; }
+    else if (chosenMana === "C") { colorName = "Colorless"; cardColor = "artifact"; }
 
     const manaSymbols = `{${chosenMana}}`.repeat(level);
 
@@ -3941,7 +3942,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
   };
 
   const resolveWizardCard = (card: CardJSON | null | undefined, playerIdx = 0): CardJSON => {
-    if (!card) return { id: "", name: "", manaCost: "", type: "", color: "colorless", illustration: "", rulesText: "" };
+    if (!card) return { id: "", name: "", manaCost: "", type: "", color: "artifact" as any, illustration: "", rulesText: "" };
     if (!gameState) return card;
     if (!isWizardCard(card)) return card;
     const level = getWizardLevelFromCard(card);
@@ -3994,7 +3995,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     const rawSpells = [...currentSpells, ...learnedSpells, ...artifactSpells];
     const resolvedSpells = rawSpells
       .filter(Boolean)
-      .map(s => (typeof s === "string" ? resolveCardNameFromRef(s, pool) : (s.name || String(s))));
+      .map((s: any) => (typeof s === "string" ? resolveCardNameFromRef(s, pool) : (s?.name || String(s))));
 
     const nonBattleNames = ["destroy land", "create land", "upgrade land", "downgrade land"];
     const validSpells = resolvedSpells.filter(s => {
@@ -4009,7 +4010,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     const rawCompanions = [...currentCompanions, ...learnedCompanions];
     const resolvedCompanions = rawCompanions
       .filter(Boolean)
-      .map(c => (typeof c === "string" ? resolveCardNameFromRef(c, pool) : (c.name || String(c))));
+      .map((c: any) => (typeof c === "string" ? resolveCardNameFromRef(c, pool) : (c?.name || String(c))));
     const newCompanions = Array.from(new Set(resolvedCompanions.filter(s => s && !s.toLowerCase().startsWith("card_"))));
 
     if (newSpells.length > 0) {
@@ -6771,6 +6772,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               const amt = manaInfo.amount;
               nextManaPool = {
                 W: (nextManaPool.W || 0) + amt,
+                U: (nextManaPool.U || 0) + amt,
                 B: (nextManaPool.B || 0) + amt,
                 R: (nextManaPool.R || 0) + amt,
                 G: (nextManaPool.G || 0) + amt,
@@ -7086,7 +7088,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         cardType: "Quest",
         illustration: cell.occupant?.illustration || "",
         isDefenderArmyCard: true
-      } as CardJSON) : pQuestCard;
+      } as unknown as CardJSON) : pQuestCard;
 
       if (questCardToUse) {
         const cardIdx = pQuestCard ? gameState.players[0].hand.indexOf(pQuestCard) : -1;
@@ -7101,7 +7103,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           questHp: initialHp,
           maxQuestHp: initialHp,
           isDefenderBattle: isDefender
-        };
+        } as any;
         setActiveQuestBattle(qBattleObj);
 
         if ((questCardToUse.name || "").toLowerCase().includes("tower of power")) {
@@ -7854,6 +7856,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             const amt = manaInfo.amount;
             nextPool = {
               W: (nextPool.W || 0) + amt,
+              U: (nextPool.U || 0) + amt,
               B: (nextPool.B || 0) + amt,
               R: (nextPool.R || 0) + amt,
               G: (nextPool.G || 0) + amt,
@@ -8232,6 +8235,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           const amt = manaInfo.amount;
           nextPool = {
             W: (nextPool.W || 0) + amt,
+            U: (nextPool.U || 0) + amt,
             B: (nextPool.B || 0) + amt,
             R: (nextPool.R || 0) + amt,
             G: (nextPool.G || 0) + amt,
@@ -8536,7 +8540,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       if (playerIdx === 0) {
         setCustomAlert({
           title: "Hand Limit Reached!",
-          message: warningType === "spell" 
+          message: (warningType as string) === "spell" 
             ? `Your hand has reached the maximum limit of ${spellLimit} spells. You cannot draw any more spells.`
             : `Your hand has reached the maximum limit of ${cardLimit} creatures. You cannot draw any more creatures.`,
           type: "warning"
@@ -9939,9 +9943,9 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
               setSelectedCell(null);
             }}
             highlightedCells={
-              isSelectingBattleLocation 
+              (isSelectingBattleLocation 
                 ? getFightTargetCells() 
-                : getPlacementHighlights()
+                : getPlacementHighlights()) as any
             }
             onCellRightClick={handleCellRightClick}
             canPaySelectedCardMana={
@@ -10733,7 +10737,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         const { fullTileId, baseName, level, owned, total, manaType } = g;
                         const isSetComplete = total > 0 && owned === total;
 
-                        let color: CardJSON["color"] = "colorless";
+                        let color: any = "colorless";
                         let manaColorName = "Colorless";
 
                         if (manaType === "W") {
@@ -10759,7 +10763,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
                         const chosenMana = gameState?.players?.[0]?.wizardManaChoice || "W";
                         let wizardColorName = "White";
-                        let wizardCardColor: CardJSON["color"] = "yellow";
+                        let wizardCardColor: any = "yellow";
                         if (chosenMana === "G") { wizardColorName = "Green"; wizardCardColor = "green"; }
                         else if (chosenMana === "R") { wizardColorName = "Red"; wizardCardColor = "red"; }
                         else if (chosenMana === "B") { wizardColorName = "Black"; wizardCardColor = "black"; }
@@ -22648,7 +22652,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
             {/* Compute Quest Pool & Map for both tabs */}
             {(() => {
               const pool = getMergedCardPool();
-              const questMap = new Map<string, { card?: CardJSON; questData: QuestDataJSON }>();
+              const questMap = new Map<string, { card?: CardJSON; questData: any }>();
 
               pool.forEach(c => {
                 if (c && (c.type?.toLowerCase().includes("quest") || c.name?.toLowerCase().includes("quest"))) {
@@ -22693,7 +22697,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                       const q = questRewardsSearchQuery.toLowerCase().trim();
                       questEntries = questEntries.filter(({ card, questData }) => {
                         const nameMatch = questData.name.toLowerCase().includes(q) || (card?.name || "").toLowerCase().includes(q);
-                        const levelMatch = questData.levels.some((lvl, idx) => {
+                        const levelMatch = questData.levels.some((lvl: any, idx: number) => {
                           const descMatch = (lvl.questDescription || lvl.description || "").toLowerCase().includes(q);
                           const rewDescMatch = (lvl.rewardsDescription || "").toLowerCase().includes(q);
                           const structuredRewards = getStructuredRewardsForLevel(lvl, idx, pool);
@@ -22949,7 +22953,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                               {/* Levels Breakdown */}
                               {!isCollapsed && (
                                 <div style={{ padding: "16px 20px", borderTop: "1px solid rgba(255, 255, 255, 0.08)", background: "rgba(0,0,0,0.25)", display: "flex", flexDirection: "column", gap: "14px" }}>
-                                  {questData.levels.map((levelObj, lvlIdx) => {
+                                  {questData.levels.map((levelObj: any, lvlIdx: number) => {
                                     const rewards = getStructuredRewardsForLevel(levelObj, lvlIdx, pool);
                                     const isClaimed = questRewardsHistory.some(item => item.questName === qName && item.level === lvlIdx + 1);
                                     const xpInfo = getXpRewardInfo(levelObj, lvlIdx);
@@ -23141,7 +23145,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                     const totalQuestsCount = allQuestsList.length;
                     const fullyCompletedCount = Object.entries(grouped).filter(([qName, items]) => {
                       const matchingQuest = allQuestsList.find(q => q.questData.name === qName);
-                      const totalLevels = matchingQuest?.questData?.levels?.length || matchingQuest?.totalQuestLevels || 4;
+                      const totalLevels = matchingQuest?.questData?.levels?.length || (matchingQuest as any)?.card?.totalQuestLevels || 4;
                       return items.length >= totalLevels;
                     }).length;
                     const activeClaimedCount = Object.keys(grouped).length;
@@ -23177,8 +23181,8 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                         {Object.entries(grouped).map(([qName, items]) => {
                           const questCombinedXp = items.reduce((sum, i) => sum + (i.xp || 0), 0);
                           const isCollapsed = collapsedQuestPanels[qName] ?? true;
-                          const matchingQuest = allQuestsList.find(q => (q.questData?.name && q.questData.name.toLowerCase() === qName.toLowerCase()) || (q.name && q.name.toLowerCase() === qName.toLowerCase()));
-                          const totalQuestLevels = matchingQuest?.questData?.levels?.length || matchingQuest?.totalQuestLevels || 4;
+                          const matchingQuest = allQuestsList.find(q => (q.questData?.name && q.questData.name.toLowerCase() === qName.toLowerCase()) || (q.card?.name && q.card.name.toLowerCase() === qName.toLowerCase()));
+                          const totalQuestLevels = matchingQuest?.questData?.levels?.length || (matchingQuest as any)?.card?.totalQuestLevels || 4;
                           const completedLevelsCount = items.length;
                           const isFullyCompleted = completedLevelsCount >= totalQuestLevels;
 

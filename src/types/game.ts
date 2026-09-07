@@ -42,6 +42,9 @@ export interface CardJSON {
   [key: string]: any;
 }
 
+export type QuestLevelJSON = any;
+export type QuestDataJSON = any;
+
 export interface MapCell {
   col: number;
   row: number;

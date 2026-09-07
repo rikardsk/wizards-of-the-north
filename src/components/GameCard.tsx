@@ -254,10 +254,10 @@ export const GameCard: React.FC<GameCardProps> = ({
       opponentsText = levelObj.opponentsDescription || "";
 
       if (levelObj.opponents && levelObj.opponents.length > 0) {
-        const resolvedOpponents = levelObj.opponents.map(ref => 
+        const resolvedOpponents = levelObj.opponents.map((ref: any) => 
           resolveOpponentCard(ref, cardPool)
         );
-        const combinedPower = resolvedOpponents.reduce((sum, opp) => {
+        const combinedPower = resolvedOpponents.reduce((sum: number, opp: any) => {
           const p = parseInt(opp.power || "0", 10);
           return sum + (isNaN(p) ? 0 : p);
         }, 0);
@@ -882,10 +882,10 @@ export const GameCard: React.FC<GameCardProps> = ({
           let combinedPower = 0;
           if (levelObj) {
             if (levelObj.opponents && levelObj.opponents.length > 0) {
-              const resolvedOpponents = levelObj.opponents.map(ref => 
+              const resolvedOpponents = levelObj.opponents.map((ref: any) => 
                 resolveOpponentCard(ref, cardPool)
               );
-              combinedPower = resolvedOpponents.reduce((sum, opp) => {
+              combinedPower = resolvedOpponents.reduce((sum: number, opp: any) => {
                 const p = parseInt(opp.power || "0", 10);
                 return sum + (isNaN(p) ? 0 : p);
               }, 0);

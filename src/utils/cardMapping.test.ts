@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isQuestCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, isFlyingCreature, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard, getCardCmc, getCardColorKey, generateLevelDefenderForTile, isQuestTileCell, isCreatureCardLockedByLandLevel } from "./cardMapping";
+import { mapCardJson, resolveIllustrationPath, isNonBattleSpell, isBattleSpell, isEnchantmentSpell, buildQuestTextFromLevel, resolveOpponentCard, resolveCardNameFromRef, isQuestOnlyNoCost, generateQuestOpponents, adjustQuestOpponentForDifficulty, getQuestInitialHp, resolveKeywordGrantForLevel, hasSpellReward, resolveSpellGrantForLevel, hasCompanionReward, resolveCompanionGrantForLevel, hasCardReward, resolveCardGrantForLevel, getXpRewardInfo, findCardsByRawId, getWizardLevelFromCard, getTowerLevelFromCard, isWizardCard, isNoCostCreature, getPlayerQuestProgress, isReviveSpell, isReanimateSpell, hasMonsterUnlockReward, getMonsterUnlockManaCost, applyMonsterUnlockManaCost, getStructuredRewardsForLevel, getTowerLevelUpRequirements, checkTowerLevelUpEligibility, defaultTowerOfTerrorQuestData, canPlayerProduceSpellMana, getPlayerProducedColors, getTileLandColors, filterDefenderCreatures, generateDefenderArmyForTile, isBorderTileBetweenBiomes, isPlainOrForestTile, checkAndSpawnDefenderArmiesOnMap, canPlayerCastCard, getCardCmc, getCardColorKey, generateLevelDefenderForTile, isQuestTileCell, isCreatureCardLockedByLandLevel } from "./cardMapping";
 
 describe("cardMapping", () => {
   it("resolves companion card ID fallback for Guard Dog correctly", () => {
@@ -250,10 +250,10 @@ describe("cardMapping", () => {
 
   describe("isEnchantmentSpell", () => {
     it("identifies enchantment spells by subtype, type, or name", () => {
-      expect(isEnchantmentSpell({ cardSubType: "Enchantment" })).toBe(true);
-      expect(isEnchantmentSpell({ type: "Enchantment Spell" })).toBe(true);
-      expect(isEnchantmentSpell({ name: "Land Enchantment" })).toBe(true);
-      expect(isEnchantmentSpell({ name: "Fireball", type: "Spell", cardSubType: "Damage" })).toBe(false);
+      expect(isEnchantmentSpell({ cardSubType: "Enchantment" } as any)).toBe(true);
+      expect(isEnchantmentSpell({ type: "Enchantment Spell" } as any)).toBe(true);
+      expect(isEnchantmentSpell({ name: "Land Enchantment" } as any)).toBe(true);
+      expect(isEnchantmentSpell({ name: "Fireball", type: "Spell", cardSubType: "Damage" } as any)).toBe(false);
     });
   });
 
@@ -1604,9 +1604,9 @@ describe("cardMapping", () => {
 
       const { map } = checkAndSpawnDefenderArmiesOnMap(mockMap, pool, ["Red", "Green"]);
       expect(map[0][1].occupant).not.toBeNull();
-      expect(map[0][1].occupant.name).toBe("Tree Ent");
+      expect(map[0][1].occupant!.name).toBe("Tree Ent");
       expect(map[1][0].occupant).not.toBeNull();
-      expect(map[1][0].occupant.name).toBe("Fire Dragon");
+      expect(map[1][0].occupant!.name).toBe("Fire Dragon");
     });
 
     it("identifies quest tile cells accurately via isQuestTileCell", () => {
@@ -1636,7 +1636,7 @@ describe("cardMapping", () => {
       expect(map[1][0].occupant).toBeUndefined();
       // Normal Forrest L3 tile SHOULD spawn L3 defender
       expect(map[1][1].occupant).not.toBeNull();
-      expect(map[1][1].occupant.name).toBe("Tree Ent");
+      expect(map[1][1].occupant!.name).toBe("Tree Ent");
     });
   });
 

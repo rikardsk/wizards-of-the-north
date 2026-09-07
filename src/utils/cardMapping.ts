@@ -821,7 +821,7 @@ export const applyMonsterUnlockManaCost = (cards: CardJSON[], manaCost: string |
       let finalCost = rawCostStr;
       if (isNumeric) {
         let cardColor = card.color || (card as any).frameStyle || "";
-        if (!cardColor || cardColor === "gold" || cardColor === "colorless") {
+        if (!cardColor || cardColor === "gold" || (cardColor as string) === "colorless") {
           if (nameLower.includes("nightmare")) cardColor = "black";
           else if (nameLower.includes("forest golem")) cardColor = "green";
           else if (nameLower.includes("balrog")) cardColor = "red";
@@ -986,7 +986,7 @@ export const resolveCardNameFromRef = (ref: string, cardPool: CardJSON[] = []): 
   return trimmed || "Not Found";
 };
 
-export const getPlayerProducedColors = (player?: any, map?: any[][]): string[] => {
+export const getPlayerProducedColors = (player?: any, _map?: any[][]): string[] => {
   const colors = new Set<string>();
 
   if (player?.deckColors && Array.isArray(player.deckColors) && player.deckColors.length > 0) {
@@ -1011,46 +1011,66 @@ export const getPlayerProducedColors = (player?: any, map?: any[][]): string[] =
     }
   }
 
-  if (map && player) {
-    const playerIdx = player.id ?? 0;
-    let towerCell: any = null;
-    map.forEach(col => col.forEach((cell: any) => {
-      if (cell.ownerId === playerIdx && cell.tileId && cell.tileId.toLowerCase().includes("tower")) {
-        towerCell = cell;
-      }
-    }));
-
-    if (towerCell) {
-      const cols = map.length;
-      const rows = cols > 0 ? map[0].length : 0;
-      const neighbors = getNeighbors(towerCell.col, towerCell.row, cols, rows);
-      neighbors.forEach(([nc, nr]) => {
-        const cell = map[nc][nr];
-        if (cell.tileId) {
-          const tLower = cell.tileId.toLowerCase();
-          if (tLower.includes("plains") || tLower.includes("white")) colors.add("white");
-          if (tLower.includes("island") || tLower.includes("blue")) colors.add("blue");
-          if (tLower.includes("swamp") || tLower.includes("black")) colors.add("black");
-          if (tLower.includes("mountain") || tLower.includes("red")) colors.add("red");
-          if (tLower.includes("forest") || tLower.includes("green")) colors.add("green");
-        }
-      });
-    }
-  }
-
-  if (colors.size === 0 && player?.manaPool) {
-    if ((player.manaPool.W || 0) > 0) colors.add("white");
-    if ((player.manaPool.U || 0) > 0) colors.add("blue");
-    if ((player.manaPool.B || 0) > 0) colors.add("black");
-    if ((player.manaPool.R || 0) > 0) colors.add("red");
-    if ((player.manaPool.G || 0) > 0) colors.add("green");
-  }
-
   if (colors.size === 0) {
     return ["white", "blue", "black", "red", "green"];
   }
 
   return Array.from(colors);
+};
+
+export const getNeighbors = (c: number, r: number, cols: number, rows: number): [number, number][] => {
+  const isEvenCol = c % 2 === 0;
+  const dirs = isEvenCol
+    ? [
+        [0, -1], [0, 1], [-1, -1], [-1, 0], [1, -1], [1, 0]
+      ]
+    : [
+        [0, -1], [0, 1], [-1, 0], [-1, 1], [1, 0], [1, 1]
+      ];
+
+  const result: [number, number][] = [];
+  dirs.forEach(([dc, dr]) => {
+    const nc = c + dc;
+    const nr = r + dr;
+    if (nc >= 0 && nc < cols && nr >= 0 && nr < rows) {
+      result.push([nc, nr]);
+    }
+  });
+  return result;
+};
+
+export const getEnabledWizardManaColorsForPlayer = (playerIdx: number, map?: any[][]): Set<"W" | "U" | "B" | "R" | "G" | "C"> => {
+  const result = new Set<"W" | "U" | "B" | "R" | "G" | "C">();
+  result.add("C");
+  result.add("W");
+
+  if (!map) return result;
+
+  let towerCell: any = null;
+  map.forEach(col => col.forEach((cell: any) => {
+    if (cell.ownerId === playerIdx && cell.tileId && cell.tileId.toLowerCase().includes("tower")) {
+      towerCell = cell;
+    }
+  }));
+
+  if (towerCell) {
+    const cols = map.length;
+    const rows = cols > 0 ? map[0].length : 0;
+    const neighbors = getNeighbors(towerCell.col, towerCell.row, cols, rows);
+    neighbors.forEach(([nc, nr]: [number, number]) => {
+      const cell = map[nc][nr];
+      if (cell.tileId) {
+        const tLower = cell.tileId.toLowerCase();
+        if (tLower.includes("plains") || tLower.includes("white")) result.add("W");
+        if (tLower.includes("island") || tLower.includes("blue")) result.add("U");
+        if (tLower.includes("swamp") || tLower.includes("black")) result.add("B");
+        if (tLower.includes("mountain") || tLower.includes("red")) result.add("R");
+        if (tLower.includes("forest") || tLower.includes("green")) result.add("G");
+      }
+    });
+  }
+
+  return result;
 };
 
 export const canPlayerCastCard = (card: CardJSON, playerProducedColors: string[]): boolean => {
