@@ -3532,13 +3532,15 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         const fullTileId = cell.tileId;
         if (fullTileId.toLowerCase().includes("tower")) return;
 
+        const baseName = cell.tileId.replace(/\s+L\d+/i, "").trim();
         const manaType = getManaType(fullTileId);
-        if (!setTracker[fullTileId]) {
-          setTracker[fullTileId] = { manaType, owned: 0, total: 0 };
+        const groupKey = baseName || manaType;
+        if (!setTracker[groupKey]) {
+          setTracker[groupKey] = { manaType, owned: 0, total: 0 };
         }
-        setTracker[fullTileId].total++;
+        setTracker[groupKey].total++;
         if (cell.ownerId === playerIdx) {
-          setTracker[fullTileId].owned++;
+          setTracker[groupKey].owned++;
         }
       });
     });
@@ -10641,20 +10643,22 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 const fullTileId = cell.tileId;
                 const baseName = cell.tileId.replace(/\s+L\d+/i, "").trim();
                 const level = getLevel(cell.tileId);
+                const isTower = baseName.toLowerCase().includes("tower") || fullTileId.toLowerCase().includes("tower");
+                const groupKey = isTower ? fullTileId : baseName;
 
-                if (!grouped[fullTileId]) {
-                  grouped[fullTileId] = {
-                    fullTileId,
+                if (!grouped[groupKey]) {
+                  grouped[groupKey] = {
+                    fullTileId: isTower ? fullTileId : baseName,
                     baseName,
-                    level,
+                    level: isTower ? level : 1,
                     owned: 0,
                     total: 0,
                     manaType: getManaType(cell.tileId)
                   };
                 }
-                grouped[fullTileId].total++;
+                grouped[groupKey].total++;
                 if (cell.ownerId === 0) {
-                  grouped[fullTileId].owned++;
+                  grouped[groupKey].owned++;
                 }
               });
 
@@ -17693,20 +17697,22 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           const baseName = cell.tileId.replace(/\s+L\d+/i, "").trim();
           const level = getLevel(cell.tileId);
           const manaType = getManaType(cell.tileId);
+          const isTower = baseName.toLowerCase().includes("tower") || fullTileId.toLowerCase().includes("tower");
+          const groupKey = isTower ? fullTileId : baseName;
 
-          if (!territoryGroups[fullTileId]) {
-            territoryGroups[fullTileId] = {
-              fullTileId,
+          if (!territoryGroups[groupKey]) {
+            territoryGroups[groupKey] = {
+              fullTileId: isTower ? fullTileId : baseName,
               baseName,
-              level,
+              level: isTower ? level : 1,
               owned: 0,
               total: 0,
               manaType
             };
           }
-          territoryGroups[fullTileId].total++;
+          territoryGroups[groupKey].total++;
           if (cell.ownerId === 0) {
-            territoryGroups[fullTileId].owned++;
+            territoryGroups[groupKey].owned++;
           }
         });
 
