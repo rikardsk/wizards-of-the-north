@@ -3524,6 +3524,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
   const calculatePlayerLandManaPool = (map: MapCell[][], playerIdx: number) => {
     const pool = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 };
+    const landCountByManaType: Record<string, number> = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 };
     const setTracker: Record<string, { manaType: string; owned: number; total: number }> = {};
 
     map.forEach((col) => {
@@ -3532,24 +3533,33 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
         const fullTileId = cell.tileId;
         if (fullTileId.toLowerCase().includes("tower")) return;
 
-        const baseName = cell.tileId.replace(/\s+L\d+/i, "").trim();
         const manaType = getManaType(fullTileId);
-        const groupKey = baseName || manaType;
-        if (!setTracker[groupKey]) {
-          setTracker[groupKey] = { manaType, owned: 0, total: 0 };
+        if (!setTracker[fullTileId]) {
+          setTracker[fullTileId] = { manaType, owned: 0, total: 0 };
         }
-        setTracker[groupKey].total++;
+        setTracker[fullTileId].total++;
         if (cell.ownerId === playerIdx) {
-          setTracker[groupKey].owned++;
+          setTracker[fullTileId].owned++;
+          if (manaType === "W" || manaType === "G" || manaType === "R" || manaType === "B" || manaType === "U") {
+            landCountByManaType[manaType]++;
+          }
         }
       });
     });
 
+    // 1 mana for every 2 lands of the same manaType (regardless of level L1, L2, L3, L4)
+    Object.entries(landCountByManaType).forEach(([manaType, count]) => {
+      if (manaType === "W" || manaType === "G" || manaType === "R" || manaType === "B" || manaType === "U") {
+        pool[manaType as "W" | "G" | "R" | "B" | "U"] += Math.floor(count / 2);
+      }
+    });
+
+    // Add +1 bonus mana for each completed level set
     Object.values(setTracker).forEach(({ manaType, owned, total }) => {
-      if (owned > 0 && (manaType === "W" || manaType === "G" || manaType === "R" || manaType === "B" || manaType === "U")) {
-        const isSetComplete = total > 0 && owned === total;
-        const manaGain = Math.floor(owned / 2) + (isSetComplete ? 1 : 0);
-        pool[manaType as "W" | "G" | "R" | "B" | "U"] += manaGain;
+      if (total > 0 && owned === total) {
+        if (manaType === "W" || manaType === "G" || manaType === "R" || manaType === "B" || manaType === "U") {
+          pool[manaType as "W" | "G" | "R" | "B" | "U"] += 1;
+        }
       }
     });
 
@@ -10643,22 +10653,20 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 const fullTileId = cell.tileId;
                 const baseName = cell.tileId.replace(/\s+L\d+/i, "").trim();
                 const level = getLevel(cell.tileId);
-                const isTower = baseName.toLowerCase().includes("tower") || fullTileId.toLowerCase().includes("tower");
-                const groupKey = isTower ? fullTileId : baseName;
 
-                if (!grouped[groupKey]) {
-                  grouped[groupKey] = {
-                    fullTileId: isTower ? fullTileId : baseName,
+                if (!grouped[fullTileId]) {
+                  grouped[fullTileId] = {
+                    fullTileId,
                     baseName,
-                    level: isTower ? level : 1,
+                    level,
                     owned: 0,
                     total: 0,
                     manaType: getManaType(cell.tileId)
                   };
                 }
-                grouped[groupKey].total++;
+                grouped[fullTileId].total++;
                 if (cell.ownerId === 0) {
-                  grouped[groupKey].owned++;
+                  grouped[fullTileId].owned++;
                 }
               });
 
@@ -10782,7 +10790,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           : `Owned ${owned} of ${total} ${fullTileId} territories on the map.\nGenerates +${manaOutputForLand} ${manaColorName} mana per turn (1 per 2 lands${isSetComplete ? " + 1 Set Completion Bonus" : ""}).\n${isSetComplete ? "🎉 Set Complete (+1 Bonus Mana)!" : `Collect all ${total} ${fullTileId} to complete this level set (+1 bonus Mana)!`}`;
 
                         const landCard: CardJSON = {
-                          name: baseName,
+                          name: fullTileId,
                           manaCost: "",
                           type: "Land",
                           cardSubType: `Level ${level} Territory`,
@@ -17697,22 +17705,20 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           const baseName = cell.tileId.replace(/\s+L\d+/i, "").trim();
           const level = getLevel(cell.tileId);
           const manaType = getManaType(cell.tileId);
-          const isTower = baseName.toLowerCase().includes("tower") || fullTileId.toLowerCase().includes("tower");
-          const groupKey = isTower ? fullTileId : baseName;
 
-          if (!territoryGroups[groupKey]) {
-            territoryGroups[groupKey] = {
-              fullTileId: isTower ? fullTileId : baseName,
+          if (!territoryGroups[fullTileId]) {
+            territoryGroups[fullTileId] = {
+              fullTileId,
               baseName,
-              level: isTower ? level : 1,
+              level,
               owned: 0,
               total: 0,
               manaType
             };
           }
-          territoryGroups[groupKey].total++;
+          territoryGroups[fullTileId].total++;
           if (cell.ownerId === 0) {
-            territoryGroups[groupKey].owned++;
+            territoryGroups[fullTileId].owned++;
           }
         });
 
@@ -18125,7 +18131,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                           const isSetComplete = t.total > 0 && t.owned === t.total;
                           const isTower = (t.baseName || "").toLowerCase().includes("tower");
                           const share = grandTotalLands > 0 ? (t.owned / grandTotalLands) * 100 : 0;
-                          const manaOutput = isTower ? t.level : (Math.floor(t.owned / 2) + (isSetComplete ? 1 : 0));
+                          const manaOutputDisplay = isTower ? `+${t.level}` : (isSetComplete ? "+1 Set Bonus Mana" : "Pooled (1 / 2 lands)");
 
                           return (
                             <tr key={t.fullTileId} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.04)" }}>
@@ -18137,7 +18143,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                     style={{ width: "26px", height: "26px", borderRadius: "4px", objectFit: "cover", border: "1px solid rgba(255,255,255,0.15)" }} 
                                     onError={(e) => { (e.currentTarget as HTMLElement).style.display = "none"; }}
                                   />
-                                  <span style={{ fontWeight: 700, color: "#ffffff" }}>{t.baseName}</span>
+                                  <span style={{ fontWeight: 700, color: "#ffffff" }}>{t.fullTileId}</span>
                                 </div>
                               </td>
                               <td style={{ padding: "8px 14px" }}>
@@ -18164,10 +18170,10 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                               <td style={{ padding: "8px 14px" }}>
                                 <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontWeight: 700, color: "#facc15" }}>
                                   <img src={getManaDataUri(t.manaType)} alt={t.manaType} style={{ width: "13px", height: "13px" }} />
-                                  +{manaOutput} {getManaLabel(t.manaType)}
+                                  {manaOutputDisplay}
                                   {!isTower && (
-                                    <span style={{ fontSize: "0.68rem", color: isSetComplete ? "#4ade80" : "var(--text-muted)", marginLeft: "4px" }} title="1 mana per 2 lands owned (+1 bonus if set complete)">
-                                      ({isSetComplete ? "1 / 2 lands + 1 bonus" : "1 / 2 lands"})
+                                    <span style={{ fontSize: "0.68rem", color: isSetComplete ? "#4ade80" : "var(--text-muted)", marginLeft: "4px" }} title="1 mana per 2 lands owned of this element (+1 bonus if set complete)">
+                                      ({isSetComplete ? "+1 bonus" : "1 / 2 lands"})
                                     </span>
                                   )}
                                 </span>
