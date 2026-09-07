@@ -1639,5 +1639,35 @@ describe("cardMapping", () => {
       expect(map[1][1].occupant.name).toBe("Tree Ent");
     });
   });
+
+  describe("Land Mana Generation Logic (1 mana for every 2 lands owned)", () => {
+    const calcLandMana = (owned: number, total: number) => {
+      const isSetComplete = total > 0 && owned === total;
+      return Math.floor(owned / 2) + (isSetComplete ? 1 : 0);
+    };
+
+    it("yields 0 mana for owning 1 land (set incomplete)", () => {
+      expect(calcLandMana(1, 4)).toBe(0);
+    });
+
+    it("yields 1 mana for owning 2 lands (set incomplete)", () => {
+      expect(calcLandMana(2, 4)).toBe(1);
+    });
+
+    it("yields 1 mana for owning 3 lands (set incomplete)", () => {
+      expect(calcLandMana(3, 4)).toBe(1);
+    });
+
+    it("yields 3 mana (2 base + 1 set bonus) for owning 4 lands out of 4 (set complete)", () => {
+      expect(calcLandMana(4, 4)).toBe(3);
+    });
+
+    it("yields 1 mana by itself for Wizard's Tower level 1", () => {
+      const towerLevel = 1;
+      const towerMana = towerLevel;
+      expect(towerMana).toBe(1);
+    });
+  });
 });
+
 

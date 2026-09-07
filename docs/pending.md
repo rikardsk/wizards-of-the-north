@@ -4,10 +4,10 @@
 
 
 ## Later maybe
-- Toggle button for tile outlines
+- Level 3 and level 4 creatures must unlock?
 - Tougher creatures draw more seldom?
 - Colorless mana?
-- Upkeep?
+- Upkeep for the army?
 - Raiding parties?
 - Make 25% of all un-owned lands have creatures defending them, so it's harder to take new lands.
 - Less mana per lands
