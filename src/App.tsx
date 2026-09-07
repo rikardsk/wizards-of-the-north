@@ -17763,35 +17763,36 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           levelMap[level].territories[baseName].count++;
         });
 
-        // Add land mana (1 per 2 lands + set completion bonus) to levelMap for territory groups
+        // Compute actual land mana using game state's calculatePlayerLandManaPool for player 0
+        const actualLandManaPool = calculatePlayerLandManaPool(gameState.map, 0);
+
+        // Add set completion bonus mana per level to levelMap for visual breakdown
         Object.values(territoryGroups).forEach((g) => {
           const isTower = (g.baseName || "").toLowerCase().includes("tower") || (g.fullTileId || "").toLowerCase().includes("tower");
           if (!isTower && g.owned > 0) {
             const level = g.level;
             const manaType = g.manaType;
             const isSetComplete = g.total > 0 && g.owned === g.total;
-            const groupMana = Math.floor(g.owned / 2) + (isSetComplete ? 1 : 0);
-            if (levelMap[level]) {
-              levelMap[level].manaByColor[manaType] = (levelMap[level].manaByColor[manaType] || 0) + groupMana;
-              levelMap[level].totalMana += groupMana;
+            if (isSetComplete && levelMap[level]) {
+              levelMap[level].manaByColor[manaType] = (levelMap[level].manaByColor[manaType] || 0) + 1;
+              levelMap[level].totalMana += 1;
             }
           }
         });
 
         const sortedLevels = Object.values(levelMap).sort((a, b) => a.level - b.level);
         const grandTotalLands = totalOwnedCount;
-        const grandTotalMana = sortedLevels.reduce((sum, item) => sum + item.totalMana, 0);
-        const overallTotalMana = grandTotalMana + wizardManaAmount;
+        const grandTotalLandMana = Object.values(actualLandManaPool).reduce((sum, val) => sum + val, 0);
+        const overallTotalMana = grandTotalLandMana + wizardManaAmount;
 
-        const grandTotalManaByColor: Record<string, number> = { W: 0, G: 0, R: 0, B: 0, U: 0, C: 0 };
-        sortedLevels.forEach(item => {
-          Object.entries(item.manaByColor).forEach(([color, amount]) => {
-            grandTotalManaByColor[color] = (grandTotalManaByColor[color] || 0) + amount;
-          });
-        });
-        if (wizardManaAmount > 0 && wizardManaChoice) {
-          grandTotalManaByColor[wizardManaChoice] = (grandTotalManaByColor[wizardManaChoice] || 0) + wizardManaAmount;
-        }
+        const grandTotalManaByColor: Record<string, number> = {
+          W: (actualLandManaPool.W || 0) + (wizardManaChoice === "W" ? wizardManaAmount : 0),
+          G: (actualLandManaPool.G || 0) + (wizardManaChoice === "G" ? wizardManaAmount : 0),
+          R: (actualLandManaPool.R || 0) + (wizardManaChoice === "R" ? wizardManaAmount : 0),
+          B: (actualLandManaPool.B || 0) + (wizardManaChoice === "B" ? wizardManaAmount : 0),
+          U: (actualLandManaPool.U || 0) + (wizardManaChoice === "U" ? wizardManaAmount : 0),
+          C: (actualLandManaPool.C || 0) + (wizardManaChoice === "C" ? wizardManaAmount : 0),
+        };
 
         const ownedTerritoryList = Object.values(territoryGroups)
           .filter(t => t.owned > 0)
@@ -17985,13 +17986,13 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                   </div>
                                 </div>
                               </td>
-                              <td style={{ padding: "10px 14px", color: "var(--text-muted)" }}>
-                                1 / 2 lands (+1 set bonus)
+                              <td style={{ padding: "10px 14px", color: "var(--text-muted)", fontSize: "0.78rem" }}>
+                                1 / 2 lands pooled (+1 set bonus)
                               </td>
                               <td style={{ padding: "10px 14px" }}>
                                 {lvl.totalMana > 0 ? (
                                   <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-                                    <span style={{ fontWeight: 800, color: "#facc15" }}>+{lvl.totalMana}</span>
+                                    <span style={{ fontWeight: 800, color: "#4ade80", fontSize: "0.78rem" }}>+{lvl.totalMana} Set Bonus</span>
                                     {(["W", "G", "R", "B", "U"] as const).map((color) => {
                                       const amt = lvl.manaByColor[color] || 0;
                                       if (amt === 0) return null;
@@ -18004,7 +18005,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                     })}
                                   </div>
                                 ) : (
-                                  <span style={{ color: "var(--text-muted)" }}>0</span>
+                                  <span style={{ color: "var(--text-muted)", fontSize: "0.78rem" }}>Pooled by Element</span>
                                 )}
                               </td>
                               <td style={{ padding: "10px 14px" }}>
