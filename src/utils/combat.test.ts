@@ -533,6 +533,7 @@ describe("Subtype Buffs & Always-Active Abilities", () => {
       expect(matchSubtype("Goblin", "goblins")).toBe(true);
       expect(matchSubtype("Soldier", "soldiers")).toBe(true);
       expect(matchSubtype("Elves", "elf")).toBe(true);
+      expect(matchSubtype("Elven", "Elves")).toBe(true);
       expect(matchSubtype("Zombies", "Zombie")).toBe(true);
     });
 
@@ -595,6 +596,59 @@ describe("Subtype Buffs & Always-Active Abilities", () => {
       expect(rgStats.toughness).toBe(2);
       expect(rgStats.buffs).toHaveLength(1);
       expect(rgStats.buffs[0].sourceName).toBe("Goblin King");
+    });
+
+    it("should give +1/+1 boost to other elven creatures when elven king is alive", () => {
+      const elvenKing: MockFightCreature = {
+        id: "ek",
+        card: {
+          name: "Elven King",
+          manaCost: "GGG",
+          type: "Creature",
+          color: "green",
+          illustration: "",
+          rulesText: "",
+          power: "3",
+          toughness: "3",
+          cardSubType: "Elven",
+          activatedAbilities: [
+            { cost: [], text: "Gives +1/+1 to all Elven." }
+          ]
+        },
+        damage: 0,
+        isAttacking: false,
+        blockingId: null
+      };
+
+      const elvenArcher: MockFightCreature = {
+        id: "ea",
+        card: {
+          name: "Elven Archer",
+          manaCost: "G",
+          type: "Creature",
+          color: "green",
+          illustration: "",
+          rulesText: "",
+          power: "1",
+          toughness: "1",
+          cardSubType: "Elven"
+        },
+        damage: 0,
+        isAttacking: false,
+        blockingId: null
+      };
+
+      const army = [elvenKing, elvenArcher];
+
+      const ekStats = getCombatStatsAndBuffs(elvenKing, army);
+      expect(ekStats.power).toBe(3);
+      expect(ekStats.toughness).toBe(3);
+
+      const eaStats = getCombatStatsAndBuffs(elvenArcher, army);
+      expect(eaStats.power).toBe(2);
+      expect(eaStats.toughness).toBe(2);
+      expect(eaStats.buffs).toHaveLength(1);
+      expect(eaStats.buffs[0].sourceName).toBe("Elven King");
     });
 
     it("should not give boost if goblin king is dead", () => {

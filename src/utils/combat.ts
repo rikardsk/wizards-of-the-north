@@ -9,8 +9,17 @@ export interface ActiveBuff {
 
 export const matchSubtype = (cardSubType: string, targetSubtype: string): boolean => {
   if (!cardSubType || !targetSubtype) return false;
-  const s = cardSubType.toLowerCase().trim();
-  const t = targetSubtype.toLowerCase().trim();
+  let s = cardSubType.toLowerCase().trim();
+  let t = targetSubtype.toLowerCase().trim();
+  if (s === t) return true;
+
+  const normalizeSubtype = (str: string) => {
+    if (str === 'elven' || str === 'elves' || str === 'elf') return 'elf';
+    return str;
+  };
+
+  s = normalizeSubtype(s);
+  t = normalizeSubtype(t);
   if (s === t) return true;
 
   const stripPlural = (str: string) => {
