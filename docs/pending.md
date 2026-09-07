@@ -4,14 +4,15 @@
 
 
 ## Later maybe
-- Level 3 and level 4 creatures must unlock?
 - Tougher creatures draw more seldom?
 - Colorless mana?
 - Upkeep for the army?
+- Time counting down?
 - Raiding parties?
 - Make 25% of all un-owned lands have creatures defending them, so it's harder to take new lands.
 - Less mana per lands
 - Mana Cap
+- Other dimensions (new map that you travel to from a portal)
 
 
 ## Done
