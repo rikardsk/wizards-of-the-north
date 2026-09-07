@@ -3247,9 +3247,13 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     return activeColors;
   };
 
-  const getRandomCardOfColors = (cardPool: CardJSON[], activeColors: string[]): CardJSON | null => {
+  const getRandomCardOfColors = (cardPool: CardJSON[], activeColors: string[], map?: any[][], playerIndex: number = 0): CardJSON | null => {
     if (!cardPool || cardPool.length === 0) return null;
-    const availablePool = cardPool.filter(c => !disabledCardNames.includes(c.name) && !isQuestOnlyNoCost(c));
+    const availablePool = cardPool.filter(c => 
+      !disabledCardNames.includes(c.name) && 
+      !isQuestOnlyNoCost(c) &&
+      !isCreatureCardLockedByLandLevel(c, map, playerIndex).isLocked
+    );
     if (availablePool.length === 0) return null;
     const matching = availablePool.filter((c) => activeColors.includes(c.color.toLowerCase()));
     if (matching.length > 0) {
@@ -3280,11 +3284,12 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     localStorage.setItem("p1DeckColors", JSON.stringify(colors));
   };
 
-  const getDeckCardsForPlayer = (colors: string[], focus: string, player: Player): CardJSON[] => {
+  const getDeckCardsForPlayer = (colors: string[], focus: string, player: Player, mapOverride?: any[][]): CardJSON[] => {
     const pool = allDeckCards.length > 0 ? allDeckCards : masterDeckCards;
+    const currentMap = mapOverride || gameState?.map;
     const baseCards = pool.filter(c => {
       if (!colors.includes(c.color.toLowerCase()) || disabledCardNames.includes(c.name) || isSpecialCard(c)) return false;
-      if (isCreatureCardLockedByLandLevel(c, gameState?.map, player.id).isLocked) return false;
+      if (isCreatureCardLockedByLandLevel(c, currentMap, player.id).isLocked) return false;
       const isCreature = c.type.toLowerCase().includes("creature");
       return focus === "creatures" ? isCreature : (focus === "spells" ? !isCreature : true);
     });
@@ -4323,6 +4328,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     const p1InitialFocus = p1.drawPreference || "creatures";
     let p1DeckCards = availableCards.filter(card => {
       if (isQuestOnlyNoCost(card)) return false;
+      if (isCreatureCardLockedByLandLevel(card, hydratedMap, 0).isLocked) return false;
       const isQuest = card.type.toLowerCase().includes("quest");
       const isPortal = isPortalCard(resolveWizardCard(card));
       const hasNoCost = !card.manaCost || card.manaCost.trim() === "";
@@ -4341,6 +4347,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     });
     let p2DeckCards = availableCards.filter(card => {
       if (isQuestOnlyNoCost(card)) return false;
+      if (isCreatureCardLockedByLandLevel(card, hydratedMap, 1).isLocked) return false;
       const hasNoCost = !card.manaCost || card.manaCost.trim() === "";
       return !hasNoCost;
     });
@@ -4352,7 +4359,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     const p1AvailableColors = getActiveManaColors(getEnabledWizardManaColorsForPlayer(0, hydratedMap));
     p1.hand = [];
     for (let i = 0; i < startingCardsCount; i++) {
-      const card = getRandomCardOfColors(p1DeckCards, p1AvailableColors);
+      const card = getRandomCardOfColors(p1DeckCards, p1AvailableColors, hydratedMap, 0);
       if (card) p1.hand.push(card);
     }
 
@@ -4401,7 +4408,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     const p2AvailableColors = getActiveManaColors(getEnabledWizardManaColorsForPlayer(1, hydratedMap));
     p2.hand = [];
     for (let i = 0; i < startingCardsCount; i++) {
-      const card = getRandomCardOfColors(p2DeckCards, p2AvailableColors);
+      const card = getRandomCardOfColors(p2DeckCards, p2AvailableColors, hydratedMap, 1);
       if (card) p2.hand.push(card);
     }
     const wizardCard2 = getWizardCardForLevel(p2.wizardLevel, p2.wizardManaChoice, cards);
@@ -8432,6 +8439,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       const isMatching = (card: CardJSON, type: "creature" | "spell"): boolean => {
         const hasNoCost = !card.manaCost || card.manaCost.trim() === "";
         if (hasNoCost) return false;
+        if (isCreatureCardLockedByLandLevel(card, gameState?.map, p.id).isLocked) return false;
         const typeLower = card.type.toLowerCase();
         if (type === "creature") {
           return typeLower.includes("creature") || typeLower.includes("wizard");
@@ -8444,9 +8452,11 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
       let drawnIndex = -1;
 
       if (preference === "next") {
-        drawnIndex = p.deck.findIndex(c => !isQuestOnlyNoCost(c));
-        if (drawnIndex === -1) drawnIndex = 0;
-        actualDrawnType = isMatching(p.deck[drawnIndex], "creature") ? "creature" : "spell";
+        drawnIndex = p.deck.findIndex(c => !isQuestOnlyNoCost(c) && !isCreatureCardLockedByLandLevel(c, gameState?.map, p.id).isLocked);
+        if (drawnIndex === -1 && p.deck.length > 0) drawnIndex = 0;
+        if (drawnIndex !== -1) {
+          actualDrawnType = isMatching(p.deck[drawnIndex], "creature") ? "creature" : "spell";
+        }
       }
 
       if (preference === "next" || maxDeckCardsEnabled) {
@@ -8459,12 +8469,16 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           }
 
           if (drawnIndex === -1) {
-            drawnIndex = p.deck.findIndex(c => !isQuestOnlyNoCost(c));
-            if (drawnIndex === -1) drawnIndex = 0;
-            const fallbackType = isMatching(p.deck[drawnIndex], "creature") ? "creature" : "spell";
-            actualDrawnType = fallbackType;
+            drawnIndex = p.deck.findIndex(c => !isQuestOnlyNoCost(c) && !isCreatureCardLockedByLandLevel(c, gameState?.map, p.id).isLocked);
+            if (drawnIndex === -1 && p.deck.length > 0) drawnIndex = 0;
+            if (drawnIndex !== -1) {
+              const fallbackType = isMatching(p.deck[drawnIndex], "creature") ? "creature" : "spell";
+              actualDrawnType = fallbackType;
+            }
           }
         }
+
+        if (drawnIndex === -1) return p;
 
         const drawnCard = JSON.parse(JSON.stringify(p.deck[drawnIndex]));
         drawnCard.id = `draw_${Date.now()}_${Math.random()}`;
@@ -8491,14 +8505,18 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
           chosenIndex = matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
         } else {
           const candidates = p.deck.map((c, i) => ({ card: c, index: i }))
-            .filter(item => !isQuestOnlyNoCost(item.card));
+            .filter(item => !isQuestOnlyNoCost(item.card) && !isCreatureCardLockedByLandLevel(item.card, gameState?.map, p.id).isLocked);
           if (candidates.length > 0) {
             chosenIndex = candidates[Math.floor(Math.random() * candidates.length)].index;
-          } else {
+          } else if (p.deck.length > 0) {
             chosenIndex = Math.floor(Math.random() * p.deck.length);
           }
-          actualDrawnType = isMatching(p.deck[chosenIndex], "creature") ? "creature" : "spell";
+          if (chosenIndex !== -1) {
+            actualDrawnType = isMatching(p.deck[chosenIndex], "creature") ? "creature" : "spell";
+          }
         }
+
+        if (chosenIndex === -1) return p;
 
         const drawnCard = JSON.parse(JSON.stringify(p.deck[chosenIndex]));
         drawnCard.id = `inf_${Date.now()}_${Math.random()}`;
@@ -8549,6 +8567,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     const isMatchingType = (card: CardJSON, type: "creature" | "spell"): boolean => {
       const hasNoCost = !card.manaCost || card.manaCost.trim() === "";
       if (hasNoCost) return false;
+      if (isCreatureCardLockedByLandLevel(card, gameState?.map, player.id).isLocked) return false;
       const typeLower = card.type.toLowerCase();
       if (type === "creature") {
         return typeLower.includes("creature") || typeLower.includes("wizard");
@@ -8564,18 +8583,18 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
     let candidateIndices: number[] = [];
 
     if (preference === "next") {
-      const idx = player.deck.findIndex(c => !isQuestOnlyNoCost(c));
-      candidateIndices = idx !== -1 ? [idx] : [0];
+      const idx = player.deck.findIndex(c => !isQuestOnlyNoCost(c) && !isCreatureCardLockedByLandLevel(c, gameState?.map, player.id).isLocked);
+      candidateIndices = idx !== -1 ? [idx] : [];
     } else {
       player.deck.forEach((c, idx) => {
-        if (isMatchingType(c, desiredType) && isMatchingColors(c)) {
+        if (isMatchingType(c, desiredType) && isMatchingColors(c) && !isCreatureCardLockedByLandLevel(c, gameState?.map, player.id).isLocked) {
           candidateIndices.push(idx);
         }
       });
 
       if (candidateIndices.length === 0) {
         player.deck.forEach((c, idx) => {
-          if (isMatchingType(c, desiredType)) {
+          if (isMatchingType(c, desiredType) && !isCreatureCardLockedByLandLevel(c, gameState?.map, player.id).isLocked) {
             candidateIndices.push(idx);
           }
         });
@@ -8583,7 +8602,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
       if (candidateIndices.length === 0) {
         player.deck.forEach((c, idx) => {
-          if (isMatchingColors(c) && !isQuestOnlyNoCost(c)) {
+          if (isMatchingColors(c) && !isQuestOnlyNoCost(c) && !isCreatureCardLockedByLandLevel(c, gameState?.map, player.id).isLocked) {
             candidateIndices.push(idx);
           }
         });
@@ -8591,7 +8610,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
 
       if (candidateIndices.length === 0) {
         player.deck.forEach((c, idx) => {
-          if (!isQuestOnlyNoCost(c)) {
+          if (!isQuestOnlyNoCost(c) && !isCreatureCardLockedByLandLevel(c, gameState?.map, player.id).isLocked) {
             candidateIndices.push(idx);
           }
         });
