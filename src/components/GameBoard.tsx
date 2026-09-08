@@ -45,7 +45,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   // Pan & Zoom state
-  const [zoom, setZoom] = useState(0.8);
+  const [zoom, setZoom] = useState(0.7);
   const [panX, setPanX] = useState(50);
   const [panY, setPanY] = useState(50);
   const [isPanning, setIsPanning] = useState(false);
@@ -68,6 +68,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const hTrackRef = useRef<HTMLDivElement | null>(null);
   const vTrackRef = useRef<HTMLDivElement | null>(null);
   const hasInitializedZoomRef = useRef(false);
+  const prevMapRef = useRef(map);
+  if (prevMapRef.current !== map) {
+    prevMapRef.current = map;
+    hasInitializedZoomRef.current = false;
+  }
 
   // Scroll Metrics
   const mapWidth = (cols - 1) * DX + HEX_WIDTH;
@@ -1071,19 +1076,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     if (!hasInitializedZoomRef.current) {
       hasInitializedZoomRef.current = true;
-      const fitZoom = Math.min(
-        (dimensions.width * 0.95) / mapWidth,
-        (dimensions.height * 0.95) / mapHeight,
-        1.1
-      );
-      setZoom(fitZoom);
-      setPanX((dimensions.width - mapWidth * fitZoom) / 2);
-      setPanY((dimensions.height - mapHeight * fitZoom) / 2);
+      const initialZoom = 0.7;
+      setZoom(initialZoom);
+      setPanX((dimensions.width - mapWidth * initialZoom) / 2);
+      setPanY((dimensions.height - mapHeight * initialZoom) / 2);
     } else {
       setPanX((dimensions.width - mapWidth * zoom) / 2);
       setPanY((dimensions.height - mapHeight * zoom) / 2);
     }
-  }, [dimensions.width, dimensions.height, cols, rows]);
+  }, [dimensions.width, dimensions.height, cols, rows, map]);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
