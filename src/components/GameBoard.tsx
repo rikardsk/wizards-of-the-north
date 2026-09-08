@@ -67,6 +67,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const [dragStartPan, setDragStartPan] = useState({ x: 0, y: 0 });
   const hTrackRef = useRef<HTMLDivElement | null>(null);
   const vTrackRef = useRef<HTMLDivElement | null>(null);
+  const hasInitializedZoomRef = useRef(false);
 
   // Scroll Metrics
   const mapWidth = (cols - 1) * DX + HEX_WIDTH;
@@ -1058,25 +1059,30 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const centerMap = () => {
     const mapWidth = (cols - 1) * DX + HEX_WIDTH;
     const mapHeight = rows * DY + (cols > 1 ? HEX_HEIGHT / 2 : 0);
-    
-    const fitZoom = Math.min(
-      (dimensions.width * 0.95) / mapWidth,
-      (dimensions.height * 0.95) / mapHeight,
-      1.1
-    );
-    
-    setZoom(fitZoom);
-    setPanX((dimensions.width - mapWidth * fitZoom) / 2);
-    setPanY((dimensions.height - mapHeight * fitZoom) / 2);
+    setPanX((dimensions.width - mapWidth * zoom) / 2);
+    setPanY((dimensions.height - mapHeight * zoom) / 2);
   };
 
   useEffect(() => {
-    if (dimensions.width > 0 && dimensions.height > 0) {
-      centerMap();
+    if (dimensions.width <= 0 || dimensions.height <= 0) return;
+
+    const mapWidth = (cols - 1) * DX + HEX_WIDTH;
+    const mapHeight = rows * DY + (cols > 1 ? HEX_HEIGHT / 2 : 0);
+
+    if (!hasInitializedZoomRef.current) {
+      hasInitializedZoomRef.current = true;
+      const fitZoom = Math.min(
+        (dimensions.width * 0.95) / mapWidth,
+        (dimensions.height * 0.95) / mapHeight,
+        1.1
+      );
+      setZoom(fitZoom);
+      setPanX((dimensions.width - mapWidth * fitZoom) / 2);
+      setPanY((dimensions.height - mapHeight * fitZoom) / 2);
+    } else {
+      setPanX((dimensions.width - mapWidth * zoom) / 2);
+      setPanY((dimensions.height - mapHeight * zoom) / 2);
     }
-    // We only want to run this centering logic on initialization, container resize,
-    // or grid size changes. We explicitly exclude panel visibility toggles (showProfile, showBottomPanel)
-    // so that opening/closing HUD overlays does not cause the map to shift or scale.
   }, [dimensions.width, dimensions.height, cols, rows]);
 
   useEffect(() => {
@@ -1172,7 +1178,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         </div>
 
         <button
-          onClick={centerMap}
+          onClick={() => centerMap()}
           style={{
             background: "rgba(10, 15, 26, 0.85)",
             border: "1px solid rgba(255, 255, 255, 0.15)",
