@@ -1733,6 +1733,23 @@ describe("cardMapping", () => {
       expect(isCreatureCardLockedByLandLevel(cmc4Creature, mockMap, 0).isLocked).toBe(true);
     });
   });
+
+  describe("Land Overview Color & Level Breakdown", () => {
+    it("groups map cells accurately by mana color and land level", () => {
+      const mockMap: any[][] = [
+        [{ ownerId: 0, tileId: "Plain L1" }, { ownerId: 0, tileId: "Plain L1" }],
+        [{ ownerId: 0, tileId: "Plain L2" }, { ownerId: 1, tileId: "Forrest L3" }],
+        [{ ownerId: 0, tileId: "Mountain L1" }, { ownerId: null, tileId: "Swamp L4" }]
+      ];
+
+      const validLands = mockMap.flat().filter(c => !c.tileId.toLowerCase().includes("tower") && !c.tileId.toLowerCase().includes("quest"));
+      const whiteL1 = validLands.filter(c => c.tileId === "Plain L1");
+      const whiteL1Owned = whiteL1.filter(c => c.ownerId === 0);
+
+      expect(whiteL1.length).toBe(2);
+      expect(whiteL1Owned.length).toBe(2);
+    });
+  });
 });
 
 

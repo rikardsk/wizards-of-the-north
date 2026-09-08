@@ -1176,6 +1176,7 @@ export default function App() {
   const [showTowerGauge, setShowTowerGauge] = useState<boolean>(false);
   const [showQuestGauge, setShowQuestGauge] = useState<boolean>(false);
   const [showLandOverviewModal, setShowLandOverviewModal] = useState<boolean>(false);
+  const [landOverviewTab, setLandOverviewTab] = useState<"overview" | "colorLevel">("overview");
   interface CounterspellPromptData {
     spellName: string;
     targetName: string;
@@ -17883,366 +17884,570 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                 </button>
               </div>
 
+              {/* Tab Navigation */}
+              <div style={{ display: "flex", gap: "8px", borderBottom: "1px solid rgba(255,255,255,0.08)", background: "rgba(0, 0, 0, 0.25)", padding: "0 26px" }}>
+                <button
+                  className={`panel-tab-btn ${landOverviewTab === "overview" ? "active" : ""}`}
+                  onClick={() => setLandOverviewTab("overview")}
+                  style={{
+                    padding: "10px 18px",
+                    border: "none",
+                    background: landOverviewTab === "overview" ? "rgba(255, 255, 255, 0.08)" : "transparent",
+                    borderBottom: landOverviewTab === "overview" ? "2px solid #4ade80" : "2px solid transparent",
+                    color: landOverviewTab === "overview" ? "#ffffff" : "var(--text-muted)",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    fontSize: "0.85rem",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  <i className="fa-solid fa-chart-pie" style={{ color: landOverviewTab === "overview" ? "#4ade80" : undefined }}></i>
+                  <span>Overview & Production</span>
+                </button>
+                <button
+                  className={`panel-tab-btn ${landOverviewTab === "colorLevel" ? "active" : ""}`}
+                  onClick={() => setLandOverviewTab("colorLevel")}
+                  style={{
+                    padding: "10px 18px",
+                    border: "none",
+                    background: landOverviewTab === "colorLevel" ? "rgba(255, 255, 255, 0.08)" : "transparent",
+                    borderBottom: landOverviewTab === "colorLevel" ? "2px solid #38bdf8" : "2px solid transparent",
+                    color: landOverviewTab === "colorLevel" ? "#ffffff" : "var(--text-muted)",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    fontSize: "0.85rem",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  <i className="fa-solid fa-layer-group" style={{ color: landOverviewTab === "colorLevel" ? "#38bdf8" : undefined }}></i>
+                  <span>Lands by Color & Level</span>
+                </button>
+              </div>
+
               <div className="modal-section" style={{ padding: "20px 26px", overflowY: "auto", flexGrow: 1, display: "flex", flexDirection: "column", gap: "20px" }}>
-                {/* 3 Metric Cards */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "14px" }}>
-                  {/* Card 1: Controlled Lands */}
-                  <div className="glass" style={{ padding: "14px 16px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.06)", borderRadius: "8px" }}>
-                    <div style={{ fontSize: "0.72rem", textTransform: "uppercase", color: "var(--text-muted)", fontWeight: 700, marginBottom: "4px" }}>
-                      Controlled Lands & Tower
-                    </div>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                      <span style={{ fontSize: "1.5rem", fontWeight: 800, color: "#4ade80" }}>{grandTotalLands} Lands</span>
-                      <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>+ 1 Tower</span>
-                      <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent-color)", marginLeft: "auto" }}>{dominionPercent}%</span>
-                    </div>
-                    <div style={{ width: "100%", height: "4px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", overflow: "hidden", marginTop: "8px" }}>
-                      <div style={{ width: `${dominionPercent}%`, height: "100%", background: "linear-gradient(90deg, #15803d 0%, #4ade80 100%)" }}></div>
-                    </div>
-                  </div>
+                {landOverviewTab === "overview" ? (
+                  <>
+                    {/* 3 Metric Cards */}
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "14px" }}>
+                      {/* Card 1: Controlled Lands */}
+                      <div className="glass" style={{ padding: "14px 16px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.06)", borderRadius: "8px" }}>
+                        <div style={{ fontSize: "0.72rem", textTransform: "uppercase", color: "var(--text-muted)", fontWeight: 700, marginBottom: "4px" }}>
+                          Controlled Lands & Tower
+                        </div>
+                        <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                          <span style={{ fontSize: "1.5rem", fontWeight: 800, color: "#4ade80" }}>{grandTotalLands} Lands</span>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>+ 1 Tower</span>
+                          <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "var(--accent-color)", marginLeft: "auto" }}>{dominionPercent}%</span>
+                        </div>
+                        <div style={{ width: "100%", height: "4px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", overflow: "hidden", marginTop: "8px" }}>
+                          <div style={{ width: `${dominionPercent}%`, height: "100%", background: "linear-gradient(90deg, #15803d 0%, #4ade80 100%)" }}></div>
+                        </div>
+                      </div>
 
-                  {/* Card 2: Total Mana Generation */}
-                  <div className="glass" style={{ padding: "14px 16px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.06)", borderRadius: "8px" }}>
-                    <div style={{ fontSize: "0.72rem", textTransform: "uppercase", color: "var(--text-muted)", fontWeight: 700, marginBottom: "4px" }}>
-                      Total Mana Output (Turn)
-                    </div>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                      <span style={{ fontSize: "1.5rem", fontWeight: 800, color: "#facc15" }}>+{overallTotalMana}</span>
-                      <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>Mana / turn</span>
-                    </div>
-                    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "6px" }}>
-                      {(["W", "G", "R", "B", "U"] as const).map((color) => {
-                        const amt = grandTotalManaByColor[color] || 0;
-                        if (amt === 0) return null;
-                        return (
-                          <span key={color} style={{ display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", fontWeight: 700, color: getManaColorHex(color), background: "rgba(255, 255, 255, 0.04)", padding: "1px 6px", borderRadius: "4px" }}>
-                            <img src={getManaDataUri(color)} alt={color} style={{ width: "12px", height: "12px" }} />
-                            +{amt}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  </div>
+                      {/* Card 2: Total Mana Generation */}
+                      <div className="glass" style={{ padding: "14px 16px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.06)", borderRadius: "8px" }}>
+                        <div style={{ fontSize: "0.72rem", textTransform: "uppercase", color: "var(--text-muted)", fontWeight: 700, marginBottom: "4px" }}>
+                          Total Mana Output (Turn)
+                        </div>
+                        <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                          <span style={{ fontSize: "1.5rem", fontWeight: 800, color: "#facc15" }}>+{overallTotalMana}</span>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>Mana / turn</span>
+                        </div>
+                        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "6px" }}>
+                          {(["W", "G", "R", "B", "U"] as const).map((color) => {
+                            const amt = grandTotalManaByColor[color] || 0;
+                            if (amt === 0) return null;
+                            return (
+                              <span key={color} style={{ display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", fontWeight: 700, color: getManaColorHex(color), background: "rgba(255, 255, 255, 0.04)", padding: "1px 6px", borderRadius: "4px" }}>
+                                <img src={getManaDataUri(color)} alt={color} style={{ width: "12px", height: "12px" }} />
+                                +{amt}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
 
-                  {/* Card 3: Territory Diversity */}
-                  <div className="glass" style={{ padding: "14px 16px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.06)", borderRadius: "8px" }}>
-                    <div style={{ fontSize: "0.72rem", textTransform: "uppercase", color: "var(--text-muted)", fontWeight: 700, marginBottom: "4px" }}>
-                      Territory Diversity
+                      {/* Card 3: Territory Diversity */}
+                      <div className="glass" style={{ padding: "14px 16px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.06)", borderRadius: "8px" }}>
+                        <div style={{ fontSize: "0.72rem", textTransform: "uppercase", color: "var(--text-muted)", fontWeight: 700, marginBottom: "4px" }}>
+                          Territory Diversity
+                        </div>
+                        <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+                          <span style={{ fontSize: "1.5rem", fontWeight: 800, color: "#38bdf8" }}>{ownedTerritoryList.length + 1}</span>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>Unique Types (inc. Tower)</span>
+                        </div>
+                        <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "6px" }}>
+                          Tower Lvl {currentTowerLevel} + {sortedLevels.filter(l => l.count > 0).length} Land Tier(s)
+                        </div>
+                      </div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                      <span style={{ fontSize: "1.5rem", fontWeight: 800, color: "#38bdf8" }}>{ownedTerritoryList.length + 1}</span>
-                      <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>Unique Types (inc. Tower)</span>
-                    </div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "6px" }}>
-                      Tower Lvl {currentTowerLevel} + {sortedLevels.filter(l => l.count > 0).length} Land Tier(s)
-                    </div>
-                  </div>
-                </div>
 
-                {/* Primary Table: Land Level Breakdown */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <h3 style={{ margin: 0, fontSize: "0.92rem", color: "#4ade80", display: "flex", alignItems: "center", gap: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                    <i className="fa-solid fa-layer-group"></i>
-                    <span>Production by Land Level</span>
-                  </h3>
-                  
-                  <div style={{ overflowX: "auto", borderRadius: "8px", border: "1px solid rgba(255, 255, 255, 0.08)", background: "rgba(0, 0, 0, 0.25)" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem", textAlign: "left", fontFamily: "'Outfit', sans-serif" }}>
-                      <thead>
-                        <tr style={{ background: "rgba(255, 255, 255, 0.04)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", color: "rgba(255, 255, 255, 0.7)" }}>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Land Level</th>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Lands Owned</th>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>% of Lands</th>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Yield / Land</th>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Total Mana / Turn</th>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Controlled Territories</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {sortedLevels.map((lvl) => {
-                          const percent = grandTotalLands > 0 ? (lvl.count / grandTotalLands) * 100 : 0;
-                          const terrList = Object.values(lvl.territories);
-                          const isOwned = lvl.count > 0;
+                    {/* Primary Table: Land Level Breakdown */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <h3 style={{ margin: 0, fontSize: "0.92rem", color: "#4ade80", display: "flex", alignItems: "center", gap: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                        <i className="fa-solid fa-layer-group"></i>
+                        <span>Production by Land Level</span>
+                      </h3>
+                      
+                      <div style={{ overflowX: "auto", borderRadius: "8px", border: "1px solid rgba(255, 255, 255, 0.08)", background: "rgba(0, 0, 0, 0.25)" }}>
+                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem", textAlign: "left", fontFamily: "'Outfit', sans-serif" }}>
+                          <thead>
+                            <tr style={{ background: "rgba(255, 255, 255, 0.04)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", color: "rgba(255, 255, 255, 0.7)" }}>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Land Level</th>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Lands Owned</th>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>% of Lands</th>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Yield / Land</th>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Total Mana / Turn</th>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Controlled Territories</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {sortedLevels.map((lvl) => {
+                              const percent = grandTotalLands > 0 ? (lvl.count / grandTotalLands) * 100 : 0;
+                              const terrList = Object.values(lvl.territories);
+                              const isOwned = lvl.count > 0;
 
-                          return (
+                              return (
+                                <tr 
+                                  key={lvl.level}
+                                  style={{ 
+                                    borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+                                    background: isOwned ? "rgba(255, 255, 255, 0.015)" : "transparent",
+                                    opacity: isOwned ? 1 : 0.45
+                                  }}
+                                >
+                                  <td style={{ padding: "10px 14px", fontWeight: 700, color: isOwned ? "var(--text-main)" : "var(--text-muted)" }}>
+                                    <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                                      <span style={{ width: "20px", height: "20px", borderRadius: "50%", background: isOwned ? "rgba(74, 222, 128, 0.2)" : "rgba(255, 255, 255, 0.05)", color: isOwned ? "#4ade80" : "var(--text-muted)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", fontWeight: 800 }}>
+                                        L{lvl.level}
+                                      </span>
+                                      Level {lvl.level}
+                                    </span>
+                                  </td>
+                                  <td style={{ padding: "10px 14px", fontWeight: 700, color: isOwned ? "#ffffff" : "var(--text-muted)" }}>
+                                    {lvl.count}
+                                  </td>
+                                  <td style={{ padding: "10px 14px" }}>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                      <span style={{ fontWeight: 600, color: isOwned ? "var(--text-main)" : "var(--text-muted)", minWidth: "42px" }}>
+                                        {percent.toFixed(1)}%
+                                      </span>
+                                      <div style={{ flex: 1, minWidth: "50px", maxWidth: "80px", height: "4px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", overflow: "hidden" }}>
+                                        <div style={{ width: `${percent}%`, height: "100%", background: "#4ade80" }}></div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: "10px 14px", color: "var(--text-muted)", fontSize: "0.78rem" }}>
+                                    1 / 2 lands pooled (+1 set bonus)
+                                  </td>
+                                  <td style={{ padding: "10px 14px" }}>
+                                    {lvl.totalMana > 0 ? (
+                                      <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                                        <span style={{ fontWeight: 800, color: "#4ade80", fontSize: "0.78rem" }}>+{lvl.totalMana} Set Bonus</span>
+                                        {(["W", "G", "R", "B", "U"] as const).map((color) => {
+                                          const amt = lvl.manaByColor[color] || 0;
+                                          if (amt === 0) return null;
+                                          return (
+                                            <span key={color} style={{ display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", color: getManaColorHex(color), background: "rgba(255, 255, 255, 0.04)", padding: "1px 5px", borderRadius: "4px" }}>
+                                              <img src={getManaDataUri(color)} alt={color} style={{ width: "12px", height: "12px" }} />
+                                              +{amt}
+                                            </span>
+                                          );
+                                        })}
+                                      </div>
+                                    ) : (
+                                      <span style={{ color: "var(--text-muted)", fontSize: "0.78rem" }}>Pooled by Element</span>
+                                    )}
+                                  </td>
+                                  <td style={{ padding: "10px 14px" }}>
+                                    {terrList.length > 0 ? (
+                                      <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
+                                        {terrList.map(t => (
+                                          <span key={t.baseName} style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "4px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+                                            <img src={getManaDataUri(t.manaType)} alt={t.manaType} style={{ width: "11px", height: "11px" }} />
+                                            <span>{t.baseName} ({t.count}x)</span>
+                                          </span>
+                                        ))}
+                                      </div>
+                                    ) : (
+                                      <span style={{ color: "rgba(255,255,255,0.3)", fontStyle: "italic", fontSize: "0.75rem" }}>None owned</span>
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+
+                            {/* Wizards Tower Row at the bottom of the table */}
                             <tr 
-                              key={lvl.level}
                               style={{ 
-                                borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
-                                background: isOwned ? "rgba(255, 255, 255, 0.015)" : "transparent",
-                                opacity: isOwned ? 1 : 0.45
+                                borderTop: "1.5px solid rgba(0, 242, 254, 0.25)",
+                                background: "rgba(0, 242, 254, 0.04)"
                               }}
                             >
-                              <td style={{ padding: "10px 14px", fontWeight: 700, color: isOwned ? "var(--text-main)" : "var(--text-muted)" }}>
+                              <td style={{ padding: "10px 14px", fontWeight: 700, color: "#00f2fe" }}>
                                 <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                                  <span style={{ width: "20px", height: "20px", borderRadius: "50%", background: isOwned ? "rgba(74, 222, 128, 0.2)" : "rgba(255, 255, 255, 0.05)", color: isOwned ? "#4ade80" : "var(--text-muted)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", fontWeight: 800 }}>
-                                    L{lvl.level}
+                                  <span style={{ width: "20px", height: "20px", borderRadius: "50%", background: "rgba(0, 242, 254, 0.2)", color: "#00f2fe", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", fontWeight: 800 }}>
+                                    🗼
                                   </span>
-                                  Level {lvl.level}
+                                  Wizards Tower
                                 </span>
                               </td>
-                              <td style={{ padding: "10px 14px", fontWeight: 700, color: isOwned ? "#ffffff" : "var(--text-muted)" }}>
-                                {lvl.count}
+                              <td style={{ padding: "10px 14px", fontWeight: 700, color: "#ffffff" }}>
+                                1 (Level {currentTowerLevel})
+                              </td>
+                              <td style={{ padding: "10px 14px", color: "var(--text-muted)" }}>
+                                Base Structure
+                              </td>
+                              <td style={{ padding: "10px 14px", color: "var(--text-muted)" }}>
+                                +{currentTowerLevel} / turn
                               </td>
                               <td style={{ padding: "10px 14px" }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                  <span style={{ fontWeight: 600, color: isOwned ? "var(--text-main)" : "var(--text-muted)", minWidth: "42px" }}>
-                                    {percent.toFixed(1)}%
+                                <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                                  <span style={{ fontWeight: 800, color: "#facc15" }}>+{currentTowerLevel}</span>
+                                  <span style={{ display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", color: getManaColorHex(wizardManaChoice), background: "rgba(255, 255, 255, 0.04)", padding: "1px 5px", borderRadius: "4px" }}>
+                                    <img src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "12px", height: "12px" }} />
+                                    +{currentTowerLevel} {getManaLabel(wizardManaChoice)}
                                   </span>
-                                  <div style={{ flex: 1, minWidth: "50px", maxWidth: "80px", height: "4px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", overflow: "hidden" }}>
-                                    <div style={{ width: `${percent}%`, height: "100%", background: "#4ade80" }}></div>
-                                  </div>
                                 </div>
                               </td>
-                              <td style={{ padding: "10px 14px", color: "var(--text-muted)", fontSize: "0.78rem" }}>
-                                1 / 2 lands pooled (+1 set bonus)
-                              </td>
                               <td style={{ padding: "10px 14px" }}>
-                                {lvl.totalMana > 0 ? (
-                                  <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-                                    <span style={{ fontWeight: 800, color: "#4ade80", fontSize: "0.78rem" }}>+{lvl.totalMana} Set Bonus</span>
-                                    {(["W", "G", "R", "B", "U"] as const).map((color) => {
-                                      const amt = lvl.manaByColor[color] || 0;
-                                      if (amt === 0) return null;
-                                      return (
-                                        <span key={color} style={{ display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", color: getManaColorHex(color), background: "rgba(255, 255, 255, 0.04)", padding: "1px 5px", borderRadius: "4px" }}>
-                                          <img src={getManaDataUri(color)} alt={color} style={{ width: "12px", height: "12px" }} />
-                                          +{amt}
-                                        </span>
-                                      );
-                                    })}
-                                  </div>
-                                ) : (
-                                  <span style={{ color: "var(--text-muted)", fontSize: "0.78rem" }}>Pooled by Element</span>
-                                )}
-                              </td>
-                              <td style={{ padding: "10px 14px" }}>
-                                {terrList.length > 0 ? (
-                                  <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
-                                    {terrList.map(t => (
-                                      <span key={t.baseName} style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "4px", background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-                                        <img src={getManaDataUri(t.manaType)} alt={t.manaType} style={{ width: "11px", height: "11px" }} />
-                                        <span>{t.baseName} ({t.count}x)</span>
-                                      </span>
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <span style={{ color: "rgba(255,255,255,0.3)", fontStyle: "italic", fontSize: "0.75rem" }}>None owned</span>
-                                )}
+                                <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "4px", background: "rgba(0, 242, 254, 0.08)", border: "1px solid rgba(0, 242, 254, 0.2)", color: "#00f2fe" }}>
+                                  <span>Produces </span>
+                                  {Array.from({ length: currentTowerLevel }).map((_, i) => (
+                                    <img key={i} src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "12px", height: "12px" }} />
+                                  ))}
+                                  <span> / turn</span>
+                                </span>
                               </td>
                             </tr>
-                          );
-                        })}
+                          </tbody>
+                          <tfoot>
+                            <tr style={{ background: "rgba(74, 222, 128, 0.08)", borderTop: "2px solid rgba(74, 222, 128, 0.3)", fontWeight: 800 }}>
+                              <td style={{ padding: "12px 14px", color: "#4ade80" }}>
+                                TOTAL
+                              </td>
+                              <td style={{ padding: "12px 14px", color: "#ffffff", fontSize: "0.95rem" }}>
+                                {grandTotalLands} Lands + 1 Tower
+                              </td>
+                              <td style={{ padding: "12px 14px", color: "#ffffff" }}>
+                                100.0%
+                              </td>
+                              <td style={{ padding: "12px 14px", color: "var(--text-muted)" }}>
+                                —
+                              </td>
+                              <td style={{ padding: "12px 14px" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                                  <span style={{ fontSize: "0.95rem", color: "#facc15" }}>+{overallTotalMana} Mana</span>
+                                  {(["W", "G", "R", "B", "U"] as const).map((color) => {
+                                    const amt = grandTotalManaByColor[color] || 0;
+                                    if (amt === 0) return null;
+                                    return (
+                                      <span key={color} style={{ display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", color: getManaColorHex(color), background: "rgba(255, 255, 255, 0.05)", padding: "1px 5px", borderRadius: "4px" }}>
+                                        <img src={getManaDataUri(color)} alt={color} style={{ width: "12px", height: "12px" }} />
+                                        +{amt}
+                                      </span>
+                                    );
+                                  })}
+                                </div>
+                              </td>
+                              <td style={{ padding: "12px 14px", color: "var(--text-muted)", fontSize: "0.78rem" }}>
+                                {ownedTerritoryList.length} lands + Wizards Tower
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
 
-                        {/* Wizards Tower Row at the bottom of the table */}
-                        <tr 
-                          style={{ 
-                            borderTop: "1.5px solid rgba(0, 242, 254, 0.25)",
-                            background: "rgba(0, 242, 254, 0.04)"
-                          }}
-                        >
-                          <td style={{ padding: "10px 14px", fontWeight: 700, color: "#00f2fe" }}>
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                              <span style={{ width: "20px", height: "20px", borderRadius: "50%", background: "rgba(0, 242, 254, 0.2)", color: "#00f2fe", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.72rem", fontWeight: 800 }}>
-                                🗼
-                              </span>
-                              Wizards Tower
-                            </span>
-                          </td>
-                          <td style={{ padding: "10px 14px", fontWeight: 700, color: "#ffffff" }}>
-                            1 (Level {currentTowerLevel})
-                          </td>
-                          <td style={{ padding: "10px 14px", color: "var(--text-muted)" }}>
-                            Base Structure
-                          </td>
-                          <td style={{ padding: "10px 14px", color: "var(--text-muted)" }}>
-                            +{currentTowerLevel} / turn
-                          </td>
-                          <td style={{ padding: "10px 14px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-                              <span style={{ fontWeight: 800, color: "#facc15" }}>+{currentTowerLevel}</span>
-                              <span style={{ display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", color: getManaColorHex(wizardManaChoice), background: "rgba(255, 255, 255, 0.04)", padding: "1px 5px", borderRadius: "4px" }}>
-                                <img src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "12px", height: "12px" }} />
-                                +{currentTowerLevel} {getManaLabel(wizardManaChoice)}
-                              </span>
-                            </div>
-                          </td>
-                          <td style={{ padding: "10px 14px" }}>
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "4px", background: "rgba(0, 242, 254, 0.08)", border: "1px solid rgba(0, 242, 254, 0.2)", color: "#00f2fe" }}>
-                              <span>Produces </span>
-                              {Array.from({ length: currentTowerLevel }).map((_, i) => (
-                                <img key={i} src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "12px", height: "12px" }} />
-                              ))}
-                              <span> / turn</span>
-                            </span>
-                          </td>
-                        </tr>
-                      </tbody>
-                      <tfoot>
-                        <tr style={{ background: "rgba(74, 222, 128, 0.08)", borderTop: "2px solid rgba(74, 222, 128, 0.3)", fontWeight: 800 }}>
-                          <td style={{ padding: "12px 14px", color: "#4ade80" }}>
-                            TOTAL
-                          </td>
-                          <td style={{ padding: "12px 14px", color: "#ffffff", fontSize: "0.95rem" }}>
-                            {grandTotalLands} Lands + 1 Tower
-                          </td>
-                          <td style={{ padding: "12px 14px", color: "#ffffff" }}>
-                            100.0%
-                          </td>
-                          <td style={{ padding: "12px 14px", color: "var(--text-muted)" }}>
-                            —
-                          </td>
-                          <td style={{ padding: "12px 14px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-                              <span style={{ fontSize: "0.95rem", color: "#facc15" }}>+{overallTotalMana} Mana</span>
-                              {(["W", "G", "R", "B", "U"] as const).map((color) => {
-                                const amt = grandTotalManaByColor[color] || 0;
-                                if (amt === 0) return null;
-                                return (
-                                  <span key={color} style={{ display: "inline-flex", alignItems: "center", gap: "3px", fontSize: "0.72rem", color: getManaColorHex(color), background: "rgba(255, 255, 255, 0.05)", padding: "1px 5px", borderRadius: "4px" }}>
-                                    <img src={getManaDataUri(color)} alt={color} style={{ width: "12px", height: "12px" }} />
-                                    +{amt}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          </td>
-                          <td style={{ padding: "12px 14px", color: "var(--text-muted)", fontSize: "0.78rem" }}>
-                            {ownedTerritoryList.length} lands + Wizards Tower
-                          </td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
+                    {/* Secondary Section: Detailed Territory Table */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <h3 style={{ margin: 0, fontSize: "0.92rem", color: "#38bdf8", display: "flex", alignItems: "center", gap: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                        <i className="fa-solid fa-list-check"></i>
+                        <span>Owned Territory Cards Breakdown</span>
+                      </h3>
 
-                {/* Secondary Section: Detailed Territory Table */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <h3 style={{ margin: 0, fontSize: "0.92rem", color: "#38bdf8", display: "flex", alignItems: "center", gap: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                    <i className="fa-solid fa-list-check"></i>
-                    <span>Owned Territory Cards Breakdown</span>
-                  </h3>
+                      <div style={{ overflowX: "auto", borderRadius: "8px", border: "1px solid rgba(255, 255, 255, 0.08)", background: "rgba(0, 0, 0, 0.25)" }}>
+                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem", textAlign: "left", fontFamily: "'Outfit', sans-serif" }}>
+                          <thead>
+                            <tr style={{ background: "rgba(255, 255, 255, 0.04)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", color: "rgba(255, 255, 255, 0.7)" }}>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Territory</th>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Element</th>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Level</th>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Owned / Map Ratio</th>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Mana Production / Turn</th>
+                              <th style={{ padding: "10px 14px", fontWeight: 700 }}>Share of Lands</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {ownedTerritoryList.map((t) => {
+                              const isSetComplete = t.total > 0 && t.owned === t.total;
+                              const isTower = (t.baseName || "").toLowerCase().includes("tower");
+                              const share = grandTotalLands > 0 ? (t.owned / grandTotalLands) * 100 : 0;
+                              const manaOutputDisplay = isTower ? `+${t.level}` : (isSetComplete ? "+1 Set Bonus Mana" : "Pooled (1 / 2 lands)");
 
-                  <div style={{ overflowX: "auto", borderRadius: "8px", border: "1px solid rgba(255, 255, 255, 0.08)", background: "rgba(0, 0, 0, 0.25)" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.82rem", textAlign: "left", fontFamily: "'Outfit', sans-serif" }}>
-                      <thead>
-                        <tr style={{ background: "rgba(255, 255, 255, 0.04)", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", color: "rgba(255, 255, 255, 0.7)" }}>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Territory</th>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Element</th>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Level</th>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Owned / Map Ratio</th>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Mana Production / Turn</th>
-                          <th style={{ padding: "10px 14px", fontWeight: 700 }}>Share of Lands</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {ownedTerritoryList.map((t) => {
-                          const isSetComplete = t.total > 0 && t.owned === t.total;
-                          const isTower = (t.baseName || "").toLowerCase().includes("tower");
-                          const share = grandTotalLands > 0 ? (t.owned / grandTotalLands) * 100 : 0;
-                          const manaOutputDisplay = isTower ? `+${t.level}` : (isSetComplete ? "+1 Set Bonus Mana" : "Pooled (1 / 2 lands)");
+                              return (
+                                <tr key={t.fullTileId} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.04)" }}>
+                                  <td style={{ padding: "8px 14px" }}>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                      <img 
+                                        src={`/assets/tiles/${t.fullTileId}.png`} 
+                                        alt={t.baseName} 
+                                        style={{ width: "26px", height: "26px", borderRadius: "4px", objectFit: "cover", border: "1px solid rgba(255,255,255,0.15)" }} 
+                                        onError={(e) => { (e.currentTarget as HTMLElement).style.display = "none"; }}
+                                      />
+                                      <span style={{ fontWeight: 700, color: "#ffffff" }}>{t.fullTileId}</span>
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: "8px 14px" }}>
+                                    <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", color: getManaColorHex(t.manaType), fontWeight: 600 }}>
+                                      <img src={getManaDataUri(t.manaType)} alt={t.manaType} style={{ width: "13px", height: "13px" }} />
+                                      {getManaLabel(t.manaType)}
+                                    </span>
+                                  </td>
+                                  <td style={{ padding: "8px 14px" }}>
+                                    <span style={{ padding: "1px 6px", borderRadius: "4px", background: "rgba(255,255,255,0.06)", fontWeight: 700, fontSize: "0.75rem" }}>
+                                      Lvl {t.level}
+                                    </span>
+                                  </td>
+                                  <td style={{ padding: "8px 14px" }}>
+                                    <span style={{ fontWeight: 600, color: isSetComplete && !isTower ? "#4ade80" : "var(--text-main)" }}>
+                                      {t.owned} / {t.total}
+                                    </span>
+                                    {isSetComplete && !isTower && (
+                                      <span style={{ marginLeft: "6px", fontSize: "0.68rem", color: "#4ade80", background: "rgba(74, 222, 128, 0.15)", padding: "1px 5px", borderRadius: "4px" }}>
+                                        Complete 🎉
+                                      </span>
+                                    )}
+                                  </td>
+                                  <td style={{ padding: "8px 14px" }}>
+                                    <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontWeight: 700, color: "#facc15" }}>
+                                      <img src={getManaDataUri(t.manaType)} alt={t.manaType} style={{ width: "13px", height: "13px" }} />
+                                      {manaOutputDisplay}
+                                      {!isTower && (
+                                        <span style={{ fontSize: "0.68rem", color: isSetComplete ? "#4ade80" : "var(--text-muted)", marginLeft: "4px" }} title="1 mana per 2 lands owned of this element (+1 bonus if set complete)">
+                                          ({isSetComplete ? "+1 bonus" : "1 / 2 lands"})
+                                        </span>
+                                      )}
+                                    </span>
+                                  </td>
+                                  <td style={{ padding: "8px 14px", color: "var(--text-muted)" }}>
+                                    {share.toFixed(1)}%
+                                  </td>
+                                </tr>
+                              );
+                            })}
 
-                          return (
-                            <tr key={t.fullTileId} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.04)" }}>
+                            {/* Wizards Tower card breakdown row at the bottom */}
+                            <tr style={{ borderTop: "1.5px solid rgba(0, 242, 254, 0.25)", background: "rgba(0, 242, 254, 0.03)" }}>
                               <td style={{ padding: "8px 14px" }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                                   <img 
-                                    src={`/assets/tiles/${t.fullTileId}.png`} 
-                                    alt={t.baseName} 
-                                    style={{ width: "26px", height: "26px", borderRadius: "4px", objectFit: "cover", border: "1px solid rgba(255,255,255,0.15)" }} 
+                                    src={`/assets/tiles/Wizards Tower L${currentTowerLevel}.png`} 
+                                    alt="Wizards Tower" 
+                                    style={{ width: "26px", height: "26px", borderRadius: "4px", objectFit: "cover", border: "1px solid rgba(0, 242, 254, 0.4)" }} 
                                     onError={(e) => { (e.currentTarget as HTMLElement).style.display = "none"; }}
                                   />
-                                  <span style={{ fontWeight: 700, color: "#ffffff" }}>{t.fullTileId}</span>
+                                  <div>
+                                    <span style={{ fontWeight: 700, color: "#00f2fe" }}>Wizards Tower</span>
+                                    <div style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>Level {currentTowerLevel} Base Sanctuary</div>
+                                  </div>
                                 </div>
                               </td>
                               <td style={{ padding: "8px 14px" }}>
-                                <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", color: getManaColorHex(t.manaType), fontWeight: 600 }}>
-                                  <img src={getManaDataUri(t.manaType)} alt={t.manaType} style={{ width: "13px", height: "13px" }} />
-                                  {getManaLabel(t.manaType)}
+                                <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", color: getManaColorHex(wizardManaChoice), fontWeight: 600 }}>
+                                  <img src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "13px", height: "13px" }} />
+                                  {getManaLabel(wizardManaChoice)}
                                 </span>
                               </td>
                               <td style={{ padding: "8px 14px" }}>
-                                <span style={{ padding: "1px 6px", borderRadius: "4px", background: "rgba(255,255,255,0.06)", fontWeight: 700, fontSize: "0.75rem" }}>
-                                  Lvl {t.level}
+                                <span style={{ padding: "1px 6px", borderRadius: "4px", background: "rgba(0, 242, 254, 0.15)", color: "#00f2fe", fontWeight: 700, fontSize: "0.75rem", border: "1px solid rgba(0, 242, 254, 0.3)" }}>
+                                  Lvl {currentTowerLevel}
                                 </span>
                               </td>
                               <td style={{ padding: "8px 14px" }}>
-                                <span style={{ fontWeight: 600, color: isSetComplete && !isTower ? "#4ade80" : "var(--text-main)" }}>
-                                  {t.owned} / {t.total}
+                                <span style={{ fontWeight: 600, color: "#00f2fe" }}>
+                                  1 / 1
                                 </span>
-                                {isSetComplete && !isTower && (
-                                  <span style={{ marginLeft: "6px", fontSize: "0.68rem", color: "#4ade80", background: "rgba(74, 222, 128, 0.15)", padding: "1px 5px", borderRadius: "4px" }}>
-                                    Complete 🎉
-                                  </span>
-                                )}
+                                <span style={{ marginLeft: "6px", fontSize: "0.68rem", color: "#00f2fe", background: "rgba(0, 242, 254, 0.15)", padding: "1px 5px", borderRadius: "4px" }}>
+                                  Active 🗼
+                                </span>
                               </td>
                               <td style={{ padding: "8px 14px" }}>
                                 <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontWeight: 700, color: "#facc15" }}>
-                                  <img src={getManaDataUri(t.manaType)} alt={t.manaType} style={{ width: "13px", height: "13px" }} />
-                                  {manaOutputDisplay}
-                                  {!isTower && (
-                                    <span style={{ fontSize: "0.68rem", color: isSetComplete ? "#4ade80" : "var(--text-muted)", marginLeft: "4px" }} title="1 mana per 2 lands owned of this element (+1 bonus if set complete)">
-                                      ({isSetComplete ? "+1 bonus" : "1 / 2 lands"})
-                                    </span>
-                                  )}
+                                  <img src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "13px", height: "13px" }} />
+                                  +{currentTowerLevel} {getManaLabel(wizardManaChoice)}
                                 </span>
                               </td>
                               <td style={{ padding: "8px 14px", color: "var(--text-muted)" }}>
-                                {share.toFixed(1)}%
+                                Base Structure
                               </td>
                             </tr>
-                          );
-                        })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  /* Tab 2: Lands by Color & Level */
+                  <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                    <div className="glass" style={{ padding: "14px 18px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid rgba(255, 255, 255, 0.06)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+                      <div>
+                        <h4 style={{ margin: "0 0 2px 0", fontSize: "0.95rem", color: "#38bdf8", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <i className="fa-solid fa-palette"></i>
+                          <span>Lands Catalog (by Color & Level)</span>
+                        </h4>
+                        <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                          Map counts and owned territory distribution organized by element and land level
+                        </p>
+                      </div>
+                      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                        <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Total Lands Owned:</span>
+                        <span style={{ fontSize: "1.1rem", fontWeight: 800, color: "#4ade80" }}>{grandTotalLands} / {totalMapLandsCount}</span>
+                      </div>
+                    </div>
 
-                        {/* Wizards Tower card breakdown row at the bottom */}
-                        <tr style={{ borderTop: "1.5px solid rgba(0, 242, 254, 0.25)", background: "rgba(0, 242, 254, 0.03)" }}>
-                          <td style={{ padding: "8px 14px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                              <img 
-                                src={`/assets/tiles/Wizards Tower L${currentTowerLevel}.png`} 
-                                alt="Wizards Tower" 
-                                style={{ width: "26px", height: "26px", borderRadius: "4px", objectFit: "cover", border: "1px solid rgba(0, 242, 254, 0.4)" }} 
-                                onError={(e) => { (e.currentTarget as HTMLElement).style.display = "none"; }}
-                              />
-                              <div>
-                                <span style={{ fontWeight: 700, color: "#00f2fe" }}>Wizards Tower</span>
-                                <div style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>Level {currentTowerLevel} Base Sanctuary</div>
+                    {(() => {
+                      const colorsList = [
+                        { code: "W", name: "White (Plains)", colorHex: "#fef08a", borderColor: "rgba(254, 240, 138, 0.2)" },
+                        { code: "G", name: "Green (Forests)", colorHex: "#4ade80", borderColor: "rgba(74, 222, 128, 0.2)" },
+                        { code: "R", name: "Red (Mountains)", colorHex: "#f87171", borderColor: "rgba(248, 113, 113, 0.2)" },
+                        { code: "B", name: "Black (Swamps)", colorHex: "#c084fc", borderColor: "rgba(192, 132, 252, 0.2)" },
+                        { code: "U", name: "Blue (Islands)", colorHex: "#38bdf8", borderColor: "rgba(56, 189, 248, 0.2)" },
+                        { code: "C", name: "Colorless / Special", colorHex: "#cbd5e1", borderColor: "rgba(203, 213, 225, 0.2)" },
+                      ] as const;
+
+                      return (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                          {colorsList.map((colorDef) => {
+                            const colorLands = validMapLands.filter(cell => getManaType(cell.tileId) === colorDef.code);
+                            const totalColorMapCount = colorLands.length;
+                            const ownedColorCount = colorLands.filter(cell => cell.ownerId === 0).length;
+
+                            if (totalColorMapCount === 0) return null;
+
+                            return (
+                              <div 
+                                key={colorDef.code} 
+                                className="glass" 
+                                style={{ 
+                                  borderRadius: "8px", 
+                                  border: `1px solid ${colorDef.borderColor}`, 
+                                  background: "rgba(0, 0, 0, 0.2)",
+                                  overflow: "hidden"
+                                }}
+                              >
+                                {/* Color Header */}
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", background: "rgba(255, 255, 255, 0.03)", borderBottom: "1px solid rgba(255, 255, 255, 0.06)" }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                    <img src={getManaDataUri(colorDef.code)} alt={colorDef.code} style={{ width: "20px", height: "20px" }} />
+                                    <span style={{ fontWeight: 800, fontSize: "0.95rem", color: colorDef.colorHex }}>{colorDef.name}</span>
+                                  </div>
+                                  <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.8rem" }}>
+                                    <span style={{ color: "var(--text-muted)" }}>Owned:</span>
+                                    <span style={{ fontWeight: 800, color: ownedColorCount > 0 ? "#ffffff" : "var(--text-muted)" }}>
+                                      {ownedColorCount} / {totalColorMapCount}
+                                    </span>
+                                    <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                                      ({totalColorMapCount > 0 ? Math.round((ownedColorCount / totalColorMapCount) * 100) : 0}%)
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* Levels Grid for this Color */}
+                                <div style={{ padding: "12px 16px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px" }}>
+                                  {[1, 2, 3, 4].map((lvl) => {
+                                    const levelCells = colorLands.filter(c => getLevel(c.tileId) === lvl);
+                                    const totalLvlCount = levelCells.length;
+                                    const ownedLvlCount = levelCells.filter(c => c.ownerId === 0).length;
+
+                                    // Tile breakdown
+                                    const tileMap: Record<string, { fullTileId: string; owned: number; total: number }> = {};
+                                    levelCells.forEach(cell => {
+                                      if (!tileMap[cell.tileId]) {
+                                        tileMap[cell.tileId] = { fullTileId: cell.tileId, owned: 0, total: 0 };
+                                      }
+                                      tileMap[cell.tileId].total++;
+                                      if (cell.ownerId === 0) {
+                                        tileMap[cell.tileId].owned++;
+                                      }
+                                    });
+
+                                    const tileList = Object.values(tileMap);
+                                    const hasLandsInLevel = totalLvlCount > 0;
+
+                                    return (
+                                      <div 
+                                        key={lvl}
+                                        style={{
+                                          padding: "10px 12px",
+                                          borderRadius: "6px",
+                                          background: hasLandsInLevel && ownedLvlCount > 0 ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.15)",
+                                          border: `1px solid ${ownedLvlCount > 0 ? colorDef.borderColor : "rgba(255, 255, 255, 0.04)"}`,
+                                          opacity: hasLandsInLevel ? 1 : 0.4,
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          gap: "6px"
+                                        }}
+                                      >
+                                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "4px" }}>
+                                          <span style={{ fontSize: "0.78rem", fontWeight: 700, color: ownedLvlCount > 0 ? colorDef.colorHex : "var(--text-muted)" }}>
+                                            Level {lvl}
+                                          </span>
+                                          <span style={{ fontSize: "0.75rem", fontWeight: 800, color: ownedLvlCount > 0 ? "#4ade80" : "var(--text-muted)" }}>
+                                            {ownedLvlCount} / {totalLvlCount}
+                                          </span>
+                                        </div>
+
+                                        {tileList.length > 0 ? (
+                                          <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginTop: "2px" }}>
+                                            {tileList.map((t) => {
+                                              const isComplete = t.total > 0 && t.owned === t.total;
+                                              return (
+                                                <div 
+                                                  key={t.fullTileId} 
+                                                  style={{ 
+                                                    display: "flex", 
+                                                    alignItems: "center", 
+                                                    justifyContent: "space-between", 
+                                                    fontSize: "0.72rem",
+                                                    padding: "2px 4px",
+                                                    borderRadius: "4px",
+                                                    background: t.owned > 0 ? "rgba(255, 255, 255, 0.04)" : "transparent"
+                                                  }}
+                                                >
+                                                  <span style={{ color: t.owned > 0 ? "#ffffff" : "var(--text-muted)", fontWeight: t.owned > 0 ? 600 : 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={t.fullTileId}>
+                                                    {t.fullTileId}
+                                                  </span>
+                                                  <span style={{ fontWeight: 700, color: isComplete ? "#4ade80" : (t.owned > 0 ? "#ffffff" : "var(--text-muted)"), marginLeft: "6px", flexShrink: 0 }}>
+                                                    {t.owned} ({t.total}) {isComplete ? "🎉" : ""}
+                                                  </span>
+                                                </div>
+                                              );
+                                            })}
+                                          </div>
+                                        ) : (
+                                          <span style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.25)", fontStyle: "italic" }}>
+                                            None on map
+                                          </span>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td style={{ padding: "8px 14px" }}>
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", color: getManaColorHex(wizardManaChoice), fontWeight: 600 }}>
-                              <img src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "13px", height: "13px" }} />
-                              {getManaLabel(wizardManaChoice)}
-                            </span>
-                          </td>
-                          <td style={{ padding: "8px 14px" }}>
-                            <span style={{ padding: "1px 6px", borderRadius: "4px", background: "rgba(0, 242, 254, 0.15)", color: "#00f2fe", fontWeight: 700, fontSize: "0.75rem", border: "1px solid rgba(0, 242, 254, 0.3)" }}>
-                              Lvl {currentTowerLevel}
-                            </span>
-                          </td>
-                          <td style={{ padding: "8px 14px" }}>
-                            <span style={{ fontWeight: 600, color: "#00f2fe" }}>
-                              1 / 1
-                            </span>
-                            <span style={{ marginLeft: "6px", fontSize: "0.68rem", color: "#00f2fe", background: "rgba(0, 242, 254, 0.15)", padding: "1px 5px", borderRadius: "4px" }}>
-                              Active 🗼
-                            </span>
-                          </td>
-                          <td style={{ padding: "8px 14px" }}>
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontWeight: 700, color: "#facc15" }}>
-                              <img src={getManaDataUri(wizardManaChoice)} alt={wizardManaChoice} style={{ width: "13px", height: "13px" }} />
-                              +{currentTowerLevel} {getManaLabel(wizardManaChoice)}
-                            </span>
-                          </td>
-                          <td style={{ padding: "8px 14px", color: "var(--text-muted)" }}>
-                            Base Structure
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="modal-options" style={{ padding: "16px 26px 20px 26px", borderTop: "1px solid rgba(255,255,255,0.08)", display: "flex", justifyContent: "flex-end" }}>
