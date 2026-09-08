@@ -18360,9 +18360,9 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                 </div>
 
                                 {/* Levels Grid for this Color */}
-                                <div style={{ padding: "12px 16px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px" }}>
-                                  {[1, 2, 3, 4].map((lvl) => {
-                                    const levelCells = colorLands.filter(c => getLevel(c.tileId) === lvl);
+                                <div style={{ padding: "12px 16px", display: "grid", gridTemplateColumns: colorDef.code === "C" ? "1fr" : "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px" }}>
+                                  {(colorDef.code === "C" ? [1] : [1, 2, 3, 4]).map((lvl) => {
+                                    const levelCells = colorDef.code === "C" ? colorLands : colorLands.filter(c => getLevel(c.tileId) === lvl);
                                     const totalLvlCount = levelCells.length;
                                     const ownedLvlCount = levelCells.filter(c => c.ownerId === 0).length;
 
@@ -18397,7 +18397,7 @@ const DEFAULT_COMPANIONS: CardJSON[] = [
                                       >
                                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "4px" }}>
                                           <span style={{ fontSize: "0.78rem", fontWeight: 700, color: ownedLvlCount > 0 ? colorDef.colorHex : "var(--text-muted)" }}>
-                                            Level {lvl}
+                                            {colorDef.code === "C" ? "Name" : `Level ${lvl}`}
                                           </span>
                                           <span style={{ fontSize: "0.75rem", fontWeight: 800, color: ownedLvlCount > 0 ? "#4ade80" : "var(--text-muted)" }}>
                                             {ownedLvlCount} / {totalLvlCount}
